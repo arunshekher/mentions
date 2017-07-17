@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="mentions" lan="Mentions" version="2.0" date="2017-07-17" compatibility="2.0" installRequired="true" >
+	<author name="Arun S. Sekher" url="http://e107.org" />
+	<summary>An @mention plugin</summary>
+	<description lan="">An @mention plugin</description>
+	<category>misc</category>
+	<keywords>
+		<word>mentions</word>
+		<word>user</word>
+		<word>content</word>
+	</keywords>
+	<adminLinks>
+		<link url='admin_config.php' description='Configure Mentions Plugin' icon='' iconSmall='' icon128="" primary='true' >LAN_CONGIGURE</link>
+		<link url="admin_config.php?mode=options" description="Configure Mentions Prefs" icon="manage" >Mention Prefs</link>
+	</adminLinks>
+	<pluginPrefs>
+		<pref name="mentions_active">1</pref>
+	</pluginPrefs>
+</e107Plugin>
