@@ -9,7 +9,7 @@ class Mentions
 
 
 	/**
-	 * mention_parse constructor.
+	 * Mentions constructor.
 	 */
 	public function __construct()
 	{
@@ -17,6 +17,7 @@ class Mentions
 
 
 	/**
+	 * Parse mentions in user submitted text
 	 * @param $text
 	 *
 	 * @return string
@@ -24,14 +25,16 @@ class Mentions
 	protected function parseMentions($text)
 	{
 		$mText = '';
-		$pattern = '#(@\w+)#mis';
-		$pieces = preg_split($pattern, $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+		//$pattern = '#(@\w+)#mis';
+		$pattern2 = '#(^|\w*@\s*\w+)#mi';
+		$phrases = preg_split($pattern2, $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 
-		foreach ($pieces as $piece) {
-			if ($this->isUserName($piece)) {
-				$mText .= $this->makeUserLink($piece);
+		foreach ($phrases as $phrase) {
+			$mention = $this->hasUserMentionIn($phrase);
+			if ($mention) {
+				$mText .= $this->createUserLinkFrom($mention);
 			} else {
-				$mText .= $piece;
+				$mText .= $phrase;
 			}
 		}
 		return $mText;
@@ -39,14 +42,14 @@ class Mentions
 
 
 	/**
+	 * Checks input for user mention match and return that if found
 	 * @param $input
 	 *
 	 * @return bool
-	 * TODO - rename as hasUserName
 	 */
-	protected function isUserName($input)
+	protected function hasUserMentionIn($input)
 	{
-		$pattern = '/(^|\s)(@\w+)/';
+		$pattern = '/(@\w+)/';
 		if (preg_match($pattern, $input, $matches)) {
 			return $matches[0];
 		}
@@ -55,35 +58,53 @@ class Mentions
 
 
 	/**
+	 * Converts mention to user profile link if user matched exists in database
 	 * @param $mention
 	 *
 	 * @return string
-	 * TODO - if user exist get userid from username and use it for link
 	 */
-	protected function makeUserLink($mention)
+	protected function createUserLinkFrom($mention)
 	{
-		//preg_replace('/@([^@ ]+)/', '<a href="/$1">@$1</a> ', $comment);
 		$data = $this->getUserData($mention);
 
-		if ($data['user_name'] === ltrim($mention, '@')) {
-			return '<a href="/user.php?id.' . $data['user_id'] . '">' . $mention . '</a>';
+		if ($data['user_name'] === $this->stripAtFrom($mention)) {
+			$userData = array('id' => $data['user_id'], 'name' => $data['user_name']);
+			$link = e107::getUrl()->create('user/profile/view', $userData);
+			return '<a href="' . $link . '">' . $mention . '</a>';
 		}
 		return $mention;
 
 	}
 
 
+	/**
+	 * Get user data drom database
+	 * @param $mention
+	 *
+	 * @return array
+	 */
 	protected function getUserData($mention)
 	{
-		$username = e107::getParser()->toDB(ltrim($mention, '@'));
-		// TODO - DB call
+		$username = e107::getParser()->toDB($this->stripAtFrom($mention));
 		$row = e107::getDb()->retrieve("user", "user_name, user_id", "user_name = '" . $username . "' ");
 		return $row;
 	}
 
 
-	protected function extractUserName($input)
+	protected function extractUserMentionFrom($input)
 	{
 
+	}
+
+
+	/**
+	 * Strips '@' sign from mention
+	 * @param $mention
+	 *
+	 * @return string
+	 */
+	protected function stripAtFrom($mention)
+	{
+		return ltrim($mention, '@');
 	}
 }
