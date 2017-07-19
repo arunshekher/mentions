@@ -9,10 +9,9 @@ jQuery(function( $ ) {
         insertTpl: "${atwho-at}${username}",
         callbacks: {
             remoteFilter: function(query, callback) {
-                console.log('Query: ' + query);
+                console.log('Query: ', query);
 
-                 //
-                /*
+                 /*
                  if(query === null || query.length < 1){
                     return callback(null);
                  }*/
@@ -24,15 +23,15 @@ jQuery(function( $ ) {
 
                     success: function(data) {
                         callback(data);
-                        console.log('Data: ' + data);
+                        console.log('Success: ', data);
                     },
 
-                    error: function() {
-                        console.warn('Didn\'t Work');
+                    error: function(xhr, textStatus, errorThrown) {
+                        console.warn('Error: ' + textStatus + ' : '  + errorThrown);
                     },
 
                     beforeSend: function(xhr) {
-                        //xhr.setRequestHeader('Authorization', localStorageService.get('authToken'));
+
                     }
                 });
             }
