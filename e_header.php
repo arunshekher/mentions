@@ -8,8 +8,6 @@ if(USER_AREA && USER) {
 	e107::js('mentions', 'js/jquery.caret.js', 'jquery');
 	e107::js('mentions', 'js/jquery.atwho.js', 'jquery');
 
-	$settings = ['path' =>  SITEURLBASE.e_PLUGIN_ABS];
-
 	$pluginPath = e_PLUGIN_ABS. 'mentions/';
 	e107::js('inline', "var mOpt = {'path': '$pluginPath'}");
 	e107::js('mentions', 'js/mentions.js', 'jquery');
