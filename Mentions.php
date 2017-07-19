@@ -18,6 +18,7 @@ class Mentions
 
 	/**
 	 * Parse mentions in user submitted text
+	 *
 	 * @param $text
 	 *
 	 * @return string
@@ -27,7 +28,8 @@ class Mentions
 		$mText = '';
 		//$pattern = '#(@\w+)#mis';
 		$pattern2 = '#(^|\w*@\s*\w+)#mi';
-		$phrases = preg_split($pattern2, $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+		$phrases = preg_split($pattern2, $text, -1,
+			PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 
 		foreach ($phrases as $phrase) {
 			$mention = $this->hasUserMentionIn($phrase);
@@ -37,12 +39,14 @@ class Mentions
 				$mText .= $phrase;
 			}
 		}
+
 		return $mText;
 	}
 
 
 	/**
 	 * Checks input for user mention match and return that if found
+	 *
 	 * @param $input
 	 *
 	 * @return bool
@@ -53,12 +57,14 @@ class Mentions
 		if (preg_match($pattern, $input, $matches)) {
 			return $matches[0];
 		}
+
 		return false;
 	}
 
 
 	/**
 	 * Converts mention to user profile link if user matched exists in database
+	 *
 	 * @param $mention
 	 *
 	 * @return string
@@ -68,17 +74,20 @@ class Mentions
 		$data = $this->getUserData($mention);
 
 		if ($data['user_name'] === $this->stripAtFrom($mention)) {
-			$userData = array('id' => $data['user_id'], 'name' => $data['user_name']);
+			$userData =
+				['id' => $data['user_id'], 'name' => $data['user_name']];
 			$link = e107::getUrl()->create('user/profile/view', $userData);
+
 			return '<a href="' . $link . '">' . $mention . '</a>';
 		}
-		return $mention;
 
+		return $mention;
 	}
 
 
 	/**
 	 * Get user data drom database
+	 *
 	 * @param $mention
 	 *
 	 * @return array
@@ -86,19 +95,16 @@ class Mentions
 	protected function getUserData($mention)
 	{
 		$username = e107::getParser()->toDB($this->stripAtFrom($mention));
-		$row = e107::getDb()->retrieve("user", "user_name, user_id", "user_name = '" . $username . "' ");
+		$row = e107::getDb()->retrieve("user", "user_name, user_id",
+			"user_name = '" . $username . "' ");
+
 		return $row;
-	}
-
-
-	protected function extractUserMentionFrom($input)
-	{
-
 	}
 
 
 	/**
 	 * Strips '@' sign from mention
+	 *
 	 * @param $mention
 	 *
 	 * @return string
