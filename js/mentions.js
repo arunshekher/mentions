@@ -12,9 +12,10 @@ jQuery(function( $ ) {
                 console.log('Query: ' + query);
 
                  //
+                /*
                  if(query === null || query.length < 1){
                     return callback(null);
-                 }
+                 }*/
 
                 $.ajax({
                     url: mOptions.path + "index.php?mq=" + query,
@@ -39,9 +40,9 @@ jQuery(function( $ ) {
         searchKey: "username",
         limit: 5,
         maxLen: 15,
+        minLen: 1,
         displayTimeout: 300,
         highlightFirst: true,
-        delay: 50,
 
     });
 
