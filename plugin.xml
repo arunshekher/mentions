@@ -10,7 +10,7 @@
 		<word>content</word>
 	</keywords>
 	<adminLinks>
-		<link url='admin_config.php' description='Configure Mentions Plugin' icon='' iconSmall='' icon128="" primary='true' >LAN_CONGIGURE</link>
+		<link url='admin_config.php' description='Configure Mentions Plugin' icon='images/mentions_32.png' iconSmall='images/mentions_16.png' icon128="images/mentions_128.png" primary='true' >LAN_CONGIGURE</link>
 		<link url="admin_config.php?mode=options" description="Configure Mentions Prefs" icon="manage" >Mention Prefs</link>
 	</adminLinks>
 	<pluginPrefs>
