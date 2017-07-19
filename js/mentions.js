@@ -3,7 +3,7 @@ jQuery(function( $ ) {
     var mOptions = $.extend({}, mOpt);
     console.log(mOptions);
 
-    $('#cmessage').atwho({
+    $('#cmessage, #comment, #forum-quickreply-text, #post').atwho({
         at: "@",
         displayTpl: "<li>${username}<small>&nbsp;${name}</small></li>",
         insertTpl: "${atwho-at}${username}",
