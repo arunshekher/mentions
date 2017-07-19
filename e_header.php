@@ -12,5 +12,5 @@ if(USER_AREA && USER) {
 
 	$pluginPath = e_PLUGIN_ABS. 'mentions/';
 	e107::js('inline', "var mOpt = {'path': '$pluginPath'}");
-	e107::js('mentions', 'js/mentions2.js', 'jquery');
+	e107::js('mentions', 'js/mentions.js', 'jquery');
 }
