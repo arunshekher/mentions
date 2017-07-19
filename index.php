@@ -6,13 +6,19 @@ if ( ! e107::isInstalled('mentions')) {
 	exit;
 }
 
-if (e_AJAX_REQUEST && strtolower($_SERVER['REQUEST_METHOD']) === 'get' && vartrue($_GET['mq'])) {
+if (strtolower($_SERVER['REQUEST_METHOD']) === 'post') {
+	exit;
+}
+
+$mq = null;
+
+if (e_AJAX_REQUEST && vartrue($_GET['mq'])) {
 
 	$db = e107::getDb();
 	$tp = e107::getParser();
 
 	$mq =
-		$tp->filter($_GET['mq']); // TODO --> ? should it be mysql escaping - but what about server resource overhead??
+		$tp->filter($_GET['mq']); // TODO --> ? should it be mysql escaping - but will it cause server overhead??
 	$where = "user_name LIKE '" . $mq . "%' ";
 
 	if ($db->select('user', 'user_name, user_login',
@@ -35,4 +41,3 @@ if (e_AJAX_REQUEST && strtolower($_SERVER['REQUEST_METHOD']) === 'get' && vartru
 	}
 
 }
-exit;
