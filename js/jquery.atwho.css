@@ -5,7 +5,7 @@
     display: none;
     margin-top: 18px;
     background: white;
-    color: black;
+    color: #24292e;
     border: 1px solid #DDD;
     border-radius: 3px;
     box-shadow: 0 0 5px rgba(0,0,0,0.1);
@@ -37,7 +37,7 @@
 }
 
 .atwho-view .cur {
-    background: #3366FF;
+    background: #0366d6;
     color: white;
 }
 .atwho-view .cur small {
@@ -48,7 +48,7 @@
 }
 .atwho-view .cur strong {
     color: white;
-    font-weight: bold;
+    /*font-weight: bold;*/
 }
 .atwho-view ul {
     /* width: 100px; */
@@ -67,6 +67,6 @@
 }
 .atwho-view small {
     font-size: smaller;
-    color: #777;
+    color: #676069;
     font-weight: normal;
 }
