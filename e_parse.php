@@ -17,8 +17,8 @@ class mentions_parse extends Mentions
 	 */
 	public function toHtml($text, $context = '')
 	{
-		if ($context === 'USER_BODY') {
-			return $this->parseMentions($text);
+		if ($context === 'USER_BODY' || $context === 'OLDDEFAULT') {
+			return $this->parseMentions($text, $context);
 		}
 		return $text;
 	}

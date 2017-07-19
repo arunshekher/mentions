@@ -22,7 +22,7 @@ class Mentions
 	 *
 	 * @return string
 	 */
-	protected function parseMentions($text)
+	protected function parseMentions($text, $context = '')
 	{
 		$mText = '';
 		//$pattern = '#(@\w+)#mis';
