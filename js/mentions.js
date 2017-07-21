@@ -1,36 +1,40 @@
-jQuery(function( $ ) {
+var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
-    var mOptions = $.extend({}, mOpt);
-    console.log(mOptions);
+jQuery(function ($) {
+
+    //console.log(e107);
+    //console.log(e107.settings.mentions.path);
+    var xhrPath = e107.settings.mentions.path;
+
 
     $('#cmessage, #comment, #forum-quickreply-text, #post').atwho({
         at: "@",
-        displayTpl: "<li>${username}<small>&nbsp;${name}</small></li>",
+        displayTpl: "<li>${username}<small>  ${name}</small></li>",
         insertTpl: "${atwho-at}${username}",
         callbacks: {
-            remoteFilter: function(query, callback) {
+            remoteFilter: function (query, callback) {
                 console.log('Query: ', query);
 
-                 /*
+                /*
                  if(query === null || query.length < 1){
-                    return callback(null);
+                 return callback(null);
                  }*/
 
                 $.ajax({
-                    url: mOptions.path + "index.php?mq=" + query,
+                    url: xhrPath + "index.php?mq=" + query,
                     type: 'GET',
                     dataType: 'json',
 
-                    success: function(data) {
+                    success: function (data) {
                         callback(data);
                         console.log('Success: ', data);
                     },
 
-                    error: function(xhr, textStatus, errorThrown) {
-                        console.warn('Error: ' + textStatus + ' : '  + errorThrown);
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.warn('Error: ' + textStatus + ' : ' + errorThrown);
                     },
 
-                    beforeSend: function(xhr) {
+                    beforeSend: function (xhr) {
 
                     }
                 });

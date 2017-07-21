@@ -37,11 +37,6 @@ class mentions_ui extends e_admin_ui
 	protected $pluginName = 'mentions';
 
 
-	protected $libLocation = [
-		'plugin_dir' => 'Plugin Directory',
-		'weblib_dir' => 'Third Party Libraries Directory',
-	];
-
 	protected $mentionsContexts = [
 		1 => 'Forum-And-Chatbox',
 		2 => 'Forum-Chatbox-And-Comments',
@@ -65,13 +60,12 @@ class mentions_ui extends e_admin_ui
 			'data'  => 'int',
 			'help'  => '\'mentions\' is called in what text parse context.',
 		],
-		'lib_location' => [
-			'title' => 'Where to load \'mentions\' Auto-complete libraries from:',
+		'use_global_path' => [
+			'title' => 'Use global path for JS libraries:',
 			'tab'   => 0,
-			'type'  => 'dropdown',
-			'size'  => 'xxlarge',
-			'data'  => 'str',
-			'help'  => 'Location of \'mentions\' auto-complete libraries.',
+			'type'  => 'boolean',
+			'data'  => 'int',
+			'help'  => 'Use global path (\'e107_web/lib/\')to load jQuery auto-complete libraries from.',
 		],
 	];
 
@@ -80,7 +74,6 @@ class mentions_ui extends e_admin_ui
 
 	public function init()
 	{
-		$this->prefs['lib_location']['writeParms'] = $this->libLocation;
 		$this->prefs['mentions_contexts']['writeParms'] =
 			$this->mentionsContexts;
 		$this->libLocationWarning();
@@ -89,8 +82,8 @@ class mentions_ui extends e_admin_ui
 
 	private function libLocationWarning()
 	{
-		$libLocation = e107::pref('mentions', 'lib_location');
-		if ($libLocation === 'weblib_dir') {
+		$libGlobal = e107::getPlugPref('mentions', 'use_global_path');
+		if ($libGlobal) {
 			e107::getMessage()
 				->addWarning('You need to place Caret.js and At.js 
 				auto-complete libraries under /e107_web/lib/ directory according to their 
