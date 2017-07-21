@@ -12,13 +12,13 @@ if (strtolower($_SERVER['REQUEST_METHOD']) === 'post') {
 
 $mq = null;
 
-if (e_AJAX_REQUEST && vartrue($_GET['mq'])) {
+if (e_AJAX_REQUEST && USER && vartrue($_GET['mq'])) {
 
 	$db = e107::getDb();
 	$tp = e107::getParser();
 
 	$mq =
-		$tp->filter($_GET['mq']); // TODO --> ? should it be mysql escaping - but will it cause server overhead??
+		$tp->filter($_GET['mq']); // TODO --> ? Shouldn't it be mysql escaping (->toDB) - but will it cause server overhead??
 	$where = "user_name LIKE '" . $mq . "%' ";
 
 	if ($db->select('user', 'user_name, user_login',
@@ -38,6 +38,17 @@ if (e_AJAX_REQUEST && vartrue($_GET['mq'])) {
 			$ajax = e107::getAjax();
 			$ajax->response($data);
 		}
+	} else {
+
+		$msg = [
+			'error' => [
+				'msg' => 'No user found!',
+				'code' => '4',
+			]
+		];
+
+		e107::getAjax()->response($msg);
 	}
 
 }
+die();
