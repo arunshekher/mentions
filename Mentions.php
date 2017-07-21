@@ -28,7 +28,8 @@ class Mentions
 		$mText = '';
 		//$pattern = '#(@\w+)#mis';
 		$pattern2 = '#(^|\w*@\s*\w+)#mi';
-		$phrases = preg_split($pattern2, $text, -1,
+		$pattern3 = '#(^|\w*@\s*[a-z0-9._]+)#mi';
+		$phrases = preg_split($pattern3, $text, -1,
 			PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 
 		foreach ($phrases as $phrase) {
@@ -53,7 +54,7 @@ class Mentions
 	 */
 	protected function hasUserMentionIn($input)
 	{
-		$pattern = '/(@\w+)/';
+		$pattern = '#^(@[a-z0-9_.]*)$#i';
 		if (preg_match($pattern, $input, $matches)) {
 			return $matches[0];
 		}
