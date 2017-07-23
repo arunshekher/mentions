@@ -21,7 +21,7 @@ jQuery(function ($) {
                  }*/
 
                 $.ajax({
-                    url: xhrPath + "index.php?mq=" + query,
+                    url: xhrPath + "test.php?mq=" + query,
                     type: 'GET',
                     dataType: 'json',
 

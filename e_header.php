@@ -2,6 +2,8 @@
 if ( ! defined('e107_INIT')) {
 	exit;
 }
+
+/*
 if (USER_AREA && USER) {
 
 	$libPref = e107::getPlugPref('mentions', 'use_global_path');
@@ -24,4 +26,7 @@ if (USER_AREA && USER) {
 
 	e107::js('footer', '{e_PLUGIN}mentions/js/mentions.js', 'jquery');
 	e107::js('settings', ['mentions' => $mentionsSettings]);
-}
+}*/
+
+require __DIR__ . '/MentionsAutoComplete.php';
+MentionsAutoComplete::loadLibs();
