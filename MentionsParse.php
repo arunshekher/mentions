@@ -1,7 +1,7 @@
 <?php
 
 
-class Mentions
+class MentionsParse
 {
 	protected $userMention;
 	protected $userName;
@@ -26,10 +26,8 @@ class Mentions
 	protected function parseMentions($text, $context = '')
 	{
 		$mText = '';
-		//$pattern = '#(@\w+)#mis';
-		$pattern2 = '#(^|\w*@\s*\w+)#mi';
-		$pattern3 = '#(^|\w*@\s*[a-z0-9._]+)#mi';
-		$phrases = preg_split($pattern3, $text, -1,
+		$pattern = '#(^|\w*@\s*[a-z0-9._]+)#mi';
+		$phrases = preg_split($pattern, $text, -1,
 			PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 
 		foreach ($phrases as $phrase) {
