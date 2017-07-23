@@ -1,5 +1,4 @@
 <?php
-require __DIR__ . '/MentionsPlugin.php';
 
 abstract class Mentions
 {
@@ -26,8 +25,9 @@ abstract class Mentions
 	{
 		$mText = '';
 		$pattern = '#(^|\w*@\s*[a-z0-9._]+)#mi';
-		$phrases = preg_split($pattern, $text, -1,
-			PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+		$phrases = preg_split(
+			$pattern, $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
+		);
 
 		foreach ($phrases as $phrase) {
 			$mention = $this->hasUserMentionIn($phrase);
@@ -72,8 +72,8 @@ abstract class Mentions
 		$data = $this->getUserData($mention);
 
 		if ($data['user_name'] === $this->stripAtFrom($mention)) {
-			$userData =
-				['id' => $data['user_id'], 'name' => $data['user_name']];
+			$userData
+				= ['id' => $data['user_id'], 'name' => $data['user_name']];
 			$link = e107::getUrl()->create('user/profile/view', $userData);
 
 			return '<a href="' . $link . '">' . $mention . '</a>';
@@ -93,8 +93,9 @@ abstract class Mentions
 	protected function getUserData($mention)
 	{
 		$username = e107::getParser()->toDB($this->stripAtFrom($mention));
-		$row = e107::getDb()->retrieve("user", "user_name, user_id",
-			"user_name = '" . $username . "' ");
+		$row = e107::getDb()->retrieve(
+			"user", "user_name, user_id", "user_name = '" . $username . "' "
+		);
 
 		return $row;
 	}
@@ -125,14 +126,18 @@ abstract class Mentions
 			return true;
 		}
 		foreach ($ctxArray as $ctxItem) {
-			if ($ctxItem === $context) return true;
+			if ($ctxItem === $context) {
+				return true;
+			}
 		}
+
 		return false;
 	}
 
 
 	/**
 	 * Gets admin chosen contexts as indexed array
+	 *
 	 * @return array|null
 	 */
 	protected function chosenContexts()
