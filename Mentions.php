@@ -1,11 +1,9 @@
 <?php
+require __DIR__ . '/MentionsPlugin.php';
 
-
-class Mentions
+abstract class Mentions
 {
-	protected $userMention;
-	protected $userName;
-	protected $userId;
+	public $prefs;
 
 
 	/**
@@ -13,6 +11,7 @@ class Mentions
 	 */
 	public function __construct()
 	{
+		$this->prefs = e107::getPlugPref('mentions');
 	}
 
 
@@ -26,10 +25,8 @@ class Mentions
 	protected function parseMentions($text, $context = '')
 	{
 		$mText = '';
-		//$pattern = '#(@\w+)#mis';
-		$pattern2 = '#(^|\w*@\s*\w+)#mi';
-		$pattern3 = '#(^|\w*@\s*[a-z0-9._]+)#mi';
-		$phrases = preg_split($pattern3, $text, -1,
+		$pattern = '#(^|\w*@\s*[a-z0-9._]+)#mi';
+		$phrases = preg_split($pattern, $text, -1,
 			PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 
 		foreach ($phrases as $phrase) {
@@ -114,4 +111,45 @@ class Mentions
 	{
 		return ltrim($mention, '@');
 	}
+
+
+	/**
+	 * @param $context
+	 *
+	 * @return bool
+	 */
+	protected function isInContext($context)
+	{
+		$ctxArray = $this->chosenContexts();
+		if (null === $ctxArray) {
+			return true;
+		}
+		foreach ($ctxArray as $ctxItem) {
+			if ($ctxItem === $context) return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Gets admin chosen contexts as indexed array
+	 * @return array|null
+	 */
+	protected function chosenContexts()
+	{
+		$contextPref = $this->prefs['mentions_contexts'];
+
+		switch ($contextPref) {
+			case 1:
+				return ['USER_BODY'];
+				break;
+			case 2:
+				return ['USER_BODY', 'OLDDEFAULT'];
+				break;
+			case 3:
+				return ['USER_BODY', 'BODY'];
+				break;
+		}
+	}
+
 }

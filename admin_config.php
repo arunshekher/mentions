@@ -38,9 +38,9 @@ class mentions_ui extends e_admin_ui
 
 
 	protected $mentionsContexts = [
-		1 => 'Forum-And-Chatbox',
-		2 => 'Forum-Chatbox-And-Comments',
-		3 => 'Forum-Chatbox-Comments-And-News',
+		1 => 'Forum + Chatbox',
+		2 => 'Forum + Chatbox + Comments',
+		3 => 'Forum + Chatbox + Comments + News',
 	];
 
 
