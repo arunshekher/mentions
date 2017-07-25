@@ -2,9 +2,8 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 jQuery(function ($) {
 
-    //console.log(e107);
-    //console.log(e107.settings.mentions.path);
-    var xhrPath = e107.settings.mentions.path;
+    //console.log(e107.settings.mentions.suggestion_api_endpoint);
+    var API_ENDPOINT = e107.settings.mentions.api_endpoint;
 
 
     $('#cmessage, #comment, #forum-quickreply-text, #post').atwho({
@@ -13,15 +12,15 @@ jQuery(function ($) {
         insertTpl: "${atwho-at}${username}",
         callbacks: {
             remoteFilter: function (query, callback) {
+
                 console.log('Query: ', query);
 
-                /*
-                 if(query === null || query.length < 1){
-                 return callback(null);
-                 }*/
+                if(query === null || query.length < 0) {
+                    return callback(null);
+                }
 
                 $.ajax({
-                    url: xhrPath + "index.php?mq=" + query,
+                    url: API_ENDPOINT + "?mq=" + query,
                     type: 'GET',
                     dataType: 'json',
 

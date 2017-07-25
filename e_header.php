@@ -6,28 +6,30 @@ $mentionsPref = e107::getPlugPref('mentions');
 
 if ($mentionsPref['mentions_active'] && USER_AREA && USER) {
 
-	$libPref = $mentionsPref['use_global_path'];
+	$libGlobal = $mentionsPref['use_global_path'];
 
-	if ($libPref) {
-		echo '<!-- Debug: Mentions - Global Libs Loaded or NOT? :-\ why? -->';
-		e107::library('load', 'jQuery.Caret.js');
-		e107::library('load', 'jQuery.At.js');
+
+	if ($libGlobal) {
+		e107::library('load', 'ichord.caret');
+		e107::library('load', 'ichord.atwho');
 	} else {
-		e107::css('mentions', 'js/jquery.atwho.css');
-		e107::js('mentions', 'js/jquery.caret.js', 'jquery');
-		e107::js('mentions', 'js/jquery.atwho.js', 'jquery');
+		e107::css('mentions', 'js/ichord.atwho/dist/css/jquery.atwho.min.css');
+		e107::js('footer', e_PLUGIN . 'mentions/js/ichord.caret/dist/jquery.caret.min.js', 'jquery', 1);
+		e107::js('footer', e_PLUGIN . 'mentions/js/ichord.atwho/dist/js/jquery.atwho.min.js', 'jquery', 2);
 	}
 
-	$pluginPath = e_PLUGIN_ABS . 'mentions/';
+	// Mentions Autocomplete/suggestion API path
+	$apiPath = e_PLUGIN_ABS . 'mentions/index.php';
 
-	$mentionsSettings = [
-		 'path'  => $pluginPath,
+	$jsSettings = [
+		 'api_endpoint'  => $apiPath,
          'At.js'    => [
             'minLen' => 1,
             'maxLen' => 15
          ]
 	];
 
+	// Footer - settings + script
+	e107::js('settings', ['mentions' => $jsSettings]);
 	e107::js('footer', '{e_PLUGIN}mentions/js/mentions.js', 'jquery');
-	e107::js('settings', ['mentions' => $mentionsSettings]);
 }
