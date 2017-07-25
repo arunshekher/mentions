@@ -4,45 +4,87 @@ class mentions_library
 
 	function config()
 	{
-		$libraries['jQuery.Caret.js'] = array(
+		$libraries['ichord.caret'] = [
 			// Only used in administrative UI of Libraries API.
 			'name'              => 'Caret.js',
-			'vendor_url'        => 'https://github.com/ichord/Caret.js/',
+			'vendor_url'        => 'https://github.com/ichord/Caret.js',
 			'download_url'      => 'https://github.com/ichord/Caret.js/archive/master.zip',
-			'version_arguments' => array(
+			'library_path'      => '{e_PLUGIN}mentions/js/ichord.caret/',
+			'version_arguments' => [
 				'file'    => 'dist/jquery.caret.js',
-			),
-			'files' => array(
-				'js'  => array(
-					'dist/jquery.caret.js' => array(
-						'type' => 'footer',
-					),
-				),
-			),
-		);
+				'pattern' => '/@version\s(\d+\.\d+\.\d+)/',
+				'lines'   => 25,
+			],
 
-		$libraries['jQuery.At.js'] = array(
+			'files' => [
+
+				'js' => [
+					'dist/jquery.caret.js' => [
+						'type' => 'footer'
+					]
+				]
+			],
+
+			'variants' => [
+				'minified' => [
+					'js' => [
+						'dist/jquery.caret.min.js' => [
+							'type' => 'footer'
+						]
+
+					]
+				]
+			]
+
+		];
+
+		$libraries['ichord.atwho'] = [
 			// Only used in administrative UI of Libraries API.
 			'name'              => 'At.js',
 			'vendor_url'        => 'https://github.com/ichord/At.js',
 			'download_url'      => 'https://github.com/ichord/At.js/archive/master.zip',
-			'version_arguments' => array(
+			'library_path'      => '{e_PLUGIN}mentions/js/ichord.atwho/',
+			'version_arguments' => [
 				'file'    => 'dist/js/jquery.atwho.js',
 				//  * at.js - 1.5.4
-				'pattern' => '/at.js - (\d+\.\d+\.\d+)/',
+				'pattern' => '/.*(\d+\.\d+\.\d+)/',
 				'lines'   => 6,
-			),
-			'files' => array(
-				'js' => array(
-					'dist/js/jquery.atwho.js' => array(
-						'type' => 'footer',
-					),
-				'css' => array(
-					'dist/css/jquery.atwho.css',
-				),
-				),
-			),
-		);
+			],
+
+		    'files' => [
+			    'css' => [
+				    'dist/css/jquery.atwho.css' => [
+					    'zone' => 2
+				    ]
+			    ],
+
+		    	'js' => [
+		    		'dist/js/jquery.atwho.js' => [
+					    'type' => 'footer'
+				    ]
+			    ],
+
+
+		    ],
+
+		    'variants' => [
+		    	'minified' => [
+		    		'css' => [
+		    			'dist/css/jquery.atwho.min.css' => [
+						    'zone' => 2
+					    ]
+				    ],
+			        'js' => [
+			        	'dist/js/jquery.atwho.min.js' => [
+					        'type' => 'footer'
+				        ]
+			        ]
+			    ]
+		    ]
+
+		];
+
+
 
 		return $libraries;
 	}
