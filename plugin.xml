@@ -16,6 +16,6 @@
 	<pluginPrefs>
 		<pref name="mentions_active">1</pref>
 		<pref name="mentions_contexts">1</pref>
-		<pref name="lib_location">plugin_dir</pref>
+		<pref name="use_global_path">0</pref>
 	</pluginPrefs>
 </e107Plugin>

@@ -1,6 +1,6 @@
 <?php
 require_once('../../class2.php');
-if ( ! getperms('P')) {
+if ( ! getperms('P') || ! e107::isInstalled('mentions')) {
 	e107::redirect('admin');
 	exit;
 }
