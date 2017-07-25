@@ -76,21 +76,7 @@ class mentions_ui extends e_admin_ui
 	{
 		$this->prefs['mentions_contexts']['writeParms'] =
 			$this->mentionsContexts;
-		$this->libLocationWarning();
 	}
-
-
-	private function libLocationWarning()
-	{
-		$libGlobal = e107::getPlugPref('mentions', 'use_global_path');
-		if ($libGlobal) {
-			e107::getMessage()
-				->addWarning('You need to place Caret.js and At.js 
-				auto-complete libraries under /e107_web/lib/ directory according to their 
-				paths declared in e_library.php to use the libraries from this location.');
-		}
-	}
-
 
 }
 
