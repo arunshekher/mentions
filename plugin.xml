@@ -17,5 +17,8 @@
 		<pref name="mentions_active">1</pref>
 		<pref name="mentions_contexts">1</pref>
 		<pref name="use_global_path">0</pref>
+		<pref name="atwho_min_char">2</pref>
+        <pref name="atwho_max_char">15</pref>
+        <pref name="atwho_item_limit">5</pref>
 	</pluginPrefs>
 </e107Plugin>

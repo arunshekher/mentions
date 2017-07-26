@@ -43,6 +43,10 @@ class mentions_ui extends e_admin_ui
 		3 => 'Forum + Chatbox + Comments + News',
 	];
 
+	protected $preftabs = [
+		'Main',
+		'Suggestion Pop-up'
+	];
 
 	protected $prefs = [
 		'mentions_active'   => [
@@ -67,6 +71,28 @@ class mentions_ui extends e_admin_ui
 			'data'  => 'int',
 			'help'  => 'Use global path (\'e107_web/lib/\')to load jQuery auto-complete libraries from.',
 		],
+		'atwho_min_char'   => [
+			'title' => '<p>Min. number of characters to input after <kbd>@</kbd> to show suggestion popup-list.</p><kbd>Range: 0 - 20, Recommended: 2</kbd>',
+			'tab'   => 1,
+			'type'  => 'number',
+			'data'  => 'int',
+			'help'  => 'Minimum number of characters required to input after `@` sign to show suggestion popup-list (0 - 20):',
+		],
+		'atwho_max_char'   => [
+			'title' => '<p>Max number of char. after <kbd>@</kbd> that would be matched to populate suggestion</p>  <kbd>Upto: 20</kbd>',
+			'tab'   => 1,
+			'type'  => 'number',
+			'data'  => 'int',
+			'help'  => 'Max number of characters after `@` that would be matched to populate suggestion.',
+		],
+		'atwho_item_limit' => [
+			'title' => 'Number of username entries to show in popup-list',
+			'tab' => 1,
+			'type' => 'number',
+			'data' => 'int',
+			'help' => 'Number of username entries to show in suggestion popup-list',
+		]
+
 	];
 
 	protected $fieldpref = [];

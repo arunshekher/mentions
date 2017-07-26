@@ -2,6 +2,8 @@
 if ( ! defined('e107_INIT')) {
 	exit;
 }
+
+// plugin preferences
 $mentionsPref = e107::getPlugPref('mentions');
 
 if ($mentionsPref['mentions_active'] && USER_AREA && USER) {
@@ -22,11 +24,12 @@ if ($mentionsPref['mentions_active'] && USER_AREA && USER) {
 	$apiPath = e_PLUGIN_ABS . 'mentions/index.php';
 
 	$jsSettings = [
-		 'api_endpoint'  => $apiPath,
-         'At.js'    => [
-            'minLen' => 1,
-            'maxLen' => 15
-         ]
+		'api_endpoint'  => $apiPath,
+		'suggestions'    => [
+			'minChar' => $mentionsPref['atwho_min_char'],
+			'maxChar' => $mentionsPref['atwho_max_char'],
+			'entryLimit' => $mentionsPref['atwho_item_limit']
+		]
 	];
 
 	// Footer - settings + script
