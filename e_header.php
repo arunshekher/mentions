@@ -4,3 +4,4 @@ if ( ! defined('e107_INIT')) {
 }
 require __DIR__ . '/MentionsAutoComplete.php';
 MentionsAutoComplete::loadLibs();
+

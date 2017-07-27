@@ -17,12 +17,12 @@ class mentions_parse extends MentionsParse
 	 */
 	public function toHtml($text, $context = '')
 	{
-		if ($context === 'USER_BODY' || $context === 'OLDDEFAULT') { // todo: Implement via admin preference
+		if ($this->prefs['mentions_active'] && $this->isInContext($context)) {
 			return $this->parseMentions($text, $context);
 		}
+
 		return $text;
 	}
-
 
 
 }
