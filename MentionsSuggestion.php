@@ -1,6 +1,6 @@
 <?php
 
-class MentionsAutoComplete
+class MentionsSuggestion
 {
 
 
