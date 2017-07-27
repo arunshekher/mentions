@@ -4,7 +4,7 @@
 class Mentions
 {
 
-	public $prefs;
+	protected $prefs;
 
 
 	/**

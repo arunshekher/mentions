@@ -1,17 +1,17 @@
 <?php
+//require __DIR__ . '/Mentions.php';
 
-class MentionsSuggestion
+class MentionsSuggestion extends Mentions
 {
 
 
 	/**
 	 * Load suggestions popup javascript libs.
 	 */
-	public static function loadLibs()
+	public function loadLibs()
 	{
-		// plugin preferences
-		$mentionsPref = e107::getPlugPref('mentions');
-		//$mentionsPref = self::$prefs;
+		// plugin preferences - shared
+		$mentionsPref = $this->prefs;
 
 		if ($mentionsPref['mentions_active'] && USER_AREA && USER) {
 
