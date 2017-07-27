@@ -119,10 +119,10 @@ abstract class Mentions
 	 *
 	 * @return bool
 	 */
-	protected function isInContext($context)
+	protected function isInContextOf($context)
 	{
 		$ctxArray = $this->chosenContexts();
-		if (null === $ctxArray) {
+		if ((array) $ctxArray !== $ctxArray && null === $ctxArray) {
 			return true;
 		}
 		foreach ($ctxArray as $ctxItem) {
@@ -152,7 +152,10 @@ abstract class Mentions
 				return ['USER_BODY', 'OLDDEFAULT'];
 				break;
 			case 3:
-				return ['USER_BODY', 'BODY'];
+				return ['USER_BODY', 'BODY', 'OLDDEFAULT'];
+				break;
+			default:
+				return null;
 				break;
 		}
 	}
