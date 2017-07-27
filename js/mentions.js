@@ -1,13 +1,16 @@
 var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
+
 jQuery(function ($) {
 
     // preferences
-    var API_ENDPOINT = e107.settings.mentions.api_endpoint;
-    var atwhoLimit = e107.settings.mentions.suggestions.entryLimit;
-    var atwhoMax = e107.settings.mentions.suggestions.maxChar;
-    var atwhoMin = e107.settings.mentions.suggestions.minChar;
-    //console.log(e107.settings.mentions.suggestions);
+    var mentionsOpts = e107.settings.mentions;
+
+    var API_ENDPOINT = mentionsOpts.api_endpoint;
+    var atwhoLimit = mentionsOpts.suggestions.entryLimit;
+    var atwhoMax = mentionsOpts.suggestions.maxChar;
+    var atwhoMin = mentionsOpts.suggestions.minChar;
+    var atwhoHiFirst = mentionsOpts.suggestions.hiFirst;
 
 
     $('#cmessage, #comment, #forum-quickreply-text, #post').atwho({
@@ -48,7 +51,7 @@ jQuery(function ($) {
         maxLen: atwhoMax,
         minLen: atwhoMin,
         displayTimeout: 300,
-        highlightFirst: true,
+        highlightFirst: atwhoHiFirst,
 
     });
 

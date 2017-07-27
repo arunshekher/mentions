@@ -28,7 +28,8 @@ if ($mentionsPref['mentions_active'] && USER_AREA && USER) {
 		'suggestions'    => [
 			'minChar' => $mentionsPref['atwho_min_char'],
 			'maxChar' => $mentionsPref['atwho_max_char'],
-			'entryLimit' => $mentionsPref['atwho_item_limit']
+			'entryLimit' => $mentionsPref['atwho_item_limit'],
+			'hiFirst' => $mentionsPref['atwho_highlight_first']
 		]
 	];
 
