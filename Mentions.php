@@ -1,7 +1,9 @@
 <?php
 
+
 class MentionsParse
 {
+
 	public $prefs;
 
 
@@ -25,9 +27,8 @@ class MentionsParse
 	{
 		$mText = '';
 		$pattern = '#(^|\w*@\s*[a-z0-9._]+)#mi';
-		$phrases = preg_split(
-			$pattern, $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
-		);
+		$phrases = preg_split($pattern, $text, -1,
+			PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 
 		foreach ($phrases as $phrase) {
 			$mention = $this->hasUserMentionIn($phrase);
@@ -72,8 +73,8 @@ class MentionsParse
 		$data = $this->getUserData($mention);
 
 		if ($data['user_name'] === $this->stripAtFrom($mention)) {
-			$userData
-				= ['id' => $data['user_id'], 'name' => $data['user_name']];
+			$userData =
+				['id' => $data['user_id'], 'name' => $data['user_name']];
 			$link = e107::getUrl()->create('user/profile/view', $userData);
 
 			return '<a href="' . $link . '">' . $mention . '</a>';
@@ -93,9 +94,8 @@ class MentionsParse
 	protected function getUserData($mention)
 	{
 		$username = e107::getParser()->toDB($this->stripAtFrom($mention));
-		$row = e107::getDb()->retrieve(
-			"user", "user_name, user_id", "user_name = '" . $username . "' "
-		);
+		$row = e107::getDb()->retrieve("user", "user_name, user_id",
+			"user_name = '" . $username . "' ");
 
 		return $row;
 	}
