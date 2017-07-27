@@ -1,17 +1,17 @@
 <?php
-require __DIR__ . '/MentionsPlugin.php';
 
-class MentionsAutoComplete extends MentionsPlugin
+class MentionsAutoComplete
 {
 
 
 	/**
-	 *
+	 * Load suggestions popup javascript libs.
 	 */
 	public static function loadLibs()
 	{
 		// plugin preferences
 		$mentionsPref = e107::getPlugPref('mentions');
+		//$mentionsPref = self::$prefs;
 
 		if ($mentionsPref['mentions_active'] && USER_AREA && USER) {
 
@@ -46,9 +46,9 @@ class MentionsAutoComplete extends MentionsPlugin
 	}
 
 	/**
-	 *
+	 * Responds to suggestions API requests, returns JSON formatted response.
 	 */
-	public function response($request)
+	public function respond($request)
 	{
 
 		if (e_AJAX_REQUEST && USER && vartrue($request)) {
