@@ -86,12 +86,19 @@ class mentions_ui extends e_admin_ui
 			'help'  => 'Max number of characters after `@` that would be matched to populate suggestion.',
 		],
 		'atwho_item_limit' => [
-			'title' => 'Number of username entries to show in popup-list',
+			'title' => '<p>Number of username entries to show in popup-list</p><kbd>Recommended: 5</kbd>',
 			'tab' => 1,
 			'type' => 'number',
 			'data' => 'int',
 			'help' => 'Number of username entries to show in suggestion popup-list',
-		]
+		],
+		'atwho_highlight_first' => [
+			'title' => 'Highlight first entry in popup-list:',
+			'tab'   => 1,
+			'type'  => 'boolean',
+			'data'  => 'boolean',
+			'help'  => 'Toggle highlight on/off for the first entry in popup-list.',
+		],
 
 	];
 

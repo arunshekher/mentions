@@ -5,4 +5,3 @@ if ( ! defined('e107_INIT')) {
 require __DIR__ . '/MentionsSuggestion.php';
 $suggestions = new MentionsSuggestion;
 $suggestions->loadLibs();
-
