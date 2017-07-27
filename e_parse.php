@@ -3,9 +3,9 @@
 if ( ! defined('e107_INIT')) {
 	exit;
 }
-require __DIR__ . '/MentionsParse.php';
+require __DIR__ . '/Mentions.php';
 
-class mentions_parse extends MentionsParse
+class mentions_parse extends Mentions
 {
 
 

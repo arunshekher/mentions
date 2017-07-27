@@ -1,7 +1,7 @@
 <?php
 
 
-class MentionsParse
+class Mentions
 {
 
 	public $prefs;
