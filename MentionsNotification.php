@@ -1,7 +1,7 @@
 <?php
 
 
-class MentionsNotification
+class MentionsNotification extends Mentions
 {
 
 }
