@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.2.0" encoding="utf-8"?>
 <e107Plugin name="Mentions" lan="" version="1.0" date="2017-07-17" compatibility="2.0" installRequired="true" >
 	<author name="Arun S. Sekher" url="https://github.com/arunshekher" />
 	<summary>An @mention plugin</summary>
