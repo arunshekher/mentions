@@ -38,9 +38,9 @@ class mentions_ui extends e_admin_ui
 
 
 	protected $mentionsContexts = [
-		1 => 'Forum + Chatbox',
-		2 => 'Forum + Chatbox + Comments',
-		3 => 'Forum + Chatbox + Comments + News',
+		1 => LAN_MENTIONS_PREF_VAL_CONTEXT_01,
+		2 => LAN_MENTIONS_PREF_VAL_CONTEXT_02,
+		3 => LAN_MENTIONS_PREF_VAL_CONTEXT_03,
 	];
 
 	protected $preftabs = [
@@ -50,14 +50,14 @@ class mentions_ui extends e_admin_ui
 
 	protected $prefs = [
 		'mentions_active'   => [
-			'title' => 'Enable/Disable',
+			'title' => LAN_MENTIONS_PREF_LBL_ACTIVE,
 			'tab'   => 0,
 			'type'  => 'boolean',
 			'data'  => 'int',
 			'help'  => 'Turn On/Off Mentions Globally',
 		],
 		'mentions_contexts' => [
-			'title' => 'Parse \'mentions\' in these contexts:',
+			'title' => LAN_MENTIONS_PREF_LBL_CONTEXTS,
 			'tab'   => 0,
 			'type'  => 'dropdown',
 			'size'  => 'xxxlarge',
@@ -65,35 +65,35 @@ class mentions_ui extends e_admin_ui
 			'help'  => '\'mentions\' is called in what text parse context.',
 		],
 		'use_global_path' => [
-			'title' => 'Use global path for JS libraries:',
+			'title' => LAN_MENTIONS_PREF_LBL_GLOBAL_LIBS,
 			'tab'   => 0,
 			'type'  => 'boolean',
 			'data'  => 'int',
 			'help'  => 'Use global path (\'e107_web/lib/\')to load jQuery auto-complete libraries from.',
 		],
 		'atwho_min_char'   => [
-			'title' => '<p>Min. number of characters to input after <kbd>@</kbd> to show suggestion popup-list.</p><kbd>Range: 0 - 20, Recommended: 2</kbd>',
+			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_MINCHARS,
 			'tab'   => 1,
 			'type'  => 'number',
 			'data'  => 'int',
 			'help'  => 'Minimum number of characters required to input after `@` sign to show suggestion popup-list (0 - 20):',
 		],
 		'atwho_max_char'   => [
-			'title' => '<p>Max number of char. after <kbd>@</kbd> that would be matched to populate suggestion</p>  <kbd>Upto: 20</kbd>',
+			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_MAXCHARS,
 			'tab'   => 1,
 			'type'  => 'number',
 			'data'  => 'int',
 			'help'  => 'Max number of characters after `@` that would be matched to populate suggestion.',
 		],
 		'atwho_item_limit' => [
-			'title' => '<p>Number of username entries to show in popup-list</p><kbd>Recommended: 5</kbd>',
+			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_LIMIT,
 			'tab' => 1,
 			'type' => 'number',
 			'data' => 'int',
 			'help' => 'Number of username entries to show in suggestion popup-list',
 		],
 		'atwho_highlight_first' => [
-			'title' => 'Highlight first entry in popup-list:',
+			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_HIGHLIGHT,
 			'tab'   => 1,
 			'type'  => 'boolean',
 			'data'  => 'boolean',
@@ -113,19 +113,17 @@ class mentions_ui extends e_admin_ui
 
 	public function renderHelp()
 	{
-		$caption = 'Project Info';
-		$text = '<div style="text-align: center">
-					<img src="http://www.e107.space/projects/mentions/svg" alt="Mentions" width="128" height="128">
-				</div>';
-		$text .= '<br><h5>Project repo on GitHub:</h5>';
-		$text .= '<p><kbd style="word-wrap: break-word"><a href="http://github.com/arunshekher/mentions">http://github.com/arunshekher/mentions</a></kbd></p>';
-		$text .= '<a class="github-button" href="https://github.com/arunshekher/mentions/subscription" data-icon="octicon-eye" aria-label="Watch arunshekher/mentions on GitHub">Watch</a>
-					<a class="github-button" href="https://github.com/arunshekher/mentions" data-icon="octicon-star" aria-label="Star arunshekher/mentions on GitHub">Star</a>
-					<a class="github-button" href="https://github.com/arunshekher/mentions/issues" data-icon="octicon-issue-opened" aria-label="Issue arunshekher/mentions on GitHub">Issue</a>';
-		$text .= '<h5>Developer:</h5>';
-		$text .= '<p><small>Arun S. Sekher</small></p>';
-		$text .= '<a class="github-button" href="https://github.com/arunshekher" aria-label="Follow @arunshekher on GitHub">Follow</a>';
-		$text .= '<script async defer src="https://buttons.github.io/buttons.js"></script>';
+		$caption = LAN_MENTIONS_INFO_MENU_TITLE;
+		$text = LAN_MENTIONS_INFO_MENU_LOGO;
+		$text .= LAN_MENTIONS_INFO_MENU_SUBTITLE;
+		$text .= LAN_MENTIONS_INFO_MENU_REPO_URL;
+		$text .= LAN_MENTIONS_INFO_MENU_REPO_BUTTON_WATCH;
+		$text .= LAN_MENTIONS_INFO_MENU_REPO_BUTTON_STAR;
+		$text .= LAN_MENTIONS_INFO_MENU_REPO_BUTTON_ISSUE;
+		$text .= LAN_MENTIONS_INFO_MENU_SUBTITLE_DEV;
+		$text .= LAN_MENTIONS_INFO_MENU_DEV;
+		$text .= LAN_MENTIONS_INFO_MENU_REPO_BUTTON_FOLLOW;
+		$text .= LAN_MENTIONS_INFO_MENU_GITHUB_BUTTONS_SCRIPT;
 
 		return ['caption' => $caption, 'text' => $text];
 
