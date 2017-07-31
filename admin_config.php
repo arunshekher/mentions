@@ -6,6 +6,7 @@ if ( ! getperms('P') || ! e107::isInstalled('mentions')) {
 }
 
 e107::lan('mentions', 'admin', true);
+e107::lan('mentions', 'global', true);
 
 
 class mentions_adminArea extends e_admin_dispatcher
@@ -25,14 +26,14 @@ class mentions_adminArea extends e_admin_dispatcher
 
 	];
 
-	protected $menuTitle = 'Mentions';
+	protected $menuTitle = LAN_MENTIONS_PLUGIN_NAME;
 
 }
 
 
 class mentions_ui extends e_admin_ui
 {
-	protected $pluginTitle = 'Mentions';
+	protected $pluginTitle = LAN_MENTIONS_PLUGIN_NAME;
 
 	protected $pluginName = 'mentions';
 
@@ -44,8 +45,8 @@ class mentions_ui extends e_admin_ui
 	];
 
 	protected $preftabs = [
-		'Main',
-		'Suggestion Pop-up'
+		LAN_MENTIONS_PREF_TAB_MAIN,
+		LAN_MENTIONS_PREF_TAB_ATWHO
 	];
 
 	protected $prefs = [
@@ -54,7 +55,7 @@ class mentions_ui extends e_admin_ui
 			'tab'   => 0,
 			'type'  => 'boolean',
 			'data'  => 'int',
-			'help'  => 'Turn On/Off Mentions Globally',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ACTIVATION,
 		],
 		'mentions_contexts' => [
 			'title' => LAN_MENTIONS_PREF_LBL_CONTEXTS,
@@ -62,42 +63,42 @@ class mentions_ui extends e_admin_ui
 			'type'  => 'dropdown',
 			'size'  => 'xxxlarge',
 			'data'  => 'int',
-			'help'  => '\'mentions\' is called in what text parse context.',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_CONTEXT,
 		],
 		'use_global_path' => [
 			'title' => LAN_MENTIONS_PREF_LBL_GLOBAL_LIBS,
 			'tab'   => 0,
 			'type'  => 'boolean',
 			'data'  => 'int',
-			'help'  => 'Use global path (\'e107_web/lib/\')to load jQuery auto-complete libraries from.',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS,
 		],
 		'atwho_min_char'   => [
 			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_MINCHARS,
 			'tab'   => 1,
 			'type'  => 'number',
 			'data'  => 'int',
-			'help'  => 'Minimum number of characters required to input after `@` sign to show suggestion popup-list (0 - 20):',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_MINCHAR,
 		],
 		'atwho_max_char'   => [
 			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_MAXCHARS,
 			'tab'   => 1,
 			'type'  => 'number',
 			'data'  => 'int',
-			'help'  => 'Max number of characters after `@` that would be matched to populate suggestion.',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_MAXCHAR,
 		],
 		'atwho_item_limit' => [
 			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_LIMIT,
 			'tab' => 1,
 			'type' => 'number',
 			'data' => 'int',
-			'help' => 'Number of username entries to show in suggestion popup-list',
+			'help' => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_LIMIT,
 		],
 		'atwho_highlight_first' => [
 			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_HIGHLIGHT,
 			'tab'   => 1,
 			'type'  => 'boolean',
 			'data'  => 'boolean',
-			'help'  => 'Toggle highlight on/off for the first entry in popup-list.',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_HIGHLIGHT,
 		],
 
 	];

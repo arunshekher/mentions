@@ -1,4 +1,6 @@
 <?php
+define('LAN_MENTIONS_PREF_TAB_MAIN', 'Main');
+define('LAN_MENTIONS_PREF_TAB_ATWHO', 'Suggestion Pop-up');
 define('LAN_MENTIONS_PREF_LBL_ACTIVE', 'Enable/Disable');
 define('LAN_MENTIONS_PREF_LBL_CONTEXTS', 'Parse \'mentions\' in these contexts:');
 define('LAN_MENTIONS_PREF_LBL_GLOBAL_LIBS', 'Use global path for JS libraries:');
@@ -6,6 +8,15 @@ define('LAN_MENTIONS_PREF_LBL_ATWHO_MINCHARS', '<p>Min. number of characters to 
 define('LAN_MENTIONS_PREF_LBL_ATWHO_MAXCHARS', '<p>Max number of char. after <kbd>@</kbd> that would be matched to populate suggestion</p>  <kbd>Upto: 20</kbd>');
 define('LAN_MENTIONS_PREF_LBL_ATWHO_LIMIT', '<p>Number of username entries to show in popup-list</p><kbd>Recommended: 5</kbd>');
 define('LAN_MENTIONS_PREF_LBL_ATWHO_HIGHLIGHT', 'Highlight first entry in popup-list:');
+
+define('LAN_MENTIONS_PREF_LBL_HINT_ACTIVATION', 'Turn On/Off Mentions Globally');
+define('LAN_MENTIONS_PREF_LBL_HINT_CONTEXT', '\'mentions\' is called in what text parse context.');
+define('LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS', 'Use global path to load jQuery auto-complete libraries from.');
+define('LAN_MENTIONS_PREF_LBL_HINT_ATWHO_MINCHAR', 'Minimum number of characters required to input after `@` sign to show suggestion popup-list (0 - 20):');
+define('LAN_MENTIONS_PREF_LBL_HINT_ATWHO_MAXCHAR', 'Max number of characters after `@` that would be matched to populate suggestion.');
+define('LAN_MENTIONS_PREF_LBL_HINT_ATWHO_LIMIT', 'Number of username entries to show in suggestion popup-list');
+define('LAN_MENTIONS_PREF_LBL_HINT_ATWHO_HIGHLIGHT', 'Toggle highlight on/off for the first entry in popup-list.');
+
 define('LAN_MENTIONS_PREF_VAL_CONTEXT_01', 'Forum + Chatbox');
 define('LAN_MENTIONS_PREF_VAL_CONTEXT_02', 'Forum + Chatbox + Comments');
 define('LAN_MENTIONS_PREF_VAL_CONTEXT_03', 'Forum + Chatbox + Comments + News');
