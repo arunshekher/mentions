@@ -6,6 +6,7 @@ if ( ! getperms('P') || ! e107::isInstalled('mentions')) {
 }
 
 e107::lan('mentions', 'admin', true);
+e107::lan('mentions', 'global', true);
 
 
 class mentions_adminArea extends e_admin_dispatcher
@@ -25,79 +26,79 @@ class mentions_adminArea extends e_admin_dispatcher
 
 	];
 
-	protected $menuTitle = 'Mentions';
+	protected $menuTitle = LAN_MENTIONS_PLUGIN_NAME;
 
 }
 
 
 class mentions_ui extends e_admin_ui
 {
-	protected $pluginTitle = 'Mentions';
+	protected $pluginTitle = LAN_MENTIONS_PLUGIN_NAME;
 
 	protected $pluginName = 'mentions';
 
 
 	protected $mentionsContexts = [
-		1 => 'Forum + Chatbox',
-		2 => 'Forum + Chatbox + Comments',
-		3 => 'Forum + Chatbox + Comments + News',
+		1 => LAN_MENTIONS_PREF_VAL_CONTEXT_01,
+		2 => LAN_MENTIONS_PREF_VAL_CONTEXT_02,
+		3 => LAN_MENTIONS_PREF_VAL_CONTEXT_03,
 	];
 
 	protected $preftabs = [
-		'Main',
-		'Suggestion Pop-up'
+		LAN_MENTIONS_PREF_TAB_MAIN,
+		LAN_MENTIONS_PREF_TAB_ATWHO
 	];
 
 	protected $prefs = [
 		'mentions_active'   => [
-			'title' => 'Enable/Disable',
+			'title' => LAN_MENTIONS_PREF_LBL_ACTIVE,
 			'tab'   => 0,
 			'type'  => 'boolean',
 			'data'  => 'int',
-			'help'  => 'Turn On/Off Mentions Globally',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ACTIVATION,
 		],
 		'mentions_contexts' => [
-			'title' => 'Parse \'mentions\' in these contexts:',
+			'title' => LAN_MENTIONS_PREF_LBL_CONTEXTS,
 			'tab'   => 0,
 			'type'  => 'dropdown',
 			'size'  => 'xxxlarge',
 			'data'  => 'int',
-			'help'  => '\'mentions\' is called in what text parse context.',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_CONTEXT,
 		],
 		'use_global_path' => [
-			'title' => 'Use global path for JS libraries:',
+			'title' => LAN_MENTIONS_PREF_LBL_GLOBAL_LIBS,
 			'tab'   => 0,
 			'type'  => 'boolean',
 			'data'  => 'int',
-			'help'  => 'Use global path (\'e107_web/lib/\')to load jQuery auto-complete libraries from.',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS,
 		],
 		'atwho_min_char'   => [
-			'title' => '<p>Min. number of characters to input after <kbd>@</kbd> to show suggestion popup-list.</p><kbd>Range: 0 - 20, Recommended: 2</kbd>',
+			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_MINCHARS,
 			'tab'   => 1,
 			'type'  => 'number',
 			'data'  => 'int',
-			'help'  => 'Minimum number of characters required to input after `@` sign to show suggestion popup-list (0 - 20):',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_MINCHAR,
 		],
 		'atwho_max_char'   => [
-			'title' => '<p>Max number of char. after <kbd>@</kbd> that would be matched to populate suggestion</p>  <kbd>Upto: 20</kbd>',
+			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_MAXCHARS,
 			'tab'   => 1,
 			'type'  => 'number',
 			'data'  => 'int',
-			'help'  => 'Max number of characters after `@` that would be matched to populate suggestion.',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_MAXCHAR,
 		],
 		'atwho_item_limit' => [
-			'title' => '<p>Number of username entries to show in popup-list</p><kbd>Recommended: 5</kbd>',
+			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_LIMIT,
 			'tab' => 1,
 			'type' => 'number',
 			'data' => 'int',
-			'help' => 'Number of username entries to show in suggestion popup-list',
+			'help' => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_LIMIT,
 		],
 		'atwho_highlight_first' => [
-			'title' => 'Highlight first entry in popup-list:',
+			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_HIGHLIGHT,
 			'tab'   => 1,
 			'type'  => 'boolean',
 			'data'  => 'boolean',
-			'help'  => 'Toggle highlight on/off for the first entry in popup-list.',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_HIGHLIGHT,
 		],
 
 	];
@@ -109,6 +110,24 @@ class mentions_ui extends e_admin_ui
 	{
 		$this->prefs['mentions_contexts']['writeParms'] =
 			$this->mentionsContexts;
+	}
+
+	public function renderHelp()
+	{
+		$caption = LAN_MENTIONS_INFO_MENU_TITLE;
+		$text = LAN_MENTIONS_INFO_MENU_LOGO;
+		$text .= LAN_MENTIONS_INFO_MENU_SUBTITLE;
+		$text .= LAN_MENTIONS_INFO_MENU_REPO_URL;
+		$text .= LAN_MENTIONS_INFO_MENU_REPO_BUTTON_WATCH;
+		$text .= LAN_MENTIONS_INFO_MENU_REPO_BUTTON_STAR;
+		$text .= LAN_MENTIONS_INFO_MENU_REPO_BUTTON_ISSUE;
+		$text .= LAN_MENTIONS_INFO_MENU_SUBTITLE_DEV;
+		$text .= LAN_MENTIONS_INFO_MENU_DEV;
+		$text .= LAN_MENTIONS_INFO_MENU_REPO_BUTTON_FOLLOW;
+		$text .= LAN_MENTIONS_INFO_MENU_GITHUB_BUTTONS_SCRIPT;
+
+		return ['caption' => $caption, 'text' => $text];
+
 	}
 
 }
