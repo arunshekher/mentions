@@ -95,4 +95,15 @@ class MentionsSuggestion extends Mentions
 
 	}
 
+
+	/**
+	 * @param $request
+	 */
+	public static function triggerResponse($request)
+	{
+		$suggestion = new MentionsSuggestion;
+		$suggestion->respond($request);
+
+	}
+
 }

@@ -8,5 +8,4 @@ if ( ! e107::isInstalled('mentions') || ! USER) {
 require __DIR__ . '/MentionsSuggestion.php';
 
 $request = $_GET['mq'];
-$suggestions = new MentionsSuggestion;
-$suggestions->respond($request);
+MentionsSuggestion::triggerResponse($request);
