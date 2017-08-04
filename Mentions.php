@@ -94,7 +94,7 @@ class Mentions
 	protected function getUserData($mention)
 	{
 		$username = e107::getParser()->toDB($this->stripAtFrom($mention));
-		$row = e107::getDb()->retrieve("user", "user_name, user_id",
+		$row = e107::getDb()->retrieve("user", "user_name, user_id, user_email",
 			"user_name = '" . $username . "' ");
 
 		return $row;
