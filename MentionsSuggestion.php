@@ -97,6 +97,7 @@ class MentionsSuggestion extends Mentions
 
 
 	/**
+	 * Trigger response for the query
 	 * @param $request
 	 */
 	public static function triggerResponse($request)
@@ -104,6 +105,13 @@ class MentionsSuggestion extends Mentions
 		$suggestion = new MentionsSuggestion;
 		$suggestion->respond($request);
 
+	}
+
+
+	public static function libs()
+	{
+		$suggestion = new MentionsSuggestion;
+		$suggestion->loadLibs();
 	}
 
 }
