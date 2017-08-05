@@ -30,6 +30,9 @@ class MentionsNotification extends Mentions
 	{
 		if (USER && (strtolower($_SERVER['REQUEST_METHOD']) === 'post' || e_AJAX_REQUEST)) {
 			$this->chatboxMentionsNotify();
+			e107::getEvent()->register('user_comment_posted', array('MentionsNotification', 'commentsMentionsNotify'));
+			e107::getEvent()->register('user_forum_topic_created', array('MentionsNotification', 'forumsMentionsNotify'));
+			e107::getEvent()->register('user_forum_post_created', array('MentionsNotification', 'forumsMentionsNotify'));
 		}
 	}
 
@@ -43,13 +46,45 @@ class MentionsNotification extends Mentions
 			// Debug
 			// $this->log(json_encode([USERNAME, $_POST['cmessage']]));
 			$mentions = $this->getAllMentions($_POST['cmessage']);
-			if ($mentions) {
-				$this->contentMessage = $_POST['cmessage'];
+			if ($mentions) { // todo: logic to check if array
 				$this->mentions = $mentions;
 				$this->mentioner = USERNAME;
+				//$this->contentMessage = $_POST['cmessage'];
 				$this->notifyAllMentioned();
 				// todo: unset mentions and message
 			}
+		}
+	}
+
+
+	/**
+	 * Comments mentions notify
+	 * @param $data
+	 */
+	public function commentsMentionsNotify($data)
+	{
+		//$this->log(json_encode($data), 'comments-trigger-data');
+		$mentions = $this->getAllMentions($data['comment_comment']);
+		if ($mentions) {
+			$this->mentions = $mentions;
+			$this->mentioner = $data['comment_author_name'];
+			$this->notifyAllMentioned();
+		}
+	}
+
+
+	/**
+	 * Forum mentions notify
+	 * @param $data
+	 */
+	public function forumsMentionsNotify($data)
+	{
+		//$this->log(json_encode($data), 'forums-trigger-data');
+		$mentions = $this->getAllMentions($data['post_entry']);
+		if ($mentions) {
+			$this->mentions = $mentions;
+			$this->mentioner = USERNAME;
+			$this->notifyAllMentioned();
 		}
 	}
 
@@ -82,8 +117,6 @@ class MentionsNotification extends Mentions
 			return;
 		}
 
-		//$mentions = array_unique($this->mentions, SORT_STRING);
-
 		foreach (array_unique($mentions, SORT_STRING) as $mention) {
 
 			if (USERNAME === $this->stripAtFrom($mention)) {
@@ -93,7 +126,7 @@ class MentionsNotification extends Mentions
 			$this->mentioneeData = $this->getUserData($mention);
 
 			// Debug
-			$this->log(json_encode($this->mentioneeData), 'mentionee-data');
+			// $this->log(json_encode($this->mentioneeData), 'mentionee-data');
 
 			// Email
 			if ($this->mentioneeData && count($this->mentioneeData)) {
@@ -103,20 +136,6 @@ class MentionsNotification extends Mentions
 
 		}
 
-	}
-
-
-	/**
-	 * Debug log method
-	 *
-	 * @param string $content
-	 * @param string $logname
-	 */
-	private function log($content, $logname = 'mentions')
-	{
-		$path = e_PLUGIN . 'mentions/' . $logname . '.txt';
-		file_put_contents($path, $content . "\n", FILE_APPEND);
-		unset($path, $content);
 	}
 
 
@@ -141,7 +160,7 @@ class MentionsNotification extends Mentions
 		$url = $this->getMentionContentLink();
 
 		$body = [
-			'USERNAME'     => $mentionee_name,
+			'USERNAME'     => $mentionee_name,// todo: channge to MENTIONEE
 			'DATE'         => $date,
 			'SITENAME'     => SITENAME,
 			'MENTIONER'    => $mentioner,
@@ -161,9 +180,10 @@ class MentionsNotification extends Mentions
 		$send =
 			$mail->sendEmail($userData['user_email'], $userData['user_name'],
 				$eml);
-		unset($body, $text, $eml);
 
 		if ($send) {
+			unset($body, $text, $eml);
+
 			return true;
 		} else {
 			return false;
@@ -177,7 +197,8 @@ class MentionsNotification extends Mentions
 	 */
 	private function template()
 	{
-		$MENTIONS_NOTIFY = e107::getTemplate('mentions', 'mentions', 'notify');
+		//$MENTIONS_NOTIFY = e107::getTemplate('mentions', 'mentions', 'notify');
+		$MENTIONS_NOTIFY = '';
 
 		if (empty($MENTIONS_NOTIFY)) {
 
@@ -213,6 +234,20 @@ class MentionsNotification extends Mentions
 	private function getMentionContentLink()
 	{
 		return '--LINK---';
+	}
+
+
+	/**
+	 * Debug log method
+	 *
+	 * @param string $content
+	 * @param string $logname
+	 */
+	private function log($content, $logname = 'mentions')
+	{
+		$path = e_PLUGIN . 'mentions/' . $logname . '.txt';
+		file_put_contents($path, $content . "\n", FILE_APPEND);
+		unset($path, $content);
 	}
 
 }
