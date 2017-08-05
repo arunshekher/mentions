@@ -29,34 +29,28 @@ class MentionsNotification extends Mentions
 	private function perform()
 	{
 		if (USER && (strtolower($_SERVER['REQUEST_METHOD']) === 'post' || e_AJAX_REQUEST)) {
-			// Chatbox
-			if ($_POST['chat_submit'] && $_POST['cmessage'] !== '') {
-				// Debug
-				$this->log(json_encode([USERNAME, $_POST['cmessage']]));
-				$mentions = $this->getAllMentions($_POST['cmessage']);
-				if ($mentions) {
-					$this->contentMessage = $_POST['cmessage'];
-					$this->mentions = $mentions;
-					$this->mentioner = USERNAME;
-					$this->notifyAllMentioned();
-					// todo: unset mentions and message
-				}
-			}
+			$this->chatboxMentionsNotify();
 		}
 	}
 
 
 	/**
-	 * Debug log method
 	 *
-	 * @param string $content
-	 * @param string $logname
 	 */
-	public function log($content, $logname = 'mentions')
+	private function chatboxMentionsNotify()
 	{
-		$path = e_PLUGIN . 'mentions/' . $logname . '.txt';
-		file_put_contents($path, $content . "\n", FILE_APPEND);
-		unset($path, $content);
+		if ($_POST['chat_submit'] && $_POST['cmessage'] !== '') {
+			// Debug
+			// $this->log(json_encode([USERNAME, $_POST['cmessage']]));
+			$mentions = $this->getAllMentions($_POST['cmessage']);
+			if ($mentions) {
+				$this->contentMessage = $_POST['cmessage'];
+				$this->mentions = $mentions;
+				$this->mentioner = USERNAME;
+				$this->notifyAllMentioned();
+				// todo: unset mentions and message
+			}
+		}
 	}
 
 
@@ -80,11 +74,11 @@ class MentionsNotification extends Mentions
 	/**
 	 * Notify all mentionees in a post event
 	 */
-	protected function notifyAllMentioned()
+	private function notifyAllMentioned()
 	{
 		$mentions = $this->mentions;
 
-		if (null === $mentions || $mentions !== (array) $mentions) {
+		if (null === $mentions || $mentions !== (array)$mentions) {
 			return;
 		}
 
@@ -107,6 +101,20 @@ class MentionsNotification extends Mentions
 
 
 	/**
+	 * Debug log method
+	 *
+	 * @param string $content
+	 * @param string $logname
+	 */
+	private function log($content, $logname = 'mentions')
+	{
+		$path = e_PLUGIN . 'mentions/' . $logname . '.txt';
+		file_put_contents($path, $content . "\n", FILE_APPEND);
+		unset($path, $content);
+	}
+
+
+	/**
 	 * Send an email to notify of a mention
 	 *
 	 * @param array $userData - user data
@@ -114,7 +122,7 @@ class MentionsNotification extends Mentions
 	 *
 	 * @return boolean
 	 */
-	protected function email($userData)
+	private function email($userData)
 	{
 		$mail = e107::getEmail();
 
@@ -144,7 +152,9 @@ class MentionsNotification extends Mentions
 		$eml['template'] = 'default';
 		$eml['e107_header'] = $userData['user_id'];
 
-		$send = $mail->sendEmail($userData['user_email'], $userData['user_name'], $eml);
+		$send =
+			$mail->sendEmail($userData['user_email'], $userData['user_name'],
+				$eml);
 		unset($body, $text, $eml);
 
 		if ($send) {
@@ -159,7 +169,7 @@ class MentionsNotification extends Mentions
 	/**
 	 * @return array|string
 	 */
-	protected function template()
+	private function template()
 	{
 		$MENTIONS_NOTIFY = e107::getTemplate('mentions', 'mentions', 'notify');
 
@@ -194,7 +204,7 @@ class MentionsNotification extends Mentions
 	 *
 	 * @return string
 	 */
-	protected function getMentionContentLink()
+	private function getMentionContentLink()
 	{
 		return '--LINK---';
 	}
