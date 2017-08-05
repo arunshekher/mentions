@@ -85,13 +85,19 @@ class MentionsNotification extends Mentions
 		//$mentions = array_unique($this->mentions, SORT_STRING);
 
 		foreach (array_unique($mentions, SORT_STRING) as $mention) {
+
+			if (USERNAME === $this->stripAtFrom($mention)) {
+				continue;
+			}
+
 			$this->mentioneeData = $this->getUserData($mention);
 
 			// Debug
 			$this->log(json_encode($this->mentioneeData), 'mentionee-data');
 
 			// Email
-			if ($this->email($this->mentioneeData)) {
+			if ($this->mentioneeData && count($this->mentioneeData)) {
+				$this->email($this->mentioneeData);
 				unset($this->mentioneeData);
 			}
 
@@ -131,7 +137,7 @@ class MentionsNotification extends Mentions
 		$mentionee_name = $userData['user_name'];
 		$mentioner = $this->mentioner;
 		$content = $this->getContentType();
-		$date = e107::getParser()->toDate(time(), 'long');
+		$date = e107::getParser()->toDate(time());
 		$url = $this->getMentionContentLink();
 
 		$body = [
