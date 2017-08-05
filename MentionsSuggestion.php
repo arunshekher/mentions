@@ -93,17 +93,9 @@ class MentionsSuggestion extends Mentions
 			$libGlobal = $mentionsPref['use_global_path'];
 
 			if ($libGlobal) {
-				e107::library('load', 'ichord.caret');
-				e107::library('load', 'ichord.atwho');
+				$this->loadLibsGlobally();
 			} else {
-				e107::css('mentions',
-					'js/ichord.atwho/dist/css/jquery.atwho.min.css');
-				e107::js('footer',
-					e_PLUGIN . 'mentions/js/ichord.caret/dist/jquery.caret.min.js',
-					'jquery', 1);
-				e107::js('footer',
-					e_PLUGIN . 'mentions/js/ichord.atwho/dist/js/jquery.atwho.min.js',
-					'jquery', 2);
+				$this->loadLibsLocally();
 			}
 
 			// Mentions Autocomplete/suggestion API path
@@ -122,6 +114,31 @@ class MentionsSuggestion extends Mentions
 			e107::js('settings', ['mentions' => $jsSettings]);
 			e107::js('footer', '{e_PLUGIN}mentions/js/mentions.js', 'jquery');
 		}
+	}
+
+
+	/**
+	 * Loads libs from the local path
+	 */
+	protected function loadLibsLocally()
+	{
+		e107::css('mentions', 'js/ichord.atwho/dist/css/jquery.atwho.min.css');
+		e107::js('footer',
+			e_PLUGIN . 'mentions/js/ichord.caret/dist/jquery.caret.min.js',
+			'jquery', 1);
+		e107::js('footer',
+			e_PLUGIN . 'mentions/js/ichord.atwho/dist/js/jquery.atwho.min.js',
+			'jquery', 2);
+	}
+
+
+	/**
+	 * Loads libs from the global path
+	 */
+	protected function loadLibsGlobally()
+	{
+		e107::library('load', 'ichord.caret', 'minified');
+		e107::library('load', 'ichord.atwho', 'minified');
 	}
 
 }
