@@ -31,8 +31,8 @@ class MentionsNotification extends Mentions
 	private function perform()
 	{
 		if (USER && (strtolower($_SERVER['REQUEST_METHOD']) === 'post' || e_AJAX_REQUEST)) {
-			$this->chatboxMentionsNotifyOld();
-			// e107::getEvent()->register('user_chatbox_post_created', array('MentionsNotification', 'chatboxMentionsNotify'));
+			// $this->chatboxMentionsNotifyOld();
+			e107::getEvent()->register('user_chatbox_post_created', array('MentionsNotification', 'chatboxMentionsNotify'));
 			e107::getEvent()->register('user_comment_posted', array('MentionsNotification', 'commentsMentionsNotify'));
 			e107::getEvent()->register('user_forum_topic_created', array('MentionsNotification', 'forumsMentionsNotify'));
 			e107::getEvent()->register('user_forum_post_created', array('MentionsNotification', 'forumsMentionsNotify'));
@@ -54,6 +54,7 @@ class MentionsNotification extends Mentions
 		if ($mentions) {
 			$this->mentions = $mentions;
 			$this->mentioner = USERNAME;
+			$this->contentType = 'chatbox post';
 			$this->notifyAllMentioned();
 		}
 	}
@@ -91,6 +92,7 @@ class MentionsNotification extends Mentions
 		if ($mentions) {
 			$this->mentions = $mentions;
 			$this->mentioner = $data['comment_author_name'];
+			$this->contentType = 'comment post';
 			$this->notifyAllMentioned();
 		}
 	}
@@ -107,6 +109,7 @@ class MentionsNotification extends Mentions
 		if ($mentions) {
 			$this->mentions = $mentions;
 			$this->mentioner = USERNAME;
+			$this->contentType = 'forum post'; // todo: find a logic to differentiate between new forum post/topic and forum reply
 			$this->notifyAllMentioned();
 		}
 	}
@@ -194,7 +197,7 @@ class MentionsNotification extends Mentions
 		$url = $this->getMentionContentLink();
 
 		$body = [
-			'USERNAME'     => $mentionee_name,// todo: channge to MENTIONEE
+			'MENTIONEE'     => $mentionee_name,// todo: channge to MENTIONEE
 			'DATE'         => $date,
 			'SITENAME'     => SITENAME,
 			'MENTIONER'    => $mentioner,
@@ -238,9 +241,9 @@ class MentionsNotification extends Mentions
 
 			$MENTIONS_NOTIFY = '<div>
 			<h4>You have been mentioned!</h4>
-			<p>Hello {USERNAME}</p>
+			<p>Hello {MENTIONEE},</p>
 			<p>{MENTIONER} mentioned you in a {CONTENT_TYPE} at {SITENAME} on {DATE}.</p>
-			<p>Please follow the {URL} to view.</p>
+			<p>Follow the {URL} to have a look.</p>
 			</div>';
 
 		}
@@ -256,7 +259,7 @@ class MentionsNotification extends Mentions
 	 */
 	private function getContentType()
 	{
-		return '--CONTENT_TYPE---';
+		return $this->contentType;
 	}
 
 
