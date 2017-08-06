@@ -12,6 +12,8 @@ class MentionsNotification extends Mentions
 	protected $contentId;
 	protected $contentUrl;
 
+	protected $contentData;
+
 
 	/**
 	 * Public static method to call perform()
@@ -29,29 +31,50 @@ class MentionsNotification extends Mentions
 	private function perform()
 	{
 		if (USER && (strtolower($_SERVER['REQUEST_METHOD']) === 'post' || e_AJAX_REQUEST)) {
-			$this->chatboxMentionsNotify();
+			$this->chatboxMentionsNotifyOld();
+			// e107::getEvent()->register('user_chatbox_post_created', array('MentionsNotification', 'chatboxMentionsNotify'));
 			e107::getEvent()->register('user_comment_posted', array('MentionsNotification', 'commentsMentionsNotify'));
 			e107::getEvent()->register('user_forum_topic_created', array('MentionsNotification', 'forumsMentionsNotify'));
 			e107::getEvent()->register('user_forum_post_created', array('MentionsNotification', 'forumsMentionsNotify'));
 		}
 	}
 
+	/**
+	 * @param $data
+	 *
+	 * @return bool
+	 */
+	public function chatboxMentionsNotify($data)
+	{
+		// $this->log(json_encode($data), 'chatbox-trigger-data');
+		if (! $this->hasAtSign($data['cmessage'])) {
+			return false;
+		}
+		$mentions = $this->getAllMentions($data['cmessage']);
+		if ($mentions) {
+			$this->mentions = $mentions;
+			$this->mentioner = USERNAME;
+			$this->notifyAllMentioned();
+		}
+	}
 
 	/**
 	 *
 	 */
-	private function chatboxMentionsNotify()
+	private function chatboxMentionsNotifyOld()
 	{
 		if ($_POST['chat_submit'] && $_POST['cmessage'] !== '') {
 			// Debug
 			// $this->log(json_encode([USERNAME, $_POST['cmessage']]));
+			if (! $this->hasAtSign($_POST['cmessage'])) {
+				return false;
+			}
 			$mentions = $this->getAllMentions($_POST['cmessage']);
 			if ($mentions) { // todo: logic to check if array
 				$this->mentions = $mentions;
 				$this->mentioner = USERNAME;
 				//$this->contentMessage = $_POST['cmessage'];
 				$this->notifyAllMentioned();
-				// todo: unset mentions and message
 			}
 		}
 	}
@@ -90,6 +113,17 @@ class MentionsNotification extends Mentions
 
 
 	/**
+	 * @param $input
+	 *
+	 * @return bool
+	 */
+	protected function hasAtSign($input)
+	{
+		return strpos($input, '@') !== false;
+	}
+
+
+	/**
 	 * Gets all mentions in the message
 	 *
 	 * @return array | null
@@ -114,12 +148,12 @@ class MentionsNotification extends Mentions
 		$mentions = $this->mentions;
 
 		if (null === $mentions || $mentions !== (array)$mentions) {
-			return;
+			return false;
 		}
 
 		foreach (array_unique($mentions, SORT_STRING) as $mention) {
 
-			if (USERNAME === $this->stripAtFrom($mention)) {
+			if ($this->mentioner === $this->stripAtFrom($mention)) {
 				continue;
 			}
 
