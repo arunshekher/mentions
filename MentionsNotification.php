@@ -31,13 +31,18 @@ class MentionsNotification extends Mentions
 	private function perform()
 	{
 		if (USER && (strtolower($_SERVER['REQUEST_METHOD']) === 'post' || e_AJAX_REQUEST)) {
-			// $this->chatboxMentionsNotifyOld();
-			e107::getEvent()->register('user_chatbox_post_created', array('MentionsNotification', 'chatboxMentionsNotify'));
-			e107::getEvent()->register('user_comment_posted', array('MentionsNotification', 'commentsMentionsNotify'));
-			e107::getEvent()->register('user_forum_topic_created', array('MentionsNotification', 'forumsMentionsNotify'));
-			e107::getEvent()->register('user_forum_post_created', array('MentionsNotification', 'forumsMentionsNotify'));
+			$this->chatboxMentionsNotifyOld();
+			// e107::getEvent()->register('user_chatbox_post_created',
+			//	['MentionsNotification', 'chatboxMentionsNotify']);
+			e107::getEvent()->register('user_comment_posted',
+				['MentionsNotification', 'commentsMentionsNotify']);
+			e107::getEvent()->register('user_forum_topic_created',
+				['MentionsNotification', 'forumsMentionsNotify']);
+			e107::getEvent()->register('user_forum_post_created',
+				['MentionsNotification', 'forumsMentionsNotify']);
 		}
 	}
+
 
 	/**
 	 * @param $data
@@ -47,7 +52,7 @@ class MentionsNotification extends Mentions
 	public function chatboxMentionsNotify($data)
 	{
 		// $this->log(json_encode($data), 'chatbox-trigger-data');
-		if (! $this->hasAtSign($data['cmessage'])) {
+		if ( ! $this->hasAtSign($data['cmessage'])) {
 			return false;
 		}
 		$mentions = $this->getAllMentions($data['cmessage']);
@@ -60,29 +65,8 @@ class MentionsNotification extends Mentions
 	}
 
 	/**
-	 *
-	 */
-	private function chatboxMentionsNotifyOld()
-	{
-		if ($_POST['chat_submit'] && $_POST['cmessage'] !== '') {
-			// Debug
-			// $this->log(json_encode([USERNAME, $_POST['cmessage']]));
-			if (! $this->hasAtSign($_POST['cmessage'])) {
-				return false;
-			}
-			$mentions = $this->getAllMentions($_POST['cmessage']);
-			if ($mentions) { // todo: logic to check if array
-				$this->mentions = $mentions;
-				$this->mentioner = USERNAME;
-				//$this->contentMessage = $_POST['cmessage'];
-				$this->notifyAllMentioned();
-			}
-		}
-	}
-
-
-	/**
 	 * Comments mentions notify
+	 *
 	 * @param $data
 	 */
 	public function commentsMentionsNotify($data)
@@ -100,6 +84,7 @@ class MentionsNotification extends Mentions
 
 	/**
 	 * Forum mentions notify
+	 *
 	 * @param $data
 	 */
 	public function forumsMentionsNotify($data)
@@ -109,8 +94,31 @@ class MentionsNotification extends Mentions
 		if ($mentions) {
 			$this->mentions = $mentions;
 			$this->mentioner = USERNAME;
-			$this->contentType = 'forum post'; // todo: find a logic to differentiate between new forum post/topic and forum reply
+			$this->contentType =
+				'forum post'; // todo: find a logic to differentiate between new forum post/topic and forum reply
 			$this->notifyAllMentioned();
+		}
+	}
+
+
+	/**
+	 *
+	 */
+	private function chatboxMentionsNotifyOld()
+	{
+		if ($_POST['chat_submit'] && $_POST['cmessage'] !== '') {
+			// Debug
+			// $this->log(json_encode([USERNAME, $_POST['cmessage']]));
+			if ( ! $this->hasAtSign($_POST['cmessage'])) {
+				return false;
+			}
+			$mentions = $this->getAllMentions($_POST['cmessage']);
+			if ($mentions) { // todo: logic to check if array
+				$this->mentions = $mentions;
+				$this->mentioner = USERNAME;
+				//$this->contentMessage = $_POST['cmessage'];
+				$this->notifyAllMentioned();
+			}
 		}
 	}
 
@@ -144,7 +152,7 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Notify all mentionees in a post event
+	 * Notify all mentionees in a post
 	 */
 	private function notifyAllMentioned()
 	{
@@ -197,7 +205,7 @@ class MentionsNotification extends Mentions
 		$url = $this->getMentionContentLink();
 
 		$body = [
-			'MENTIONEE'     => $mentionee_name,// todo: channge to MENTIONEE
+			'MENTIONEE'    => $mentionee_name,// todo: channge to MENTIONEE
 			'DATE'         => $date,
 			'SITENAME'     => SITENAME,
 			'MENTIONER'    => $mentioner,
