@@ -46,7 +46,8 @@ class mentions_ui extends e_admin_ui
 
 	protected $preftabs = [
 		LAN_MENTIONS_PREF_TAB_MAIN,
-		LAN_MENTIONS_PREF_TAB_ATWHO
+		LAN_MENTIONS_PREF_TAB_ATWHO,
+		'Notification'
 	];
 
 	protected $prefs = [
@@ -99,6 +100,34 @@ class mentions_ui extends e_admin_ui
 			'type'  => 'boolean',
 			'data'  => 'boolean',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_HIGHLIGHT,
+		],
+		'notify_chatbox_mentions' => [
+			'title' => 'Email notification for chatbox mentions',
+			'tab'   => 2,
+			'type'  => 'boolean',
+			'data'  => 'boolean',
+			'help'  => 'Turn on notification for chatbox mentions.',
+		],
+		'notify_comment_mentions' => [
+			'title' => 'Email notification for comment mentions',
+			'tab'   => 2,
+			'type'  => 'boolean',
+			'data'  => 'boolean',
+			'help'  => 'Turn on notification for comment mentions.',
+		],
+		'notify_forum_topic_mentions' => [
+			'title' => 'Email notification for forum new topic mentions',
+			'tab'   => 2,
+			'type'  => 'boolean',
+			'data'  => 'boolean',
+			'help'  => 'Turn on notification for forum new topic mentions.',
+		],
+		'notify_forum_reply_mentions' => [
+			'title' => 'Email notification for forum reply mentions',
+			'tab'   => 2,
+			'type'  => 'boolean',
+			'data'  => 'boolean',
+			'help'  => 'Turn on notification for forum reply mentions.',
 		],
 
 	];
