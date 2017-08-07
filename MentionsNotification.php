@@ -204,8 +204,8 @@ class MentionsNotification extends Mentions
 		$date = e107::getParser()->toDate(time());
 		$url = $this->getMentionContentLink();
 
-		$body = [
-			'MENTIONEE'    => $mentionee_name,// todo: channge to MENTIONEE
+		$bodyVars = [
+			'MENTIONEE'    => $mentionee_name,
 			'DATE'         => $date,
 			'SITENAME'     => SITENAME,
 			'MENTIONER'    => $mentioner,
@@ -213,27 +213,25 @@ class MentionsNotification extends Mentions
 			'URL'          => $url,
 		];
 
-		$text = e107::getParser()->simpleParse($MENTIONS_NOTIFY, $body);
+		$body = e107::getParser()->simpleParse($MENTIONS_NOTIFY, $bodyVars);
 
-		$eml = [];
-		$eml['email_subject'] = 'You were mentioned by ' . $mentioner;
-		$eml['send_html'] = true;
-		$eml['email_body'] = $text;
-		$eml['template'] = 'default';
-		$eml['e107_header'] = $userData['user_id'];
+		$email = [];
+		$email['email_subject'] = $this->prepSubjectLine();
+		$email['send_html'] = true;
+		$email['email_body'] = $body;
+		$email['template'] = 'default';
+		$email['e107_header'] = $userData['user_id'];
 
-		$send =
+		$sendEmail =
 			$mail->sendEmail($userData['user_email'], $userData['user_name'],
-				$eml);
+				$email);
 
-		if ($send) {
-			unset($body, $text, $eml);
-
+		if ($sendEmail) {
+			unset($body, $bodyVars, $email);
 			return true;
-		} else {
-			return false;
 		}
 
+		return false;
 	}
 
 
@@ -259,6 +257,18 @@ class MentionsNotification extends Mentions
 		return $MENTIONS_NOTIFY;
 	}
 
+
+	/**
+	 * @return string
+	 */
+	public function prepSubjectLine()
+	{
+		$subjectLine = $this->prefs['email_subject_line'];
+		if (null !== $subjectLine && is_string($subjectLine)) {
+			return str_replace('{MENTIONER}', $this->mentioner, $subjectLine);
+		}
+		return 'You were mentioned by ' . $this->mentioner;
+	}
 
 	/**
 	 * todo: develop this stub
