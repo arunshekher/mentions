@@ -259,12 +259,13 @@ class MentionsNotification extends Mentions
 
 
 	/**
+	 * Preps subject line
 	 * @return string
 	 */
 	public function prepSubjectLine()
 	{
-		$subjectLine = $this->prefs['email_subject_line'];
-		if (null !== $subjectLine && is_string($subjectLine)) {
+		$subjectLine = trim($this->prefs['email_subject_line']);
+		if (null !== $subjectLine && $subjectLine !== '') {
 			return str_replace('{MENTIONER}', $this->mentioner, $subjectLine);
 		}
 		return 'You were mentioned by ' . $this->mentioner;
