@@ -158,7 +158,6 @@ class mentions_ui extends e_admin_ui
 	{
 		$caption = LAN_MENTIONS_INFO_MENU_TITLE;
 		$text = '';
-		// $text .= LAN_MENTIONS_FORK_RIBBON;
 		$text .= LAN_MENTIONS_INFO_MENU_LOGO;
 		$text .= LAN_MENTIONS_INFO_MENU_SUBTITLE;
 		$text .= LAN_MENTIONS_INFO_MENU_REPO_URL;
