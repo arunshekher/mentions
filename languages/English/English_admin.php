@@ -15,8 +15,8 @@ define('LAN_MENTIONS_PREF_LBL_FORUMREPLY_EMAIL', 'Email notification for forum r
 define('LAN_MENTIONS_PREF_LBL_EMAIL_SUBJECT', 'Email subject-line text:');
 
 define('LAN_MENTIONS_PREF_LBL_HINT_ACTIVATION', 'Turn On/Off Mentions Globally');
-define('LAN_MENTIONS_PREF_LBL_HINT_CONTEXT', 'In what text-parse/output-filter context mentions is called.');
-define('LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS', 'Turn this on if you wish to share <kbd><a href="https://github.com/ichord/Caret.js" target="_blank">Caret.js</a></kbd> and <kbd><a href="https://github.com/ichord/At.js" target="_blank">At.js</a></kbd> libraries (which this plugin uses) with other e107 plugins and/or theme.');
+define('LAN_MENTIONS_PREF_LBL_HINT_CONTEXT', 'All the content context in which \'mentions\' should be applied.');
+define('LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS', 'Turn this on if you wish to share <kbd><a href="https://github.com/ichord/Caret.js" target="_blank">Caret.js</a></kbd> and <kbd><a href="https://github.com/ichord/At.js" target="_blank">At.js</a></kbd> libraries with other e107 plugins and/or theme. This plugin uses these libs.');
 define('LAN_MENTIONS_PREF_LBL_HINT_ATWHO_MINCHAR', 'Minimum number of characters required to input after `@` sign to show suggestion popup-list (0 - 20):');
 define('LAN_MENTIONS_PREF_LBL_HINT_ATWHO_MAXCHAR', 'Max number of characters after `@` that would be matched to populate suggestion.');
 define('LAN_MENTIONS_PREF_LBL_HINT_ATWHO_LIMIT', 'Number of username entries to show in suggestion popup-list');
