@@ -17,6 +17,15 @@ class MentionsSuggestion extends Mentions
 
 	}
 
+	/**
+	 * Load libs
+	 */
+	public static function libs()
+	{
+		$suggestion = new MentionsSuggestion;
+		$suggestion->loadLibs();
+	}
+
 
 	/**
 	 * Responds to suggestions API requests,
@@ -66,18 +75,8 @@ class MentionsSuggestion extends Mentions
 
 		}
 		die;
-
 	}
 
-
-	/**
-	 * Load libs
-	 */
-	public static function libs()
-	{
-		$suggestion = new MentionsSuggestion;
-		$suggestion->loadLibs();
-	}
 
 
 	/**
@@ -98,22 +97,20 @@ class MentionsSuggestion extends Mentions
 				$this->loadLibsLocally();
 			}
 
-			// Mentions Autocomplete/suggestion API path
-			$apiPath = e_PLUGIN_ABS . 'mentions/index.php';
+			$this->setLibOptions($mentionsPref);
 
-			$jsSettings = [
-				'api_endpoint' => $apiPath,
-				'suggestions'  => [
-					'minChar'    => $mentionsPref['atwho_min_char'],
-					'maxChar'    => $mentionsPref['atwho_max_char'],
-					'entryLimit' => $mentionsPref['atwho_item_limit'],
-				],
-			];
-
-			// Footer - settings + script
-			e107::js('settings', ['mentions' => $jsSettings]);
 			e107::js('footer', '{e_PLUGIN}mentions/js/mentions.js', 'jquery');
 		}
+	}
+
+
+	/**
+	 * Loads libs from the global path
+	 */
+	protected function loadLibsGlobally()
+	{
+		e107::library('load', 'ichord.caret', 'minified');
+		e107::library('load', 'ichord.atwho', 'minified');
 	}
 
 
@@ -133,12 +130,24 @@ class MentionsSuggestion extends Mentions
 
 
 	/**
-	 * Loads libs from the global path
+	 * @param $mentionsPref
 	 */
-	protected function loadLibsGlobally()
+	private function setLibOptions($mentionsPref)
 	{
-		e107::library('load', 'ichord.caret', 'minified');
-		e107::library('load', 'ichord.atwho', 'minified');
+		// Mentions Autocomplete/suggestion API path
+		$apiPath = e_PLUGIN_ABS . 'mentions/index.php';
+
+		$jsSettings = [
+			'api_endpoint' => $apiPath,
+			'suggestions'  => [
+				'minChar'    => $mentionsPref['atwho_min_char'],
+				'maxChar'    => $mentionsPref['atwho_max_char'],
+				'entryLimit' => $mentionsPref['atwho_item_limit'],
+			],
+		];
+
+		// Footer - settings + script
+		e107::js('settings', ['mentions' => $jsSettings]);
 	}
 
 }
