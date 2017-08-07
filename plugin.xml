@@ -25,5 +25,6 @@
 		<pref name="notify_comment_mentions">false</pref>
 		<pref name="notify_forum_topic_mentions">false</pref>
 		<pref name="notify_forum_reply_mentions">false</pref>
+		<pref name="email_subject_line">You were mentioned by {MENTIONER}</pref>
 	</pluginPrefs>
 </e107Plugin>

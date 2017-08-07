@@ -129,6 +129,13 @@ class mentions_ui extends e_admin_ui
 			'data'  => 'boolean',
 			'help'  => 'Turn on notification for forum reply mentions.',
 		],
+		'email_subject_line' => array(
+			'title' => 'Email Subject Line',
+			'tab'   => 2,
+			'type' 	=> 'text',
+			'data' 	=> 'str',
+			'help' 	=>'Email Subject Line - in place of {MENTIONER} mentioner\'s username will appear.',
+		),
 
 	];
 
