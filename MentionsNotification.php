@@ -31,15 +31,28 @@ class MentionsNotification extends Mentions
 	private function perform()
 	{
 		if (USER && (strtolower($_SERVER['REQUEST_METHOD']) === 'post' || e_AJAX_REQUEST)) {
-			$this->chatboxMentionsNotifyOld();
-			// e107::getEvent()->register('user_chatbox_post_created',
-			//	['MentionsNotification', 'chatboxMentionsNotify']);
-			e107::getEvent()->register('user_comment_posted',
-				['MentionsNotification', 'commentsMentionsNotify']);
-			e107::getEvent()->register('user_forum_topic_created',
-				['MentionsNotification', 'forumsMentionsNotify']);
-			e107::getEvent()->register('user_forum_post_created',
-				['MentionsNotification', 'forumsMentionsNotify']);
+
+			if ($this->prefs['notify_chatbox_mentions']) {
+				$this->chatboxMentionsNotifyOld();
+				// e107::getEvent()->register('user_chatbox_post_created',
+				//	['MentionsNotification', 'chatboxMentionsNotify']);
+			}
+
+			if ($this->prefs['notify_comment_mentions']) {
+				e107::getEvent()->register('user_comment_posted',
+					['MentionsNotification', 'commentsMentionsNotify']);
+			}
+
+			if ($this->prefs['notify_forum_topic_mentions']) {
+				e107::getEvent()->register('user_forum_topic_created',
+					['MentionsNotification', 'forumsMentionsNotify']);
+			}
+
+			if ($this->prefs['notify_forum_reply_mentions']) {
+				e107::getEvent()->register('user_forum_post_created',
+					['MentionsNotification', 'forumsMentionsNotify']);
+			}
+
 		}
 	}
 
@@ -89,7 +102,7 @@ class MentionsNotification extends Mentions
 	 */
 	public function forumsMentionsNotify($data)
 	{
-		//$this->log(json_encode($data), 'forums-trigger-data');
+		$this->log(json_encode($data), 'forums-trigger-data');
 		$mentions = $this->getAllMentions($data['post_entry']);
 		if ($mentions) {
 			$this->mentions = $mentions;
