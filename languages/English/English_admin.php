@@ -12,11 +12,11 @@ define('LAN_MENTIONS_PREF_LBL_CHATBOX_EMAIL', 'Email notification for chatbox me
 define('LAN_MENTIONS_PREF_LBL_COMMENT_EMAIL', 'Email notification for comment mentions');
 define('LAN_MENTIONS_PREF_LBL_FORUMTOPIC_EMAIL', 'Email notification for forum new topic mentions');
 define('LAN_MENTIONS_PREF_LBL_FORUMREPLY_EMAIL', 'Email notification for forum reply mentions');
-define('LAN_MENTIONS_PREF_LBL_EMAIL_SUBJECT', 'Email Subject Line');
+define('LAN_MENTIONS_PREF_LBL_EMAIL_SUBJECT', 'Email subject-line text:');
 
 define('LAN_MENTIONS_PREF_LBL_HINT_ACTIVATION', 'Turn On/Off Mentions Globally');
-define('LAN_MENTIONS_PREF_LBL_HINT_CONTEXT', '\'mentions\' is called in what text parse context.');
-define('LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS', 'Use global path to load jQuery auto-complete libraries from.');
+define('LAN_MENTIONS_PREF_LBL_HINT_CONTEXT', 'In what text-parse/output-filter context mentions is called.');
+define('LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS', 'Turn this on if you wish to share Caret.js and At.js libraries with other e107 plugins and/or theme.');
 define('LAN_MENTIONS_PREF_LBL_HINT_ATWHO_MINCHAR', 'Minimum number of characters required to input after `@` sign to show suggestion popup-list (0 - 20):');
 define('LAN_MENTIONS_PREF_LBL_HINT_ATWHO_MAXCHAR', 'Max number of characters after `@` that would be matched to populate suggestion.');
 define('LAN_MENTIONS_PREF_LBL_HINT_ATWHO_LIMIT', 'Number of username entries to show in suggestion popup-list');
@@ -25,7 +25,7 @@ define('LAN_MENTIONS_PREF_LBL_HINT_CHATBOX_EMAIL', 'Turn on email notification f
 define('LAN_MENTIONS_PREF_LBL_HINT_COMMENT_EMAIL', 'Turn on email notification for comment mentions.');
 define('LAN_MENTIONS_PREF_LBL_HINT_FORUMTOPIC_EMAIL', 'Turn on email notification for new forum topic mentions.');
 define('LAN_MENTIONS_PREF_LBL_HINT_FORUMREPLY_EMAIL', 'Turn on email notification for forum reply mentions.');
-define('LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT', 'Email Subject Line - {MENTIONER} will be substituted with actual mentioner\'s username at run-time.');
+define('LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT', 'You can use the text macro <kbd>{MENTIONER}</kbd> in subject-line text, and it will be substituted with actual mentioner\'s username in the email subject field.');
 
 
 define('LAN_MENTIONS_PREF_VAL_CONTEXT_01', 'Forum + Chatbox');
@@ -45,3 +45,5 @@ define('LAN_MENTIONS_INFO_MENU_REPO_URL', '<p><kbd style="word-wrap: break-word"
 define('LAN_MENTIONS_INFO_MENU_REPO_BUTTON_WATCH', '<a class="github-button" href="https://github.com/arunshekher/mentions/subscription" data-icon="octicon-eye" aria-label="Watch arunshekher/mentions on GitHub">Watch</a>');
 define('LAN_MENTIONS_INFO_MENU_REPO_BUTTON_STAR', ' <a class="github-button" href="https://github.com/arunshekher/mentions" data-icon="octicon-star" aria-label="Star arunshekher/mentions on GitHub">Star</a>');
 define('LAN_MENTIONS_INFO_MENU_REPO_BUTTON_ISSUE', ' <a class="github-button" href="https://github.com/arunshekher/mentions/issues" data-icon="octicon-issue-opened" aria-label="Issue arunshekher/mentions on GitHub">Issue</a>');
+
+define('LAN_MENTIONS_FORK_RIBBON', '<a href="https://github.com/you"><img style="position: static; top: 0; left: 0; border: 0; float: left;" src="https://camo.githubusercontent.com/82b228a3648bf44fc1163ef44c62fcc60081495e/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png"></a>');

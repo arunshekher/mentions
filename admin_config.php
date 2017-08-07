@@ -47,68 +47,71 @@ class mentions_ui extends e_admin_ui
 	protected $preftabs = [
 		LAN_MENTIONS_PREF_TAB_MAIN,
 		LAN_MENTIONS_PREF_TAB_ATWHO,
-		'Notification'
+		'Notification',
 	];
 
 	protected $prefs = [
-		'mentions_active'   => [
-			'title' => LAN_MENTIONS_PREF_LBL_ACTIVE,
+		'mentions_active'             => [
+			'title' => '<p>' . LAN_MENTIONS_PREF_LBL_ACTIVE
+				. '</p><small>' . LAN_MENTIONS_PREF_LBL_HINT_ACTIVATION . '</small>',
 			'tab'   => 0,
 			'type'  => 'boolean',
 			'data'  => 'int',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ACTIVATION,
 		],
-		'mentions_contexts' => [
-			'title' => LAN_MENTIONS_PREF_LBL_CONTEXTS,
+		'mentions_contexts'           => [
+			'title' => '<p>' . LAN_MENTIONS_PREF_LBL_CONTEXTS
+				. '</p><small>' . LAN_MENTIONS_PREF_LBL_HINT_CONTEXT . '</small>',
 			'tab'   => 0,
 			'type'  => 'dropdown',
 			'size'  => 'xxxlarge',
 			'data'  => 'int',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_CONTEXT,
 		],
-		'use_global_path' => [
-			'title' => LAN_MENTIONS_PREF_LBL_GLOBAL_LIBS,
+		'use_global_path'             => [
+			'title' => '<p>' . LAN_MENTIONS_PREF_LBL_GLOBAL_LIBS
+				. '</p><small>' . LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS . '</small>',
 			'tab'   => 0,
 			'type'  => 'boolean',
 			'data'  => 'int',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS,
 		],
-		'atwho_min_char'   => [
+		'atwho_min_char'              => [
 			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_MINCHARS,
 			'tab'   => 1,
 			'type'  => 'number',
 			'data'  => 'int',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_MINCHAR,
 		],
-		'atwho_max_char'   => [
+		'atwho_max_char'              => [
 			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_MAXCHARS,
 			'tab'   => 1,
 			'type'  => 'number',
 			'data'  => 'int',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_MAXCHAR,
 		],
-		'atwho_item_limit' => [
+		'atwho_item_limit'            => [
 			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_LIMIT,
-			'tab' => 1,
-			'type' => 'number',
-			'data' => 'int',
-			'help' => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_LIMIT,
+			'tab'   => 1,
+			'type'  => 'number',
+			'data'  => 'int',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_LIMIT,
 		],
-		'atwho_highlight_first' => [
+		'atwho_highlight_first'       => [
 			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_HIGHLIGHT,
 			'tab'   => 1,
 			'type'  => 'boolean',
 			'data'  => 'boolean',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_HIGHLIGHT,
 		],
-		'notify_chatbox_mentions' => [
+		'notify_chatbox_mentions'     => [
 			'title' => LAN_MENTIONS_PREF_LBL_CHATBOX_EMAIL,
 			'tab'   => 2,
 			'type'  => 'boolean',
 			'data'  => 'boolean',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_CHATBOX_EMAIL,
 		],
-		'notify_comment_mentions' => [
+		'notify_comment_mentions'     => [
 			'title' => LAN_MENTIONS_PREF_LBL_COMMENT_EMAIL,
 			'tab'   => 2,
 			'type'  => 'boolean',
@@ -129,14 +132,15 @@ class mentions_ui extends e_admin_ui
 			'data'  => 'boolean',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_FORUMREPLY_EMAIL,
 		],
-		'email_subject_line' => array(
-			'title' => LAN_MENTIONS_PREF_LBL_EMAIL_SUBJECT,
+		'email_subject_line'          => [
+			'title' => '<p>' . LAN_MENTIONS_PREF_LBL_EMAIL_SUBJECT
+				. '</p><small>' . LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT . '</small>',
 			'tab'   => 2,
-			'type' 	=> 'text',
-			'data' 	=> 'str',
-			'size'  => 'xxxlarge',
-			'help' 	=> LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT,
-		),
+			'type'  => 'text',
+			'data'  => 'str',
+			'size'  => 'xxlarge',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT,
+		],
 
 	];
 
@@ -149,10 +153,13 @@ class mentions_ui extends e_admin_ui
 			$this->mentionsContexts;
 	}
 
+
 	public function renderHelp()
 	{
 		$caption = LAN_MENTIONS_INFO_MENU_TITLE;
-		$text = LAN_MENTIONS_INFO_MENU_LOGO;
+		$text = '';
+		// $text .= LAN_MENTIONS_FORK_RIBBON;
+		$text .= LAN_MENTIONS_INFO_MENU_LOGO;
 		$text .= LAN_MENTIONS_INFO_MENU_SUBTITLE;
 		$text .= LAN_MENTIONS_INFO_MENU_REPO_URL;
 		$text .= LAN_MENTIONS_INFO_MENU_REPO_BUTTON_WATCH;
