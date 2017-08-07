@@ -84,7 +84,7 @@ class MentionsNotification extends Mentions
 	 */
 	public function commentsMentionsNotify($data)
 	{
-		//$this->log(json_encode($data), 'comments-trigger-data');
+		// $this->log(json_encode($data), 'comments-trigger-data');
 		$mentions = $this->getAllMentions($data['comment_comment']);
 		if ($mentions) {
 			$this->mentions = $mentions;
@@ -102,7 +102,7 @@ class MentionsNotification extends Mentions
 	 */
 	public function forumsMentionsNotify($data)
 	{
-		$this->log(json_encode($data), 'forums-trigger-data');
+		// $this->log(json_encode($data), 'forums-trigger-data');
 		$mentions = $this->getAllMentions($data['post_entry']);
 		if ($mentions) {
 			$this->mentions = $mentions;
@@ -129,7 +129,7 @@ class MentionsNotification extends Mentions
 			if ($mentions) { // todo: logic to check if array
 				$this->mentions = $mentions;
 				$this->mentioner = USERNAME;
-				//$this->contentMessage = $_POST['cmessage'];
+				$this->contentType = 'chatbox post';
 				$this->notifyAllMentioned();
 			}
 		}
