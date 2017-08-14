@@ -7,12 +7,18 @@ class MentionsNotification extends Mentions
 	protected $mentioner;
 	protected $mentioneeData;
 
-	protected $contentType;
-	protected $contentMessage;
-	protected $contentId;
-	protected $contentUrl;
+	protected $entityTag;
+	protected $entityId;
+	protected $entityApproval;
+	protected $entityPossessorId;
+	protected $entityPossessorType;
 
-	protected $contentData;
+
+	protected $entityData;
+	protected $entityMessage;
+
+	protected $entityPointerUrl;
+
 
 
 	/**
@@ -33,9 +39,9 @@ class MentionsNotification extends Mentions
 		if (USER && (strtolower($_SERVER['REQUEST_METHOD']) === 'post' || e_AJAX_REQUEST)) {
 
 			if ($this->prefs['notify_chatbox_mentions']) {
-				$this->chatboxMentionsNotifyOld();
-				// e107::getEvent()->register('user_chatbox_post_created',
-				//	['MentionsNotification', 'chatboxMentionsNotify']);
+				//$this->chatboxMentionsNotifyOld();
+				e107::getEvent()->register('user_chatbox_post_created',
+					['MentionsNotification', 'chatboxMentionsNotify']);
 			}
 
 			if ($this->prefs['notify_comment_mentions']) {
@@ -64,7 +70,9 @@ class MentionsNotification extends Mentions
 	 */
 	public function chatboxMentionsNotify($data)
 	{
-		// $this->log(json_encode($data), 'chatbox-trigger-data');
+		// Debug
+		$this->log(json_encode($data), 'chatbox-trigger-data');
+
 		if ( ! $this->hasAtSign($data['cmessage'])) {
 			return false;
 		}
@@ -72,24 +80,36 @@ class MentionsNotification extends Mentions
 		if ($mentions) {
 			$this->mentions = $mentions;
 			$this->mentioner = USERNAME;
-			$this->contentType = 'chatbox post';
+			$this->entityTag = 'chatbox post';
 			$this->notifyAllMentioned();
 		}
 	}
+
 
 	/**
 	 * Comments mentions notify
 	 *
 	 * @param $data
+	 *
+	 * @return bool
 	 */
 	public function commentsMentionsNotify($data)
 	{
-		// $this->log(json_encode($data), 'comments-trigger-data');
+		// Debug
+		$this->log(json_encode($data), 'comments-trigger-data');
+
+		if ( ! $this->hasAtSign($data['comment_comment'])) {
+			return false;
+		}
 		$mentions = $this->getAllMentions($data['comment_comment']);
 		if ($mentions) {
 			$this->mentions = $mentions;
 			$this->mentioner = $data['comment_author_name'];
-			$this->contentType = 'comment post';
+			$this->entityTag = 'comment post';
+			$this->entityId = $data['comment_id'];
+			$this->entityPossessorId = $data['comment_item_id'];
+			$this->entityPossessorType = $data['comment_type'];
+			$this->entityApproval = $data['comment_blocked'];
 			$this->notifyAllMentioned();
 		}
 	}
@@ -102,12 +122,14 @@ class MentionsNotification extends Mentions
 	 */
 	public function forumsMentionsNotify($data)
 	{
-		// $this->log(json_encode($data), 'forums-trigger-data');
+		// Debug
+		$this->log(json_encode($data), 'forums-trigger-data');
+
 		$mentions = $this->getAllMentions($data['post_entry']);
 		if ($mentions) {
 			$this->mentions = $mentions;
 			$this->mentioner = USERNAME;
-			$this->contentType =
+			$this->entityTag =
 				'forum post'; // todo: find a logic to differentiate between new forum post/topic and forum reply
 			$this->notifyAllMentioned();
 		}
@@ -129,7 +151,7 @@ class MentionsNotification extends Mentions
 			if ($mentions) { // todo: logic to check if array
 				$this->mentions = $mentions;
 				$this->mentioner = USERNAME;
-				$this->contentType = 'chatbox post';
+				$this->entityTag = 'chatbox post';
 				$this->notifyAllMentioned();
 			}
 		}
@@ -216,6 +238,7 @@ class MentionsNotification extends Mentions
 		$content = $this->getContentType();
 		$date = e107::getParser()->toDate(time());
 		$url = $this->getMentionContentLink();
+		$url2 = $this->compileContentLink();
 
 		$bodyVars = [
 			'MENTIONEE'    => $mentionee_name,
@@ -223,7 +246,7 @@ class MentionsNotification extends Mentions
 			'SITENAME'     => SITENAME,
 			'MENTIONER'    => $mentioner,
 			'CONTENT_TYPE' => $content,
-			'URL'          => $url,
+			'URL'          => $url2,
 		];
 
 		$body = e107::getParser()->simpleParse($MENTIONS_NOTIFY, $bodyVars);
@@ -262,7 +285,7 @@ class MentionsNotification extends Mentions
 			<h4>You have been mentioned!</h4>
 			<p>Hello {MENTIONEE},</p>
 			<p>{MENTIONER} mentioned you in a {CONTENT_TYPE} at {SITENAME} on {DATE}.</p>
-			<p>Follow the {URL} to have a look.</p>
+			<p>Follow {URL} to have a look.</p>
 			</div>';
 
 		}
@@ -291,7 +314,7 @@ class MentionsNotification extends Mentions
 	 */
 	private function getContentType()
 	{
-		return $this->contentType;
+		return $this->entityTag;
 	}
 
 
@@ -307,6 +330,57 @@ class MentionsNotification extends Mentions
 
 
 	/**
+	 * @return string
+	 */
+	private function compileContentLink()
+	{
+		switch ($this->entityTag) {
+			case 'chatbox post':
+				$url = SITEURLBASE . e_PLUGIN_ABS . 'chatbox_menu/chat.php';
+				return '<a href="' . $url . '">this link</a>';
+			case 'comment post':
+				return '';
+			case 'forum reply':
+				return '';
+			default:
+				return '[unresolved]';
+		}
+	}
+
+
+	/**
+	 * @param $input
+	 *
+	 * @return string
+	 */
+	protected function findCommentType($input)
+	{
+		if (ctype_digit($input)) {
+			return $this->commentType($input);
+		}
+		return $input;
+	}
+
+
+	/**
+	 * @param $input
+	 *
+	 * @return string
+	 */
+	private function commentType($input)
+	{
+		$input = (int) $input;
+		switch ($input) {
+			case 0:
+				return 'news';
+			case 4:
+				return 'poll';
+			case 2:
+				return 'downloads';
+		}
+	}
+
+	/**
 	 * Debug log method
 	 *
 	 * @param string $content
@@ -318,5 +392,8 @@ class MentionsNotification extends Mentions
 		file_put_contents($path, $content . "\n", FILE_APPEND);
 		unset($path, $content);
 	}
+
+
+
 
 }
