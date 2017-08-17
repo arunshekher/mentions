@@ -39,22 +39,22 @@ class MentionsNotification extends Mentions
 
 			if ($this->prefs['notify_chatbox_mentions']) {
 				e107::getEvent()->register('user_chatbox_post_created',
-					['MentionsNotification', 'chatboxMentionsNotify']);
+					['MentionsNotification', 'chatbox']);
 			}
 
 			if ($this->prefs['notify_comment_mentions']) {
 				e107::getEvent()->register('user_comment_posted',
-					['MentionsNotification', 'commentsMentionsNotify']);
+					['MentionsNotification', 'comment']);
 			}
 
 			if ($this->prefs['notify_forum_topic_mentions']) {
 				e107::getEvent()->register('user_forum_topic_created',
-					['MentionsNotification', 'forumsMentionsNotify']);
+					['MentionsNotification', 'forum']);
 			}
 
 			if ($this->prefs['notify_forum_reply_mentions']) {
 				e107::getEvent()->register('user_forum_post_created',
-					['MentionsNotification', 'forumsMentionsNotify']);
+					['MentionsNotification', 'forum']);
 			}
 
 		}
@@ -66,7 +66,7 @@ class MentionsNotification extends Mentions
 	 *
 	 * @return bool
 	 */
-	public function chatboxMentionsNotify($data)
+	public function chatbox($data)
 	{
 		// Debug
 		$this->log(json_encode($data), 'chatbox-trigger-data');
@@ -90,7 +90,7 @@ class MentionsNotification extends Mentions
 	 *
 	 * @return bool
 	 */
-	public function commentsMentionsNotify($data)
+	public function comment($data)
 	{
 		// Debug
 		$this->log(json_encode($data), 'comments-trigger-data');
@@ -117,7 +117,7 @@ class MentionsNotification extends Mentions
 	 *
 	 * @param $data
 	 */
-	public function forumsMentionsNotify($data)
+	public function forum($data)
 	{
 		// Debug
 		$this->log(json_encode($data), 'forums-trigger-data');
@@ -126,8 +126,8 @@ class MentionsNotification extends Mentions
 		if ($mentions) {
 			$this->mentions = $mentions;
 			$this->mentioner = USERNAME;
-			$this->entityTag =
-				'forum post'; // todo: find a logic to differentiate between new forum post/topic and forum reply
+			// todo: logic to differentiate between new forum post/topic and forum reply
+			$this->entityTag = 'forum post';
 			$this->notifyAll();
 		}
 	}
