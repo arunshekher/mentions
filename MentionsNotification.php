@@ -7,17 +7,74 @@ class MentionsNotification extends Mentions
 	protected $mentioner;
 	protected $mentioneeData;
 
-	protected $entityTag;
-	protected $entityId;
-	protected $entityApproval;
-	protected $entityPossessorId;
-	protected $entityPossessorType;
+	protected $itemTag;
+	protected $itemId;
+	protected $itemApproval;
+	protected $itemPossessorId;
+	protected $itemPossessorType;
 
 
-	protected $entityData;
-	protected $entityMessage;
+	protected $itemData = [];
 
-	protected $entityPointerUrl;
+	protected $itemMessage;
+
+	protected $itemPointerUrl;
+
+	protected $notificationVars = [];
+
+
+	private function __set($name, $value)
+	{
+		$this->set($name, $value);
+	}
+
+
+	private function __get($name)
+	{
+		return $this->get($name);
+	}
+
+
+	protected function __isset($name)
+	{
+		// TODO: Implement __isset() method.
+	}
+
+
+	protected function __unset($name)
+	{
+		// TODO: Implement __unset() method.
+	}
+
+	/**
+	 * Gets property
+	 * @param $name
+	 *
+	 * @return mixed|null
+	 */
+	private function get($name)
+	{
+		if (property_exists($this, $name)) {
+			return $this->$name;
+		}
+
+		if (array_key_exists($name, $this->notificationVars)) {
+			return $this->notificationVars[$name];
+		}
+
+		return null;
+	}
+
+
+	private function set($name, $value)
+	{
+		if (property_exists($this, $name)) {
+			$this->$name = $value;
+		}
+
+		$this->notificationVars[$name] = $value;
+
+	}
 
 
 	/**
@@ -62,6 +119,7 @@ class MentionsNotification extends Mentions
 
 
 	/**
+	 * Chatbox mentions notify
 	 * @param $data
 	 *
 	 * @return bool
@@ -78,7 +136,7 @@ class MentionsNotification extends Mentions
 		if ($mentions) {
 			$this->mentions = $mentions;
 			$this->mentioner = USERNAME;
-			$this->entityTag = 'chatbox post';
+			$this->itemTag = 'chatbox post';
 			$this->notifyAll();
 		}
 	}
@@ -87,7 +145,6 @@ class MentionsNotification extends Mentions
 	 * Comments mentions notify
 	 *
 	 * @param $data
-	 *
 	 * @return bool
 	 */
 	public function comment($data)
@@ -102,11 +159,11 @@ class MentionsNotification extends Mentions
 		if ($mentions) {
 			$this->mentions = $mentions;
 			$this->mentioner = $data['comment_author_name'];
-			$this->entityTag = 'comment post';
-			$this->entityId = $data['comment_id'];
-			$this->entityPossessorId = $data['comment_item_id'];
-			$this->entityPossessorType = $data['comment_type'];
-			$this->entityApproval = $data['comment_blocked'];
+			$this->itemTag = 'comment post';
+			$this->itemId = $data['comment_id'];
+			$this->itemPossessorId = $data['comment_item_id'];
+			$this->itemPossessorType = $data['comment_type'];
+			$this->itemApproval = $data['comment_blocked'];
 			$this->notifyAll();
 		}
 	}
@@ -127,7 +184,7 @@ class MentionsNotification extends Mentions
 			$this->mentions = $mentions;
 			$this->mentioner = USERNAME;
 			// todo: logic to differentiate between new forum post/topic and forum reply
-			$this->entityTag = 'forum post';
+			$this->itemTag = 'forum post';
 			$this->notifyAll();
 		}
 	}
@@ -148,6 +205,7 @@ class MentionsNotification extends Mentions
 
 
 	/**
+	 * Checks if the string passed in as argument has an @ sign
 	 * @param $input
 	 *
 	 * @return bool
@@ -269,6 +327,7 @@ class MentionsNotification extends Mentions
 
 
 	/**
+	 * Email template
 	 * @return array|string
 	 */
 	private function emailTemplate()
@@ -298,7 +357,7 @@ class MentionsNotification extends Mentions
 	 */
 	private function getContentType()
 	{
-		return $this->entityTag;
+		return $this->itemTag;
 	}
 
 
@@ -318,15 +377,15 @@ class MentionsNotification extends Mentions
 	 */
 	private function compileContentLink()
 	{
-		switch ($this->entityTag) {
+		switch ($this->itemTag) {
 			case 'chatbox post':
 				$url = SITEURLBASE . e_PLUGIN_ABS . 'chatbox_menu/chat.php';
 
 				return '<a href="' . $url . '">this link</a>';
 			case 'comment post':
-				return '';
+				return '--COMMENT-LINK--';
 			case 'forum reply':
-				return '';
+				return '--FORUM-LINK--';
 			default:
 				return '[unresolved]';
 		}
