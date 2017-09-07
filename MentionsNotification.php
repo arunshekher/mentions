@@ -14,10 +14,10 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Stores data from magic setter if property does not exist
+	 * Stores attribute data as array key value pair if property does not exist
 	 * @var array
 	 */
-	private $notificationVars = [];
+	private $dataVars = [];
 
 
 	/**
@@ -74,8 +74,8 @@ class MentionsNotification extends Mentions
 			return $this->$name;
 		}
 
-		if (array_key_exists($name, $this->notificationVars)) {
-			return $this->notificationVars[$name];
+		if (array_key_exists($name, $this->dataVars)) {
+			return $this->dataVars[$name];
 		}
 
 		return null;
@@ -93,7 +93,7 @@ class MentionsNotification extends Mentions
 			$this->$name = $value;
 		}
 
-		$this->notificationVars[$name] = $value;
+		$this->dataVars[$name] = $value;
 
 	}
 
@@ -203,7 +203,7 @@ class MentionsNotification extends Mentions
 			$this->getAscendantTitle($data['comment_subject']);
 
 			// debug
-			$this->log(json_encode($this->notificationVars), 'notify-vars-array-data');
+			$this->log(json_encode($this->dataVars), 'notify-vars-array-data');
 
 			//todo: check for comment approval before notifying
 			//notify
@@ -313,7 +313,10 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Notify each mentionees in a post
+	 * Notify each mentionees in a post after making sure
+	 * that the mentioner is not the mentionee
+	 *
+	 * @return bool
 	 */
 	private function notifyAll()
 	{
@@ -325,10 +328,12 @@ class MentionsNotification extends Mentions
 
 		foreach (array_unique($mentions, SORT_STRING) as $mention) {
 
+			// no notification if mentionee is the mentioner
 			if ($this->mentioner === $this->stripAtFrom($mention)) {
 				continue;
 			}
 
+			// Mentionee
 			$this->mentioneeData = $this->getUserData($mention);
 
 			// Debug
@@ -336,8 +341,13 @@ class MentionsNotification extends Mentions
 
 			// Email
 			if ($this->mentioneeData && count($this->mentioneeData)) {
-				$this->dispatchEmail();
-				unset($this->mentioneeData);
+
+				if ($this->dispatchEmail()) {
+					unset($this->mentioneeData);
+					return true;
+				}
+
+				return false;
 			}
 
 		}
@@ -346,7 +356,7 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Sends email to notify mentioned user of a mention
+	 * Sends email to notify mentioned user
 	 *
 	 * @return boolean
 	 */
@@ -406,8 +416,8 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Email template
-	 * @return array|string
+	 * Returns Email template
+	 * @return string
 	 */
 	private function emailTemplate()
 	{
@@ -432,6 +442,7 @@ class MentionsNotification extends Mentions
 	 * @param $type
 	 *
 	 * @return string
+	 * @todo make language files compatible
 	 */
 	private function getMentionLine($type)
 	{
@@ -528,7 +539,9 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Gets comment type based on 'comment_type' in comment event data
+	 * Gets comment's ascendant based on 'comment_type'
+	 * received from comment event data
+	 *
 	 * @param $input
 	 *
 	 * @return string
@@ -544,23 +557,24 @@ class MentionsNotification extends Mentions
 
 
 	/**
+	 * Returns comment type name string based on e107 spec.
 	 * @param $input
 	 *
 	 * @return string
 	 */
 	private function commentType($input)
 	{
-		$input = (int)$input;
+		$input = (int) $input;
 
 		switch ($input) {
 			case 0:
-				return 'News';
+				return 'news';
 			case 4:
-				return 'Poll';
+				return 'poll';
 			case 2:
-				return 'Downloads';
+				return 'downloads';
 			default:
-				return null;
+				return 'unknown';
 		}
 	}
 
