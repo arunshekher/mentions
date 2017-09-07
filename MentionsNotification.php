@@ -20,24 +20,43 @@ class MentionsNotification extends Mentions
 	private $notificationVars = [];
 
 
+	/**
+	 * Magic set
+	 * @param $name
+	 * @param $value
+	 */
 	private function __set($name, $value)
 	{
 		$this->set($name, $value);
 	}
 
 
+	/**
+	 * Magic get
+	 * @param $name
+	 *
+	 * @return mixed|null
+	 */
 	private function __get($name)
 	{
 		return $this->get($name);
 	}
 
 
+	/**
+	 * Magic isset
+	 * @param $name
+	 */
 	protected function __isset($name)
 	{
 		// TODO: Implement __isset() method.
 	}
 
 
+	/**
+	 * Magic unset
+	 * @param $name
+	 */
 	protected function __unset($name)
 	{
 		// TODO: Implement __unset() method.
@@ -63,6 +82,11 @@ class MentionsNotification extends Mentions
 	}
 
 
+	/**
+	 * Sets property
+	 * @param $name
+	 * @param $value
+	 */
 	private function set($name, $value)
 	{
 		if (property_exists($this, $name)) {
@@ -75,7 +99,8 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Public static method to call perform()
+	 * Public static method to call perform() which listen to event triggers
+	 * and performs mentions notification
 	 */
 	public static function execute()
 	{
@@ -85,7 +110,7 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Listen to and perform notification
+	 * Listens to event triggers and performs mentions notification
 	 */
 	private function perform()
 	{
@@ -116,7 +141,7 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Chatbox mentions notify
+	 * Does Chatbox mentions notifications
 	 * @param $data
 	 *
 	 * @return bool
@@ -129,17 +154,20 @@ class MentionsNotification extends Mentions
 		if ( ! $this->hasAtSign($data['cmessage'])) {
 			return false;
 		}
+
 		$mentions = $this->getAllMentions($data['cmessage']);
+
 		if ($mentions) {
 			$this->mentions = $mentions;
 			$this->mentioner = USERNAME;
+			$this->mentionDate = $data['datestamp'];
 			$this->itemTag = 'chatbox post';
 			$this->notifyAll();
 		}
 	}
 
 	/**
-	 * Comments mentions notify
+	 * Does Comments mentions notifications
 	 *
 	 * @param $data
 	 * @return bool
@@ -149,14 +177,20 @@ class MentionsNotification extends Mentions
 		// Debug
 		$this->log(json_encode($data), 'comments-trigger-data');
 
+		// if no mentions abort
 		if ( ! $this->hasAtSign($data['comment_comment'])) {
 			return false;
 		}
+
 		$mentions = $this->getAllMentions($data['comment_comment']);
+
 		if ($mentions) {
 			$this->mentions = $mentions;
 			$this->mentioner = $data['comment_author_name'];
 			$this->itemTag = 'comment post';
+
+			$this->mentionDate = $data['comment_datestamp'];
+
 			$this->itemId = $data['comment_id'];
 			$this->itemPossessorId = $data['comment_item_id'];
 			$this->itemPossessorType = $data['comment_type'];
@@ -166,11 +200,12 @@ class MentionsNotification extends Mentions
 			$this->commentType = $this->getCommentType($data['comment_type']);
 
 			// comment title
-			$this->getPossessorTitle($data['comment_subject']);
+			$this->getAscendantTitle($data['comment_subject']);
 
 			// debug
 			$this->log(json_encode($this->notificationVars), 'notify-vars-array-data');
 
+			//todo: check for comment approval before notifying
 			//notify
 			$this->notifyAll();
 		}
@@ -178,28 +213,62 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Forum mentions notify
+	 * Does Forum mentions notifications
 	 *
 	 * @param $data
+	 *
+	 * @return bool
 	 */
 	public function forum($data)
 	{
 		// Debug
 		$this->log(json_encode($data), 'forums-trigger-data');
 
+		$this->forumData = $data;
+
+
+		if ( ! $this->hasAtSign($data['post_entry'])) {
+			return false;
+		}
+
+		$this->log(json_encode($this->forumData), 'forums-trigger-data-3');
+
+
 		$mentions = $this->getAllMentions($data['post_entry']);
+
+
+
 		if ($mentions) {
 			$this->mentions = $mentions;
 			$this->mentioner = USERNAME;
+
 			// todo: logic to differentiate between new forum post/topic and forum reply
-			$this->itemTag = 'forum post';
+			if (isset($data['thread_id'])) {
+				$this->itemTag = 'forum post';
+			} else {
+				$this->itemTag = 'forum reply';
+			}
+
+
+			//$this->getAscendantTitle($data['thread_name']);
+			$this->itemTitle = $data['thread_name'];
+
+			// Debug
+			$this->log(json_encode($data['thread_name']), 'forums-thread-name');
+
+			// Debug
+			$this->log(json_encode($this->mentions), 'forums-mentions');
+
+			// Debug
+			$this->log(json_encode($data), 'forums-trigger-data-2');
+
 			$this->notifyAll();
 		}
 	}
 
 
 	/**
-	 * Debug log method
+	 * Does Debug logging
 	 *
 	 * @param string $content
 	 * @param string $logname
@@ -244,7 +313,7 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Notify all mentionees in a post
+	 * Notify each mentionees in a post
 	 */
 	private function notifyAll()
 	{
@@ -368,13 +437,19 @@ class MentionsNotification extends Mentions
 	{
 		switch ($type) {
 			case 'chatbox post':
-				return '{MENTIONER} mentioned you in a {CONTENT_TYPE} on {DATE}.';
+				return "$this->mentioner mentioned you in a $this->itemTag on $this->mentionDate.";
 				break;
 			case 'comment post':
 				return "$this->mentioner mentioned you in a $this->itemTag for $this->commentType item titled '$this->itemTitle' on $this->mentionDate.";
 				break;
+			case 'forum post':
+				return "$this->mentioner mentioned you in a $this->itemTag titled '$this->itemTitle' on $this->mentionDate.";
+				break;
+			case 'forum reply':
+				return "$this->mentioner mentioned you in a $this->itemTag to a forum thread titled '$this->itemTitle' on $this->mentionDate.";
+				break;
 			default:
-				return '--UNRESOLVED--';
+				return "$this->mentioner mentioned you in an un-resolvable mention!";
 				break;
 		}
 		
@@ -403,6 +478,7 @@ class MentionsNotification extends Mentions
 
 
 	/**
+	 * Test link
 	 * @return string
 	 */
 	private function compileContentLink()
@@ -410,14 +486,17 @@ class MentionsNotification extends Mentions
 		switch ($this->itemTag) {
 			case 'chatbox post':
 				$url = SITEURLBASE . e_PLUGIN_ABS . 'chatbox_menu/chat.php';
-
 				return '<a href="' . $url . '">this link</a>';
+				break;
 			case 'comment post':
 				return '--COMMENT-LINK--';
+				break;
 			case 'forum reply':
 				return '--FORUM-LINK--';
+				break;
 			default:
 				return '[unresolved]';
+				break;
 		}
 	}
 
@@ -442,7 +521,7 @@ class MentionsNotification extends Mentions
 	 * Returns the posessor title based on itemTag
 	 * @return mixed|null
 	 */
-	private function getPossessorTitle($title)
+	private function getAscendantTitle($title)
 	{
 		return $this->itemTitle = $title;
 	}
