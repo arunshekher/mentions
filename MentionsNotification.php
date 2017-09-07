@@ -3,24 +3,21 @@
 
 class MentionsNotification extends Mentions
 {
+	private $siteName;
+	private $mentionDate;
+
 	protected $mentions;
 	protected $mentioner;
 	protected $mentioneeData;
 
-	protected $itemTag;
-	protected $itemId;
-	protected $itemApproval;
-	protected $itemPossessorId;
-	protected $itemPossessorType;
 
 
-	protected $itemData = [];
 
-	protected $itemMessage;
-
-	protected $itemPointerUrl;
-
-	protected $notificationVars = [];
+	/**
+	 * Stores data from magic setter if property does not exist
+	 * @var array
+	 */
+	private $notificationVars = [];
 
 
 	private function __set($name, $value)
@@ -164,6 +161,17 @@ class MentionsNotification extends Mentions
 			$this->itemPossessorId = $data['comment_item_id'];
 			$this->itemPossessorType = $data['comment_type'];
 			$this->itemApproval = $data['comment_blocked'];
+
+			// comment type detection
+			$this->commentType = $this->getCommentType($data['comment_type']);
+
+			// comment title
+			$this->getPossessorTitle($data['comment_subject']);
+
+			// debug
+			$this->log(json_encode($this->notificationVars), 'notify-vars-array-data');
+
+			//notify
 			$this->notifyAll();
 		}
 	}
@@ -312,6 +320,7 @@ class MentionsNotification extends Mentions
 		$date = e107::getParser()->toDate(time());
 		$url = $this->getMentionContentLink();
 		$url2 = $this->compileContentLink();
+		$mention_line = $this->getMentionLine($this->itemTag);
 
 		$bodyVars = [
 			'MENTIONEE'    => $mentionee_name,
@@ -320,6 +329,7 @@ class MentionsNotification extends Mentions
 			'MENTIONER'    => $mentioner,
 			'CONTENT_TYPE' => $content,
 			'URL'          => $url2,
+			'MENTION_LINE' => $mention_line
 		];
 
 		return e107::getParser()->simpleParse($EMAIL_TEMPLATE, $bodyVars);
@@ -338,10 +348,8 @@ class MentionsNotification extends Mentions
 		if (empty($EMAIL_TEMPLATE)) {
 
 			$EMAIL_TEMPLATE = '<div>
-			<h4>You have been mentioned!</h4>
 			<p>Hello {MENTIONEE},</p>
-			<p>{MENTIONER} mentioned you in a {CONTENT_TYPE} at {SITENAME} on {DATE}.</p>
-			<p>Follow {URL} to have a look.</p>
+			<p>{MENTION_LINE}</p>
 			</div>';
 
 		}
@@ -349,6 +357,28 @@ class MentionsNotification extends Mentions
 		return $EMAIL_TEMPLATE;
 	}
 
+
+	/**
+	 * Returns mention email notification sentense based on content tag
+	 * @param $type
+	 *
+	 * @return string
+	 */
+	private function getMentionLine($type)
+	{
+		switch ($type) {
+			case 'chatbox post':
+				return '{MENTIONER} mentioned you in a {CONTENT_TYPE} on {DATE}.';
+				break;
+			case 'comment post':
+				return "$this->mentioner mentioned you in a $this->itemTag for $this->commentType item titled '$this->itemTitle' on $this->mentionDate.";
+				break;
+			default:
+				return '--UNRESOLVED--';
+				break;
+		}
+		
+	}
 
 	/**
 	 * todo: develop this stub
@@ -408,15 +438,23 @@ class MentionsNotification extends Mentions
 	}
 
 
-
+	/**
+	 * Returns the posessor title based on itemTag
+	 * @return mixed|null
+	 */
+	private function getPossessorTitle($title)
+	{
+		return $this->itemTitle = $title;
+	}
 
 
 	/**
+	 * Gets comment type based on 'comment_type' in comment event data
 	 * @param $input
 	 *
 	 * @return string
 	 */
-	protected function findCommentType($input)
+	protected function getCommentType($input)
 	{
 		if (ctype_digit($input)) {
 			return $this->commentType($input);
@@ -437,11 +475,11 @@ class MentionsNotification extends Mentions
 
 		switch ($input) {
 			case 0:
-				return 'news';
+				return 'News';
 			case 4:
-				return 'poll';
+				return 'Poll';
 			case 2:
-				return 'downloads';
+				return 'Downloads';
 			default:
 				return null;
 		}
