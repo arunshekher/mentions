@@ -99,6 +99,19 @@ class MentionsNotification extends Mentions
 
 
 	/**
+	 * Cretates mentions date
+	 *
+	 * @param $date
+	 *
+	 * @return \HTML
+	 */
+	private function createMentionDate($date)
+	{
+		return e107::getParser()->toDate($date, 'long');
+	}
+
+
+	/**
 	 * Public static method to call perform() which listen to event triggers
 	 * and performs mentions notification
 	 */
@@ -160,7 +173,7 @@ class MentionsNotification extends Mentions
 		if ($mentions) {
 			$this->mentions = $mentions;
 			$this->mentioner = USERNAME;
-			$this->mentionDate = $data['datestamp'];
+			$this->mentionDate = $this->createMentionDate($data['datestamp']);
 			$this->itemTag = 'chatbox post';
 			$this->notifyAll();
 		}
@@ -189,8 +202,10 @@ class MentionsNotification extends Mentions
 			$this->mentioner = $data['comment_author_name'];
 			$this->itemTag = 'comment post';
 
-			$this->mentionDate = $data['comment_datestamp'];
+			// sets date
+			$this->mentionDate = $this->createMentionDate($data['comment_datestamp']);
 
+			//todo: remove these after checking
 			$this->itemId = $data['comment_id'];
 			$this->itemPossessorId = $data['comment_item_id'];
 			$this->itemPossessorType = $data['comment_type'];
@@ -222,17 +237,38 @@ class MentionsNotification extends Mentions
 	public function forum($data)
 	{
 		// Debug
-		$this->log(json_encode($data), 'forums-trigger-data');
+		$this->log(json_encode((array) $data), 'forums-trigger-data');
 
-		$this->forumData = $data;
+		/*
+		foreach ($data as $k => $v) {
+			//$this->log("$k = $v", 'forums-trigger-data');
+			if ($k ===  'thread_name') {
+				//$this->forumTitle = $v;
+				$this->log($v, 'forums-trigger-data-title');
+				$this->itemTitle = $v;
+			}
+		}
+		*/
+
+		//$forumData = preg_split("/[\n]+/", json_encode($data));
+
+		//$forumData = explode("\n", json_encode($data));
+
+		//convert into proper json format
+		//$jsonData = implode(',', $forumData);
+
+
+
 
 
 		if ( ! $this->hasAtSign($data['post_entry'])) {
 			return false;
 		}
 
-		$this->log(json_encode($this->forumData), 'forums-trigger-data-3');
 
+		// $this->log($this->itemTitle, 'forums-trigger-data-4');
+
+		
 
 		$mentions = $this->getAllMentions($data['post_entry']);
 
@@ -243,24 +279,22 @@ class MentionsNotification extends Mentions
 			$this->mentioner = USERNAME;
 
 			// todo: logic to differentiate between new forum post/topic and forum reply
+			/*
 			if (isset($data['thread_id'])) {
 				$this->itemTag = 'forum post';
 			} else {
 				$this->itemTag = 'forum reply';
 			}
+			*/
 
+			$this->itemTag = 'forum post';
 
-			//$this->getAscendantTitle($data['thread_name']);
+			// date/time
+			$this->mentionDate = $this->createMentionDate($data['post_datestamp']);
+
 			$this->itemTitle = $data['thread_name'];
 
-			// Debug
-			$this->log(json_encode($data['thread_name']), 'forums-thread-name');
 
-			// Debug
-			$this->log(json_encode($this->mentions), 'forums-mentions');
-
-			// Debug
-			$this->log(json_encode($data), 'forums-trigger-data-2');
 
 			$this->notifyAll();
 		}
@@ -451,16 +485,16 @@ class MentionsNotification extends Mentions
 				return "$this->mentioner mentioned you in a $this->itemTag on $this->mentionDate.";
 				break;
 			case 'comment post':
-				return "$this->mentioner mentioned you in a $this->itemTag for $this->commentType item titled '$this->itemTitle' on $this->mentionDate.";
+				return "$this->mentioner mentioned you in a $this->itemTag for the $this->commentType item titled '$this->itemTitle' on $this->mentionDate.";
 				break;
 			case 'forum post':
-				return "$this->mentioner mentioned you in a $this->itemTag titled '$this->itemTitle' on $this->mentionDate.";
+				return "$this->mentioner mentioned you in a $this->itemTag on $this->mentionDate.";
 				break;
 			case 'forum reply':
 				return "$this->mentioner mentioned you in a $this->itemTag to a forum thread titled '$this->itemTitle' on $this->mentionDate.";
 				break;
 			default:
-				return "$this->mentioner mentioned you in an un-resolvable mention!";
+				return "$this->mentioner mentioned you in an un-resolvable post!";
 				break;
 		}
 		
