@@ -99,15 +99,16 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Cretates mentions date
+	 * Prepares mention date
 	 *
-	 * @param $date
+	 * @param        $date
+	 * @param string $format
 	 *
 	 * @return \HTML
 	 */
-	private function createMentionDate($date)
+	private function createMentionDate($date, $format = 'long')
 	{
-		return e107::getParser()->toDate($date, 'long');
+		return e107::getParser()->toDate($date, $format);
 	}
 
 
@@ -175,7 +176,9 @@ class MentionsNotification extends Mentions
 			$this->mentioner = USERNAME;
 			$this->mentionDate = $this->createMentionDate($data['datestamp']);
 			$this->itemTag = 'chatbox post';
+			// notify
 			$this->notifyAll();
+			// todo: unset some vars if done.
 		}
 	}
 
@@ -215,7 +218,7 @@ class MentionsNotification extends Mentions
 			$this->commentType = $this->getCommentType($data['comment_type']);
 
 			// comment title
-			$this->getAscendantTitle($data['comment_subject']);
+			$this->getAscendantTitle($data['comment_subject']); // todo: tidy-up this
 
 			// debug
 			$this->log(json_encode($this->dataVars), 'notify-vars-array-data');
@@ -223,6 +226,7 @@ class MentionsNotification extends Mentions
 			//todo: check for comment approval before notifying
 			//notify
 			$this->notifyAll();
+			// todo: unset some vars if done.
 		}
 	}
 
@@ -297,6 +301,7 @@ class MentionsNotification extends Mentions
 
 
 			$this->notifyAll();
+			// todo: unset some vars if done.
 		}
 	}
 
@@ -350,7 +355,6 @@ class MentionsNotification extends Mentions
 	 * Notify each mentionees in a post after making sure
 	 * that the mentioner is not the mentionee
 	 *
-	 * @return bool
 	 */
 	private function notifyAll()
 	{
@@ -374,14 +378,12 @@ class MentionsNotification extends Mentions
 			$this->log(json_encode($this->mentioneeData), 'mentionee-data');
 
 			// Email
-			if ($this->mentioneeData && count($this->mentioneeData)) {
+			if (null !== $this->mentioneeData['user_email'] && null !== $this->mentioneeData['user_name']) {
 
-				if ($this->dispatchEmail()) {
-					unset($this->mentioneeData);
-					return true;
-				}
+				$this->dispatchEmail();
+				unset($this->mentioneeData);
+				continue;
 
-				return false;
 			}
 
 		}
@@ -390,9 +392,9 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Sends email to notify mentioned user
+	 * Dispatches email to the mentioned user
 	 *
-	 * @return boolean
+	 * @return boolean - true if success false if failed
 	 */
 	private function dispatchEmail()
 	{
@@ -412,8 +414,11 @@ class MentionsNotification extends Mentions
 
 		if ($sendEmail) {
 			unset($body, $email);
-			return true;
+			return $sendEmail;
 		}
+
+		// Debug
+		$this->log($sendEmail, 'send-email-error-log');
 
 		return false;
 	}
@@ -422,6 +427,7 @@ class MentionsNotification extends Mentions
 	/**
 	 * Parses and returns email body
 	 * @return string
+	 * todo : tidy-up this method
 	 */
 	private function emailBody()
 	{
@@ -429,20 +435,15 @@ class MentionsNotification extends Mentions
 
 		$mentionee_name = $this->mentioneeData['user_name'];
 		$mentioner = $this->mentioner;
-		$content = $this->getContentType();
-		$date = e107::getParser()->toDate(time());
 		$url = $this->getMentionContentLink();
 		$url2 = $this->compileContentLink();
-		$mention_line = $this->getMentionLine($this->itemTag);
+		$mention_verse = $this->getMentionLine($this->itemTag);
 
 		$bodyVars = [
 			'MENTIONEE'    => $mentionee_name,
-			'DATE'         => $date,
-			'SITENAME'     => SITENAME,
 			'MENTIONER'    => $mentioner,
-			'CONTENT_TYPE' => $content,
+			'MENTION_VERSE' => $mention_verse,
 			'URL'          => $url2,
-			'MENTION_LINE' => $mention_line
 		];
 
 		return e107::getParser()->simpleParse($EMAIL_TEMPLATE, $bodyVars);
@@ -462,7 +463,7 @@ class MentionsNotification extends Mentions
 
 			$EMAIL_TEMPLATE = '<div>
 			<p>Hello {MENTIONEE},</p>
-			<p>{MENTION_LINE}</p>
+			<p>{MENTION_VERSE}</p>
 			</div>';
 
 		}
@@ -482,10 +483,14 @@ class MentionsNotification extends Mentions
 	{
 		switch ($type) {
 			case 'chatbox post':
-				return "$this->mentioner mentioned you in a $this->itemTag on $this->mentionDate.";
+				$verse = e107::getParser()->lanVars(LAN_MENTIONS_EMAIL_VERSE_CHATBOX, ['a' => $this->mentioner, 'b' => $this->itemTag, 'c' => $this->mentionDate]);
+				return $verse;
+				// return "$this->mentioner mentioned you in a $this->itemTag on $this->mentionDate.";
 				break;
 			case 'comment post':
-				return "$this->mentioner mentioned you in a $this->itemTag for the $this->commentType item titled '$this->itemTitle' on $this->mentionDate.";
+				$verse = e107::getParser()->lanVars(LAN_MENTIONS_EMAIL_VERSE_COMMENT, ['a' => $this->mentioner, 'b' => $this->itemTag, 'c' => $this->mentionDate, 'd' => $this->commentType, 'e' => $this->itemTitle]);
+				return $verse;
+				// return "$this->mentioner mentioned you in a $this->itemTag for the $this->commentType item titled '$this->itemTitle' on $this->mentionDate.";
 				break;
 			case 'forum post':
 				return "$this->mentioner mentioned you in a $this->itemTag on $this->mentionDate.";
