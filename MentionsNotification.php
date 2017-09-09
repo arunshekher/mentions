@@ -437,7 +437,7 @@ class MentionsNotification extends Mentions
 		$mentioner = $this->mentioner;
 		$url = $this->getMentionContentLink();
 		$url2 = $this->compileContentLink();
-		$mention_verse = $this->getMentionLine($this->itemTag);
+		$mention_verse = $this->getMentionVerse($this->itemTag);
 
 		$bodyVars = [
 			'MENTIONEE'    => $mentionee_name,
@@ -479,7 +479,7 @@ class MentionsNotification extends Mentions
 	 * @return string
 	 * @todo make language files compatible
 	 */
-	private function getMentionLine($type)
+	private function getMentionVerse($type)
 	{
 		switch ($type) {
 			case 'chatbox post':
@@ -494,9 +494,6 @@ class MentionsNotification extends Mentions
 				break;
 			case 'forum post':
 				return "$this->mentioner mentioned you in a $this->itemTag on $this->mentionDate.";
-				break;
-			case 'forum reply':
-				return "$this->mentioner mentioned you in a $this->itemTag to a forum thread titled '$this->itemTitle' on $this->mentionDate.";
 				break;
 			default:
 				return "$this->mentioner mentioned you in an un-resolvable post!";
