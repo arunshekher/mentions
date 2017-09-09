@@ -3,12 +3,10 @@
 
 class MentionsNotification extends Mentions
 {
-	private $siteName;
+	private $mentions;
+	private $mentioner;
 	private $mentionDate;
-
-	protected $mentions;
-	protected $mentioner;
-	protected $mentioneeData;
+	private $mentioneeData;
 
 
 
@@ -218,7 +216,7 @@ class MentionsNotification extends Mentions
 			$this->commentType = $this->getCommentType($data['comment_type']);
 
 			// comment title
-			$this->getAscendantTitle($data['comment_subject']); // todo: tidy-up this
+			$this->itemTitle = $data['comment_subject'];
 
 			// debug
 			$this->log(json_encode($this->dataVars), 'notify-vars-array-data');
@@ -366,12 +364,14 @@ class MentionsNotification extends Mentions
 
 		foreach (array_unique($mentions, SORT_STRING) as $mention) {
 
-			// no notification if mentionee is the mentioner
-			if ($this->mentioner === $this->stripAtFrom($mention)) {
+			// no notification if 'mentioner' is the 'mentionee'
+			$mentionee = $this->stripAtFrom($mention);
+
+			if ($this->mentioner === $mentionee) {
 				continue;
 			}
 
-			// Mentionee
+			// 'mentionee' details - email, username, userid
 			$this->mentioneeData = $this->getUserData($mention);
 
 			// Debug
@@ -462,8 +462,8 @@ class MentionsNotification extends Mentions
 		if (empty($EMAIL_TEMPLATE)) {
 
 			$EMAIL_TEMPLATE = '<div>
-			<p>Hello {MENTIONEE},</p>
-			<p>{MENTION_VERSE}</p>
+				<p>Hello {MENTIONEE},</p>
+				<p>{MENTION_VERSE}</p>
 			</div>';
 
 		}
@@ -483,37 +483,46 @@ class MentionsNotification extends Mentions
 	{
 		switch ($type) {
 			case 'chatbox post':
-				$verse = e107::getParser()->lanVars(LAN_MENTIONS_EMAIL_VERSE_CHATBOX, ['a' => $this->mentioner, 'b' => $this->itemTag, 'c' => $this->mentionDate]);
-				return $verse;
-				// return "$this->mentioner mentioned you in a $this->itemTag on $this->mentionDate.";
+				$vars = [
+					'user' => $this->mentioner,
+					'tag' => $this->itemTag,
+					'date' => $this->mentionDate
+				];
+
+				return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_CHATBOX, $vars);
 				break;
+
 			case 'comment post':
-				$verse = e107::getParser()->lanVars(LAN_MENTIONS_EMAIL_VERSE_COMMENT, ['a' => $this->mentioner, 'b' => $this->itemTag, 'c' => $this->mentionDate, 'd' => $this->commentType, 'e' => $this->itemTitle]);
-				return $verse;
-				// return "$this->mentioner mentioned you in a $this->itemTag for the $this->commentType item titled '$this->itemTitle' on $this->mentionDate.";
+				$vars = [
+					'user' => $this->mentioner,
+					'tag' => $this->itemTag,
+					'date' => $this->mentionDate,
+					'type' => $this->commentType,
+					'title' => $this->itemTitle
+				];
+
+				return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_COMMENT, $vars);
 				break;
+
 			case 'forum post':
-				return "$this->mentioner mentioned you in a $this->itemTag on $this->mentionDate.";
+				$vars = [
+					'user'  => $this->mentioner,
+					'tag'   => $this->itemTag,
+					'date'  => $this->mentionDate
+				];
+
+				return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_FORUM, $vars);
 				break;
+
 			default:
-				return "$this->mentioner mentioned you in an un-resolvable post!";
+				return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_UNRESOLVED, $this->mentioner);
 				break;
 		}
 		
 	}
 
 	/**
-	 * todo: develop this stub
-	 *
-	 * @return string
-	 */
-	private function getContentType()
-	{
-		return $this->itemTag;
-	}
-
-
-	/**
+	 * Experimental: Mention link returner
 	 * todo: develop this stub
 	 *
 	 * @return string
@@ -525,7 +534,7 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Test link
+	 * Experimental: Link compiler method
 	 * @return string
 	 */
 	private function compileContentLink()
@@ -565,17 +574,7 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Returns the posessor title based on itemTag
-	 * @return mixed|null
-	 */
-	private function getAscendantTitle($title)
-	{
-		return $this->itemTitle = $title;
-	}
-
-
-	/**
-	 * Gets comment's ascendant based on 'comment_type'
+	 * Gets comment's ascendant name from 'comment_type'
 	 * received from comment event data
 	 *
 	 * @param $input
@@ -593,7 +592,7 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Returns comment type name string based on e107 spec.
+	 * Returns comment type name string based on e107 comment type spec.
 	 * @param $input
 	 *
 	 * @return string
