@@ -3,6 +3,18 @@
 
 class MentionsSuggestion extends Mentions
 {
+	private $db;
+	private $ajax;
+
+	/**
+	 * MentionsSuggestion constructor.
+	 */
+	public function __construct()
+	{
+		Mentions::__construct();
+		$this->db = e107::getDb();
+		$this->ajax = e107::getAjax();
+	}
 
 
 	/**
@@ -14,11 +26,10 @@ class MentionsSuggestion extends Mentions
 	{
 		$suggestion = new MentionsSuggestion;
 		$suggestion->respond($request);
-
 	}
 
 	/**
-	 * Load libs
+	 * Load libraries
 	 */
 	public static function libs()
 	{
@@ -38,8 +49,9 @@ class MentionsSuggestion extends Mentions
 
 		if (e_AJAX_REQUEST && USER && vartrue($request)) {
 
-			$db = e107::getDb();
-			$tp = e107::getParser();
+			$db = $this->db;
+			$tp = $this->parse;
+			$ajax = $this->ajax;
 
 			$mq = $tp->filter($request);
 			$where = "user_name LIKE '" . $mq . "%' ";
@@ -58,7 +70,7 @@ class MentionsSuggestion extends Mentions
 				}
 
 				if (count($data)) {
-					$ajax = e107::getAjax();
+					//$ajax = e107::getAjax();
 					$ajax->response($data);
 				}
 			} else {
@@ -70,7 +82,9 @@ class MentionsSuggestion extends Mentions
 					],
 				];
 
-				e107::getAjax()->response($msg);
+				//e107::getAjax()->response($msg);
+				$ajax->response($msg);
+
 			}
 
 		}
@@ -80,7 +94,7 @@ class MentionsSuggestion extends Mentions
 
 
 	/**
-	 * Load suggestions popup javascript libs.
+	 * Load javascript libraries.
 	 */
 	public function loadLibs()
 	{
@@ -105,7 +119,7 @@ class MentionsSuggestion extends Mentions
 
 
 	/**
-	 * Loads libs from the global path
+	 * Loads libraries from the global path
 	 */
 	protected function loadLibsGlobally()
 	{
@@ -115,7 +129,7 @@ class MentionsSuggestion extends Mentions
 
 
 	/**
-	 * Loads libs from the local path
+	 * Loads libraries from the local path
 	 */
 	protected function loadLibsLocally()
 	{
@@ -130,6 +144,7 @@ class MentionsSuggestion extends Mentions
 
 
 	/**
+	 * Javascript settings
 	 * @param $mentionsPref
 	 */
 	private function setLibOptions($mentionsPref)
