@@ -8,6 +8,7 @@ class Mentions
 	protected $prefs;
 	protected $parse;
 
+	protected $dataVars = [];
 
 	/**
 	 * Mentions constructor.
@@ -18,6 +19,96 @@ class Mentions
 		$this->parse = e107::getParser();
 	}
 
+
+	/**
+	 * Magic set
+	 * @param $name
+	 * @param $value
+	 */
+	protected function __set($name, $value)
+	{
+		$this->set($name, $value);
+	}
+
+
+	/**
+	 * Magic get
+	 * @param $name
+	 *
+	 * @return mixed|null
+	 */
+	protected function __get($name)
+	{
+		return $this->get($name);
+	}
+
+
+	/**
+	 * Magic isset
+	 *
+	 * @param $name
+	 *
+	 * @return bool
+	 */
+	protected function __isset($name)
+	{
+		if (property_exists($this, $name)) {
+			return isset($this->$name);
+		}
+
+		if (array_key_exists($name, $this->dataVars)) {
+			return isset($this->dataVars[$name]);
+		}
+	}
+
+
+	/**
+	 * Magic unset
+	 * @param $name
+	 */
+	protected function __unset($name)
+	{
+		if (property_exists($this, $name)) {
+			unset($this->$name);
+		} elseif (array_key_exists($name, $this->dataVars)) {
+			unset($this->dataVars[$name]);
+		}
+	}
+
+	/**
+	 * Gets property
+	 * @param $name
+	 *
+	 * @return mixed|null
+	 */
+	protected function get($name)
+	{
+		if (property_exists($this, $name)) {
+			return $this->$name;
+		}
+
+		if (array_key_exists($name, $this->dataVars)) {
+			return $this->dataVars[$name];
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * Sets property
+	 * @param $name
+	 * @param $value
+	 */
+	protected function set($name, $value)
+	{
+		if (property_exists($this, $name)) {
+			$this->$name = $value;
+		}
+
+		$this->dataVars[$name] = $value;
+
+	}
 
 
 
