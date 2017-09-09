@@ -1,5 +1,6 @@
 <?php
 
+e107::lan('mentions', 'front', true);
 
 class Mentions
 {
