@@ -18,9 +18,9 @@ class MentionsNotification extends Mentions
 	 *
 	 * @return \HTML
 	 */
-	private function createMentionDate($date, $format = 'long')
+	private function getMentionDate($date, $format = 'long')
 	{
-		return e107::getParser()->toDate($date, $format);
+		return $this->parse->toDate($date, $format);
 	}
 
 
@@ -52,6 +52,14 @@ class MentionsNotification extends Mentions
 					['MentionsNotification', 'comment']);
 			}
 
+			if ($this->prefs['notify_forum_mentions']) {
+
+				// forum post/reply
+				e107::getEvent()->register('user_forum_post_created',
+					['MentionsNotification', 'forum_new']);
+			}
+
+			/*
 			if ($this->prefs['notify_forum_topic_mentions']) {
 				e107::getEvent()->register('user_forum_topic_created',
 					['MentionsNotification', 'forum']);
@@ -61,7 +69,7 @@ class MentionsNotification extends Mentions
 				e107::getEvent()->register('user_forum_post_created',
 					['MentionsNotification', 'forum']);
 			}
-
+			*/
 		}
 	}
 
@@ -75,8 +83,9 @@ class MentionsNotification extends Mentions
 	public function chatbox($data)
 	{
 		// Debug
-		$this->log(json_encode($data), 'chatbox-trigger-data');
+		// $this->log(json_encode($data), 'chatbox-trigger-data');
 
+		// if no mentions abort
 		if ( ! $this->hasAtSign($data['cmessage'])) {
 			return false;
 		}
@@ -86,7 +95,7 @@ class MentionsNotification extends Mentions
 		if ($mentions) {
 			$this->mentions = $mentions;
 			$this->mentioner = USERNAME;
-			$this->mentionDate = $this->createMentionDate($data['datestamp']);
+			$this->mentionDate = $this->getMentionDate($data['datestamp']);
 			$this->itemTag = LAN_MENTIONS_TAG_CHATBOX;
 			// notify
 			$this->notifyAll();
@@ -103,7 +112,7 @@ class MentionsNotification extends Mentions
 	public function comment($data)
 	{
 		// Debug
-		$this->log(json_encode($data), 'comments-trigger-data');
+		// $this->log(json_encode($data), 'comments-trigger-data');
 
 		// if no mentions abort
 		if ( ! $this->hasAtSign($data['comment_comment'])) {
@@ -118,10 +127,7 @@ class MentionsNotification extends Mentions
 			$this->itemTag = LAN_MENTIONS_TAG_COMMENT;
 
 			// sets date
-			$this->mentionDate = $this->createMentionDate($data['comment_datestamp']);
-
-			// todo : store comment approval status for later use
-			$this->itemApproval = $data['comment_blocked'];
+			$this->mentionDate = $this->getMentionDate($data['comment_datestamp']);
 
 			// comment type detection
 			$this->commentType = $this->getCommentType($data['comment_type']);
@@ -129,12 +135,11 @@ class MentionsNotification extends Mentions
 			// comment title
 			$this->itemTitle = $data['comment_subject'];
 
-			// debug
-			$this->log(json_encode($this->dataVars), 'notify-vars-array-data');
+			// notify if comment is not blocked
+			if (! $data['comment_blocked']) {
+				$this->notifyAll();
+			}
 
-			//todo: check for comment approval before notifying
-			//notify
-			$this->notifyAll();
 			// todo: unset some vars if done.
 		}
 	}
@@ -149,6 +154,11 @@ class MentionsNotification extends Mentions
 	 */
 	public function forum($data)
 	{
+		// if no mentions abort
+		if ( ! $this->hasAtSign($data['post_entry'])) {
+			return false;
+		}
+
 		// Debug
 		$this->log(json_encode((array) $data), 'forums-trigger-data');
 
@@ -171,18 +181,6 @@ class MentionsNotification extends Mentions
 		//$jsonData = implode(',', $forumData);
 
 
-
-
-
-		if ( ! $this->hasAtSign($data['post_entry'])) {
-			return false;
-		}
-
-
-		// $this->log($this->itemTitle, 'forums-trigger-data-4');
-
-		
-
 		$mentions = $this->getAllMentions($data['post_entry']);
 
 
@@ -203,8 +201,9 @@ class MentionsNotification extends Mentions
 			$this->itemTag = LAN_MENTIONS_TAG_FORUM;
 
 			// date/time
-			$this->mentionDate = $this->createMentionDate($data['post_datestamp']);
+			$this->mentionDate = $this->getMentionDate($data['post_datestamp']);
 
+			// todo: make it work - $data['thread_name'] is currently not accessible here
 			$this->itemTitle = $data['thread_name'];
 
 
@@ -213,6 +212,48 @@ class MentionsNotification extends Mentions
 			// todo: unset some vars if done.
 		}
 	}
+
+
+	public function forum_new($data)
+	{
+		// if no mentions abort
+		if ( ! $this->hasAtSign($data['post_entry'])) {
+			return false;
+		}
+
+		// get mentions
+		$mentions = $this->getAllMentions($data['post_entry']);
+
+		if ($mentions) {
+
+			$this->mentions = $mentions;
+
+			$this->mentioner = USERNAME;
+
+			$this->itemTag = LAN_MENTIONS_TAG_FORUM;
+
+			// date/time
+			$this->mentionDate = $this->getMentionDate($data['post_datestamp']);
+
+			// todo: make it work - $data['thread_name'] is currently not accessible here
+			$this->itemTitle = $data['thread_name'];
+
+			// link
+			$postInfo = [
+				'forum_sef' => '',
+				'thread_id' => 42,
+				'thread_sef' => ''
+			];
+			$url = e107::url('forum', 'topic', $postInfo);
+
+
+			$this->notifyAll();
+			// todo: unset some vars if done.
+		}
+
+	}
+
+
 
 
 	/**
