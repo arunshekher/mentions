@@ -6,6 +6,7 @@ class Mentions
 {
 
 	protected $prefs;
+	protected $parse;
 
 
 	/**
@@ -14,6 +15,7 @@ class Mentions
 	public function __construct()
 	{
 		$this->prefs = e107::getPlugPref('mentions');
+		$this->parse = e107::getParser();
 	}
 
 
