@@ -5,95 +5,9 @@ class MentionsNotification extends Mentions
 {
 	private $mentions;
 	private $mentioner;
-	private $mentionDate;
-	private $mentioneeData;
+	protected $mentionDate;
+	protected $mentioneeData;
 
-
-
-
-	/**
-	 * Stores attribute data as array key value pair if property does not exist
-	 * @var array
-	 */
-	private $dataVars = [];
-
-
-	/**
-	 * Magic set
-	 * @param $name
-	 * @param $value
-	 */
-	private function __set($name, $value)
-	{
-		$this->set($name, $value);
-	}
-
-
-	/**
-	 * Magic get
-	 * @param $name
-	 *
-	 * @return mixed|null
-	 */
-	private function __get($name)
-	{
-		return $this->get($name);
-	}
-
-
-	/**
-	 * Magic isset
-	 * @param $name
-	 */
-	protected function __isset($name)
-	{
-		// TODO: Implement __isset() method.
-	}
-
-
-	/**
-	 * Magic unset
-	 * @param $name
-	 */
-	protected function __unset($name)
-	{
-		// TODO: Implement __unset() method.
-	}
-
-	/**
-	 * Gets property
-	 * @param $name
-	 *
-	 * @return mixed|null
-	 */
-	private function get($name)
-	{
-		if (property_exists($this, $name)) {
-			return $this->$name;
-		}
-
-		if (array_key_exists($name, $this->dataVars)) {
-			return $this->dataVars[$name];
-		}
-
-		return null;
-	}
-
-
-	/**
-	 * Sets property
-	 * @param $name
-	 * @param $value
-	 */
-	private function set($name, $value)
-	{
-		if (property_exists($this, $name)) {
-			$this->$name = $value;
-		}
-
-		$this->dataVars[$name] = $value;
-
-	}
 
 
 	/**
@@ -372,7 +286,7 @@ class MentionsNotification extends Mentions
 			$this->mentioneeData = $this->getUserData($mention);
 
 			// Debug
-			// $this->log(json_encode($this->mentioneeData), 'mentionee-data');
+			$this->log(json_encode($this->mentioneeData), 'mentionee-data');
 
 			// Email
 			if (null !== $this->mentioneeData['user_email'] && null !== $this->mentioneeData['user_name']) {
@@ -459,7 +373,7 @@ class MentionsNotification extends Mentions
 		if (empty($EMAIL_TEMPLATE)) {
 
 			$EMAIL_TEMPLATE = '<div>
-				<p>Hello {MENTIONEE},</p>
+				<p>' . LAN_MENTIONS_EMAIL_HELLO . ' {MENTIONEE},</p>
 				<p>{MENTION_VERSE}</p>
 			</div>';
 
