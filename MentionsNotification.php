@@ -173,7 +173,7 @@ class MentionsNotification extends Mentions
 			$this->mentions = $mentions;
 			$this->mentioner = USERNAME;
 			$this->mentionDate = $this->createMentionDate($data['datestamp']);
-			$this->itemTag = 'chatbox post';
+			$this->itemTag = LAN_MENTIONS_TAG_CHATBOX;
 			// notify
 			$this->notifyAll();
 			// todo: unset some vars if done.
@@ -201,15 +201,12 @@ class MentionsNotification extends Mentions
 		if ($mentions) {
 			$this->mentions = $mentions;
 			$this->mentioner = $data['comment_author_name'];
-			$this->itemTag = 'comment post';
+			$this->itemTag = LAN_MENTIONS_TAG_COMMENT;
 
 			// sets date
 			$this->mentionDate = $this->createMentionDate($data['comment_datestamp']);
 
-			//todo: remove these after checking
-			$this->itemId = $data['comment_id'];
-			$this->itemPossessorId = $data['comment_item_id'];
-			$this->itemPossessorType = $data['comment_type'];
+			// todo : store comment approval status for later use
 			$this->itemApproval = $data['comment_blocked'];
 
 			// comment type detection
@@ -289,7 +286,7 @@ class MentionsNotification extends Mentions
 			}
 			*/
 
-			$this->itemTag = 'forum post';
+			$this->itemTag = LAN_MENTIONS_TAG_FORUM;
 
 			// date/time
 			$this->mentionDate = $this->createMentionDate($data['post_datestamp']);
@@ -375,7 +372,7 @@ class MentionsNotification extends Mentions
 			$this->mentioneeData = $this->getUserData($mention);
 
 			// Debug
-			$this->log(json_encode($this->mentioneeData), 'mentionee-data');
+			// $this->log(json_encode($this->mentioneeData), 'mentionee-data');
 
 			// Email
 			if (null !== $this->mentioneeData['user_email'] && null !== $this->mentioneeData['user_name']) {
@@ -456,7 +453,7 @@ class MentionsNotification extends Mentions
 	 */
 	private function emailTemplate()
 	{
-		//$EMAIL_TEMPLATE = e107::getTemplate('mentions', 'mentions', 'notify');
+		// $EMAIL_TEMPLATE = e107::getTemplate('mentions', 'mentions', 'notify');
 		$EMAIL_TEMPLATE = '';
 
 		if (empty($EMAIL_TEMPLATE)) {
@@ -482,7 +479,7 @@ class MentionsNotification extends Mentions
 	private function getMentionVerse($type)
 	{
 		switch ($type) {
-			case 'chatbox post':
+			case 'chatbox':
 				$vars = [
 					'user' => $this->mentioner,
 					'tag' => $this->itemTag,
@@ -492,7 +489,7 @@ class MentionsNotification extends Mentions
 				return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_CHATBOX, $vars);
 				break;
 
-			case 'comment post':
+			case 'comment':
 				$vars = [
 					'user' => $this->mentioner,
 					'tag' => $this->itemTag,
@@ -504,7 +501,7 @@ class MentionsNotification extends Mentions
 				return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_COMMENT, $vars);
 				break;
 
-			case 'forum post':
+			case 'forum':
 				$vars = [
 					'user'  => $this->mentioner,
 					'tag'   => $this->itemTag,
@@ -540,14 +537,14 @@ class MentionsNotification extends Mentions
 	private function compileContentLink()
 	{
 		switch ($this->itemTag) {
-			case 'chatbox post':
+			case 'chatbox':
 				$url = SITEURLBASE . e_PLUGIN_ABS . 'chatbox_menu/chat.php';
 				return '<a href="' . $url . '">this link</a>';
 				break;
-			case 'comment post':
+			case 'comment':
 				return '--COMMENT-LINK--';
 				break;
-			case 'forum reply':
+			case 'forum':
 				return '--FORUM-LINK--';
 				break;
 			default:
