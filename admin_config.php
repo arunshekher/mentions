@@ -124,13 +124,20 @@ class mentions_ui extends e_admin_ui
 			'type'  => 'boolean',
 			'data'  => 'boolean',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_FORUMTOPIC_EMAIL,
-		],*/
+		],
 		'notify_forum_reply_mentions' => [
 			'title' => LAN_MENTIONS_PREF_LBL_FORUMREPLY_EMAIL,
 			'tab'   => 2,
 			'type'  => 'boolean',
 			'data'  => 'boolean',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_FORUMREPLY_EMAIL,
+		],*/
+		'notify_forum_mentions' => [
+			'title' => LAN_MENTIONS_PREF_LBL_FORUM_EMAIL,
+			'tab'   => 2,
+			'type'  => 'boolean',
+			'data'  => 'boolean',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_FORUM_EMAIL,
 		],
 		'email_subject_line'          => [
 			'title' => '<p>' . LAN_MENTIONS_PREF_LBL_EMAIL_SUBJECT

@@ -11,6 +11,7 @@ define('LAN_MENTIONS_PREF_LBL_ATWHO_HIGHLIGHT', 'Highlight first entry in popup-
 define('LAN_MENTIONS_PREF_LBL_CHATBOX_EMAIL', 'Email notification for chatbox mentions');
 define('LAN_MENTIONS_PREF_LBL_COMMENT_EMAIL', 'Email notification for comment mentions');
 define('LAN_MENTIONS_PREF_LBL_FORUMTOPIC_EMAIL', 'Email notification for forum new topic mentions');
+define('LAN_MENTIONS_PREF_LBL_FORUM_EMAIL', 'Email notification for forum mentions');
 define('LAN_MENTIONS_PREF_LBL_FORUMREPLY_EMAIL', 'Email notification for forum reply mentions');
 define('LAN_MENTIONS_PREF_LBL_EMAIL_SUBJECT', 'Email subject-line text:');
 
@@ -24,6 +25,7 @@ define('LAN_MENTIONS_PREF_LBL_HINT_ATWHO_HIGHLIGHT', 'Toggle highlight on/off fo
 define('LAN_MENTIONS_PREF_LBL_HINT_CHATBOX_EMAIL', 'Turn on email notification for chatbox mentions.');
 define('LAN_MENTIONS_PREF_LBL_HINT_COMMENT_EMAIL', 'Turn on email notification for comment mentions.');
 define('LAN_MENTIONS_PREF_LBL_HINT_FORUMTOPIC_EMAIL', 'Turn on email notification for new forum topic mentions.');
+define('LAN_MENTIONS_PREF_LBL_HINT_FORUM_EMAIL', 'Turn on email notification for forum mentions.');
 define('LAN_MENTIONS_PREF_LBL_HINT_FORUMREPLY_EMAIL', 'Turn on email notification for forum reply mentions.');
 define('LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT', 'You can use the text macro <kbd>{MENTIONER}</kbd> in subject-line text, and it will be substituted with actual mentioner\'s username in the email subject field.');
 
