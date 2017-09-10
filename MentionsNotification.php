@@ -236,7 +236,7 @@ class MentionsNotification extends Mentions
 			$this->mentionDate = $this->getMentionDate($data['post_datestamp']);
 
 			// todo: make it work - $data['thread_name'] is currently not accessible here
-			$forumInfo = $this->getForumPostExtendedInfo($data['post_thread']);
+			$forumInfo = $this->getForumPostExtendedData($data['post_thread']);
 
 			$this->itemTitle = $forumInfo['thread_name'];
 
@@ -571,7 +571,7 @@ class MentionsNotification extends Mentions
 	 *
 	 * @return string
 	 */
-	private function getForumPostExtendedInfo($thread_id)
+	private function getForumPostExtendedData($thread_id)
 	{
 		$sql = \e107::getDb();
 		$thread_id = (int) $thread_id;
