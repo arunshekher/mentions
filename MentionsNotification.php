@@ -240,14 +240,24 @@ class MentionsNotification extends Mentions
 
 			// link
 			$postInfo = [
-				'forum_sef' => '',
-				'thread_id' => 42,
-				'thread_sef' => ''
+				'forum_sef' => 'sub-forum',
+				'thread_id' => 16,
+				'thread_sef' => 'test-forum-post'
 			];
-			$url = e107::url('forum', 'topic', $postInfo);
 
+			$opt = [
+				'mode' => 'full',
+				'legacy' => true
+			];
 
-			$this->notifyAll();
+			$url = e107::url('forum', 'topic', $postInfo, $opt);
+
+			//$this->log($url, 'forum-url-test');
+
+			$forumInfo = $this->getForumPostExtendedInfo($data['post_thread']);
+			$this->log(json_encode($forumInfo), 'forum-extended-info');
+
+			//$this->notifyAll();
 			// todo: unset some vars if done.
 		}
 
@@ -563,6 +573,19 @@ class MentionsNotification extends Mentions
 			default:
 				return 'unknown';
 		}
+	}
+
+
+	private function getForumPostExtendedInfo($thread_id)
+	{
+		$sql = \e107::getDb();
+		$thread_id = (int) $thread_id;
+
+		$query =
+			"SELECT f.forum_sef, f.forum_id, ft.thread_name FROM `#forum` AS f LEFT JOIN `#forum_thread` AS ft ON f.forum_id = ft.thread_forum_id WHERE ft.thread_id = {$thread_id} ";
+
+		$row = $sql->retrieve($query, null, null, true);
+		return $row;
 	}
 
 
