@@ -54,7 +54,7 @@ class MentionsNotification extends Mentions
 
 			if ($this->prefs['notify_forum_mentions']) {
 
-				// forum post/reply
+				// forum 'thread' and 'reply' covered
 				e107::getEvent()->register('user_forum_post_created',
 					['MentionsNotification', 'forum_new']);
 			}
@@ -237,7 +237,6 @@ class MentionsNotification extends Mentions
 
 			// todo: make it work - $data['thread_name'] is currently not accessible here
 			$forumInfo = $this->getForumPostExtendedInfo($data['post_thread']);
-			//$this->log(json_encode($forumInfo), 'forum-extended-info');
 
 			$this->itemTitle = $forumInfo['thread_name'];
 
@@ -267,21 +266,6 @@ class MentionsNotification extends Mentions
 
 	}
 
-
-
-
-	/**
-	 * Does Debug logging
-	 *
-	 * @param string $content
-	 * @param string $logname
-	 */
-	private function log($content, $logname = 'mentions')
-	{
-		$path = e_PLUGIN . 'mentions/' . $logname . '.txt';
-		file_put_contents($path, $content . "\n", FILE_APPEND);
-		unset($path, $content);
-	}
 
 
 	/**
