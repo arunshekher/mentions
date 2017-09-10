@@ -305,15 +305,12 @@ class MentionsNotification extends Mentions
 
 		$mentionee_name = $this->mentioneeData['user_name'];
 		$mentioner = $this->mentioner;
-		$url = $this->getMentionContentLink();
-		$url2 = $this->compileContentLink();
 		$mention_verse = $this->getMentionVerse($this->itemTag);
 
 		$bodyVars = [
 			'MENTIONEE'    => $mentionee_name,
 			'MENTIONER'    => $mentioner,
-			'MENTION_VERSE' => $mention_verse,
-			'URL'          => $url2,
+			'MENTION_VERSE' => $mention_verse
 		];
 
 		return e107::getParser()->simpleParse($EMAIL_TEMPLATE, $bodyVars);
@@ -392,40 +389,6 @@ class MentionsNotification extends Mentions
 		
 	}
 
-	/**
-	 * Experimental: Mention link returner
-	 * todo: develop this stub
-	 *
-	 * @return string
-	 */
-	private function getMentionContentLink()
-	{
-		return '--LINK---';
-	}
-
-
-	/**
-	 * Experimental: Link compiler method
-	 * @return string
-	 */
-	private function compileContentLink()
-	{
-		switch ($this->itemTag) {
-			case 'chatbox':
-				$url = SITEURLBASE . e_PLUGIN_ABS . 'chatbox_menu/chat.php';
-				return '<a href="' . $url . '">this link</a>';
-				break;
-			case 'comment':
-				return '--COMMENT-LINK--';
-				break;
-			case 'forum':
-				return '--FORUM-LINK--';
-				break;
-			default:
-				return '[unresolved]';
-				break;
-		}
-	}
 
 
 	/**
