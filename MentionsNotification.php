@@ -3,25 +3,10 @@
 
 class MentionsNotification extends Mentions
 {
-	private $mentions;
-	private $mentioner;
 	protected $mentionDate;
 	protected $mentioneeData;
-
-
-
-	/**
-	 * Prepares mention date
-	 *
-	 * @param        $date
-	 * @param string $format
-	 *
-	 * @return \HTML
-	 */
-	private function getMentionDate($date, $format = 'long')
-	{
-		return $this->parse->toDate($date, $format);
-	}
+	private $mentions;
+	private $mentioner;
 
 
 	/**
@@ -64,6 +49,7 @@ class MentionsNotification extends Mentions
 
 	/**
 	 * Does Chatbox mentions notifications
+	 *
 	 * @param $data
 	 *
 	 * @return bool
@@ -95,6 +81,7 @@ class MentionsNotification extends Mentions
 	 * Does Comments mentions notifications
 	 *
 	 * @param $data
+	 *
 	 * @return bool
 	 */
 	public function comment($data)
@@ -115,7 +102,8 @@ class MentionsNotification extends Mentions
 			$this->itemTag = LAN_MENTIONS_TAG_COMMENT;
 
 			// sets date
-			$this->mentionDate = $this->getMentionDate($data['comment_datestamp']);
+			$this->mentionDate =
+				$this->getMentionDate($data['comment_datestamp']);
 
 			// comment type detection
 			$this->commentType = $this->getCommentType($data['comment_type']);
@@ -124,14 +112,13 @@ class MentionsNotification extends Mentions
 			$this->itemTitle = $data['comment_subject'];
 
 			// notify if comment is not blocked
-			if (! $data['comment_blocked']) {
+			if ( ! $data['comment_blocked']) {
 				$this->notifyAll();
 			}
 
 			// todo: unset some vars if done.
 		}
 	}
-
 
 	/**
 	 * Does Forum mentions notifications
@@ -175,9 +162,9 @@ class MentionsNotification extends Mentions
 	}
 
 
-
 	/**
 	 * Checks if the string passed in as argument has an @ sign
+	 *
 	 * @param $input
 	 *
 	 * @return bool
@@ -208,9 +195,22 @@ class MentionsNotification extends Mentions
 
 
 	/**
+	 * Prepares mention date
+	 *
+	 * @param        $date
+	 * @param string $format
+	 *
+	 * @return \HTML
+	 */
+	private function getMentionDate($date, $format = 'long')
+	{
+		return $this->parse->toDate($date, $format);
+	}
+
+
+	/**
 	 * Notify each mentionees in a post after making sure
 	 * that the mentioner is not the mentionee
-	 *
 	 */
 	private function notifyAll()
 	{
@@ -272,6 +272,7 @@ class MentionsNotification extends Mentions
 
 		if ($sendEmail) {
 			unset($body, $email);
+
 			return $sendEmail;
 		}
 
@@ -284,6 +285,7 @@ class MentionsNotification extends Mentions
 
 	/**
 	 * Parses and returns email body
+	 *
 	 * @return string
 	 * todo : tidy-up this method
 	 */
@@ -296,9 +298,9 @@ class MentionsNotification extends Mentions
 		$mention_verse = $this->getMentionVerse($this->itemTag);
 
 		$bodyVars = [
-			'MENTIONEE'    => $mentionee_name,
-			'MENTIONER'    => $mentioner,
-			'MENTION_VERSE' => $mention_verse
+			'MENTIONEE'     => $mentionee_name,
+			'MENTIONER'     => $mentioner,
+			'MENTION_VERSE' => $mention_verse,
 		];
 
 		return e107::getParser()->simpleParse($EMAIL_TEMPLATE, $bodyVars);
@@ -307,6 +309,7 @@ class MentionsNotification extends Mentions
 
 	/**
 	 * Returns Email template
+	 *
 	 * @return string
 	 */
 	private function emailTemplate()
@@ -329,6 +332,7 @@ class MentionsNotification extends Mentions
 
 	/**
 	 * Returns mention email notification sentense based on content tag
+	 *
 	 * @param $type
 	 *
 	 * @return string
@@ -340,23 +344,25 @@ class MentionsNotification extends Mentions
 			case 'chatbox':
 				$vars = [
 					'user' => $this->mentioner,
-					'tag' => $this->itemTag,
-					'date' => $this->mentionDate
+					'tag'  => $this->itemTag,
+					'date' => $this->mentionDate,
 				];
 
-				return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_CHATBOX, $vars);
+				return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_CHATBOX,
+					$vars);
 				break;
 
 			case 'comment':
 				$vars = [
-					'user' => $this->mentioner,
-					'tag' => $this->itemTag,
-					'date' => $this->mentionDate,
-					'type' => $this->commentType,
-					'title' => $this->itemTitle
+					'user'  => $this->mentioner,
+					'tag'   => $this->itemTag,
+					'date'  => $this->mentionDate,
+					'type'  => $this->commentType,
+					'title' => $this->itemTitle,
 				];
 
-				return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_COMMENT, $vars);
+				return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_COMMENT,
+					$vars);
 				break;
 
 			case 'forum':
@@ -364,19 +370,20 @@ class MentionsNotification extends Mentions
 					'user'  => $this->mentioner,
 					'tag'   => $this->itemTag,
 					'date'  => $this->mentionDate,
-					'title' => $this->itemTitle
+					'title' => $this->itemTitle,
 				];
 
-				return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_FORUM, $vars);
+				return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_FORUM,
+					$vars);
 				break;
 
 			default:
-				return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_UNRESOLVED, $this->mentioner);
+				return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_UNRESOLVED,
+					$this->mentioner);
 				break;
 		}
-		
-	}
 
+	}
 
 
 	/**
@@ -415,13 +422,14 @@ class MentionsNotification extends Mentions
 
 	/**
 	 * Returns comment type name string based on e107 comment type spec.
+	 *
 	 * @param $input
 	 *
 	 * @return string
 	 */
 	private function commentType($input)
 	{
-		$input = (int) $input;
+		$input = (int)$input;
 
 		switch ($input) {
 			case 0:
@@ -436,26 +444,27 @@ class MentionsNotification extends Mentions
 	}
 
 
+
 	/**
 	 * Get forum thread title and other info from thread_id
+	 *
 	 * @param $thread_id
 	 *
 	 * @return string
 	 */
 	private function getForumPostExtendedData($thread_id)
 	{
-		$sql = \e107::getDb();
-		$thread_id = (int) $thread_id;
+		$sql = e107::getDb();
+		$thread_id = (int)$thread_id;
 
-		$query =
-			"SELECT f.forum_sef, f.forum_id, ft.thread_name FROM `#forum` AS f 
+		$query = "SELECT f.forum_sef, f.forum_id, ft.thread_name FROM `#forum` AS f 
 				LEFT JOIN `#forum_thread` AS ft ON f.forum_id = ft.thread_forum_id 
 					WHERE ft.thread_id = {$thread_id} ";
 
 		$result = $sql->gen($query);
 		$row = $sql->fetch($result);
 
-		return (array) $row ?: '[title un-resolved]';
+		return (array)$row ?: '[title un-resolved]';
 	}
 
 
