@@ -39,7 +39,7 @@ class MentionsNotification extends Mentions
 
 			if ($this->prefs['notify_forum_mentions']) {
 
-				// forum 'thread' and 'reply' covered
+				// forum 'thread' and 'reply' covered - for now
 				e107::getEvent()->register('user_forum_post_created',
 					['MentionsNotification', 'forum']);
 			}
@@ -457,9 +457,9 @@ class MentionsNotification extends Mentions
 		$sql = e107::getDb();
 		$thread_id = (int)$thread_id;
 
-		$query = "SELECT f.forum_sef, f.forum_id, ft.thread_name FROM `#forum` AS f 
-				LEFT JOIN `#forum_thread` AS ft ON f.forum_id = ft.thread_forum_id 
-					WHERE ft.thread_id = {$thread_id} ";
+		$query = "SELECT f.forum_sef, f.forum_id, ft.thread_name FROM `#forum` AS f "
+				. "LEFT JOIN `#forum_thread` AS ft ON f.forum_id = ft.thread_forum_id "
+					. " WHERE ft.thread_id = {$thread_id} ";
 
 		$result = $sql->gen($query);
 		$row = $sql->fetch($result);
