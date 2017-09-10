@@ -56,7 +56,7 @@ class MentionsNotification extends Mentions
 
 				// forum 'thread' and 'reply' covered
 				e107::getEvent()->register('user_forum_post_created',
-					['MentionsNotification', 'forum_new']);
+					['MentionsNotification', 'forum']);
 			}
 
 			/*
@@ -159,68 +159,6 @@ class MentionsNotification extends Mentions
 			return false;
 		}
 
-		// Debug
-		$this->log(json_encode((array) $data), 'forums-trigger-data');
-
-		/*
-		foreach ($data as $k => $v) {
-			//$this->log("$k = $v", 'forums-trigger-data');
-			if ($k ===  'thread_name') {
-				//$this->forumTitle = $v;
-				$this->log($v, 'forums-trigger-data-title');
-				$this->itemTitle = $v;
-			}
-		}
-		*/
-
-		//$forumData = preg_split("/[\n]+/", json_encode($data));
-
-		//$forumData = explode("\n", json_encode($data));
-
-		//convert into proper json format
-		//$jsonData = implode(',', $forumData);
-
-
-		$mentions = $this->getAllMentions($data['post_entry']);
-
-
-
-		if ($mentions) {
-			$this->mentions = $mentions;
-			$this->mentioner = USERNAME;
-
-			// todo: logic to differentiate between new forum post/topic and forum reply
-			/*
-			if (isset($data['thread_id'])) {
-				$this->itemTag = 'forum post';
-			} else {
-				$this->itemTag = 'forum reply';
-			}
-			*/
-
-			$this->itemTag = LAN_MENTIONS_TAG_FORUM;
-
-			// date/time
-			$this->mentionDate = $this->getMentionDate($data['post_datestamp']);
-
-			// todo: make it work - $data['thread_name'] is currently not accessible here
-			$this->itemTitle = $data['thread_name'];
-
-
-
-			$this->notifyAll();
-			// todo: unset some vars if done.
-		}
-	}
-
-
-	public function forum_new($data)
-	{
-		// if no mentions abort
-		if ( ! $this->hasAtSign($data['post_entry'])) {
-			return false;
-		}
-
 		// get mentions
 		$mentions = $this->getAllMentions($data['post_entry']);
 
@@ -241,24 +179,6 @@ class MentionsNotification extends Mentions
 			$this->itemTitle = $forumInfo['thread_name'];
 
 			$this->log($forumInfo['thread_name'], 'thread-name-log');
-
-			// link
-			$postInfo = [
-				'forum_sef' => 'sub-forum',
-				'thread_id' => 16,
-				'thread_sef' => 'test-forum-post'
-			];
-
-			$opt = [
-				'mode' => 'full',
-				'legacy' => true
-			];
-
-			$url = e107::url('forum', 'topic', $postInfo, $opt);
-
-			//$this->log($url, 'forum-url-test');
-
-
 
 			$this->notifyAll();
 			// todo: unset some vars if done.
