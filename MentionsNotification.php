@@ -74,7 +74,7 @@ class MentionsNotification extends Mentions
 			$this->itemTag = LAN_MENTIONS_TAG_CHATBOX;
 			// notify
 			$this->notifyAll();
-			// todo: unset some vars if done.
+			// todo: unset some vars
 		}
 	}
 
@@ -117,7 +117,7 @@ class MentionsNotification extends Mentions
 				$this->notifyAll();
 			}
 
-			// todo: unset some vars if done.
+			// todo: unset some vars
 		}
 	}
 
@@ -158,7 +158,7 @@ class MentionsNotification extends Mentions
 			$this->itemTitle = $forumInfo['thread_name'];
 
 			$this->notifyAll();
-			// todo: unset some vars if done.
+			// todo: unset some vars
 		}
 
 	}
