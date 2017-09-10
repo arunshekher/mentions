@@ -5,7 +5,7 @@ if ( ! defined('e107_INIT')) {
 if ( ! e107::isInstalled('mentions') || ! USER) {
 	exit;
 }
-require_once __DIR__ . '/MentionsSuggestion.php';
+require_once __DIR__ . '/MentionsAutoComplete.php';
 
 $request = $_GET['mq'];
-MentionsSuggestion::triggerResponse($request);
+MentionsAutoComplete::triggerResponse($request);

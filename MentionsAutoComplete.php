@@ -1,13 +1,13 @@
 <?php
 
 
-class MentionsSuggestion extends Mentions
+class MentionsAutoComplete extends Mentions
 {
 	private $db;
 	private $ajax;
 
 	/**
-	 * MentionsSuggestion constructor.
+	 * MentionsAutoComplete constructor.
 	 */
 	public function __construct()
 	{
@@ -24,8 +24,8 @@ class MentionsSuggestion extends Mentions
 	 */
 	public static function triggerResponse($request)
 	{
-		$suggestion = new MentionsSuggestion;
-		$suggestion->respond($request);
+		$autoComplete = new MentionsAutoComplete;
+		$autoComplete->respond($request);
 	}
 
 	/**
@@ -33,8 +33,8 @@ class MentionsSuggestion extends Mentions
 	 */
 	public static function libs()
 	{
-		$suggestion = new MentionsSuggestion;
-		$suggestion->loadLibs();
+		$autoComplete = new MentionsAutoComplete;
+		$autoComplete->loadLibs();
 	}
 
 
@@ -70,7 +70,6 @@ class MentionsSuggestion extends Mentions
 				}
 
 				if (count($data)) {
-					//$ajax = e107::getAjax();
 					$ajax->response($data);
 				}
 			} else {
@@ -82,7 +81,6 @@ class MentionsSuggestion extends Mentions
 					],
 				];
 
-				//e107::getAjax()->response($msg);
 				$ajax->response($msg);
 
 			}
