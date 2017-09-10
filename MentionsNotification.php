@@ -10,18 +10,19 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Public static method to call perform() which listen to event triggers
-	 * and performs mentions notification
+	 * Public static method to call perform()
+	 *
 	 */
 	public static function execute()
 	{
-		$mn = new MentionsNotification;
-		$mn->perform();
+		$notification = new MentionsNotification;
+		$notification->perform();
 	}
 
 
 	/**
-	 * Listens to event triggers and performs mentions notification
+	 * Listens to event triggers and
+	 * performs mentions notification
 	 */
 	private function perform()
 	{
@@ -129,6 +130,9 @@ class MentionsNotification extends Mentions
 	 */
 	public function forum($data)
 	{
+		// Debug
+		// $this->log(json_encode($data), 'forum-trigger-data');
+
 		// if no mentions abort
 		if ( ! $this->hasAtSign($data['post_entry'])) {
 			return false;
@@ -152,8 +156,6 @@ class MentionsNotification extends Mentions
 			$forumInfo = $this->getForumPostExtendedData($data['post_thread']);
 
 			$this->itemTitle = $forumInfo['thread_name'];
-
-			$this->log($forumInfo['thread_name'], 'thread-name-log');
 
 			$this->notifyAll();
 			// todo: unset some vars if done.
@@ -233,7 +235,7 @@ class MentionsNotification extends Mentions
 			$this->mentioneeData = $this->getUserData($mention);
 
 			// Debug
-			$this->log(json_encode($this->mentioneeData), 'mentionee-data');
+			// $this->log(json_encode($this->mentioneeData), 'mentionee-data');
 
 			// Email
 			if (null !== $this->mentioneeData['user_email'] && null !== $this->mentioneeData['user_name']) {
@@ -303,7 +305,7 @@ class MentionsNotification extends Mentions
 			'MENTION_VERSE' => $mention_verse,
 		];
 
-		return e107::getParser()->simpleParse($EMAIL_TEMPLATE, $bodyVars);
+		return $this->parse->simpleParse($EMAIL_TEMPLATE, $bodyVars);
 	}
 
 
