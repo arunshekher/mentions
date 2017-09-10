@@ -236,7 +236,12 @@ class MentionsNotification extends Mentions
 			$this->mentionDate = $this->getMentionDate($data['post_datestamp']);
 
 			// todo: make it work - $data['thread_name'] is currently not accessible here
-			$this->itemTitle = $data['thread_name'];
+			$forumInfo = $this->getForumPostExtendedInfo($data['post_thread']);
+			//$this->log(json_encode($forumInfo), 'forum-extended-info');
+
+			$this->itemTitle = $forumInfo['thread_name'];
+
+			$this->log($forumInfo['thread_name'], 'thread-name-log');
 
 			// link
 			$postInfo = [
@@ -254,10 +259,9 @@ class MentionsNotification extends Mentions
 
 			//$this->log($url, 'forum-url-test');
 
-			$forumInfo = $this->getForumPostExtendedInfo($data['post_thread']);
-			$this->log(json_encode($forumInfo), 'forum-extended-info');
 
-			//$this->notifyAll();
+
+			$this->notifyAll();
 			// todo: unset some vars if done.
 		}
 
@@ -470,7 +474,8 @@ class MentionsNotification extends Mentions
 				$vars = [
 					'user'  => $this->mentioner,
 					'tag'   => $this->itemTag,
-					'date'  => $this->mentionDate
+					'date'  => $this->mentionDate,
+					'title' => $this->itemTitle
 				];
 
 				return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_FORUM, $vars);
@@ -576,16 +581,26 @@ class MentionsNotification extends Mentions
 	}
 
 
+	/**
+	 * Get forum thread title and other info from thread_id
+	 * @param $thread_id
+	 *
+	 * @return string
+	 */
 	private function getForumPostExtendedInfo($thread_id)
 	{
 		$sql = \e107::getDb();
 		$thread_id = (int) $thread_id;
 
 		$query =
-			"SELECT f.forum_sef, f.forum_id, ft.thread_name FROM `#forum` AS f LEFT JOIN `#forum_thread` AS ft ON f.forum_id = ft.thread_forum_id WHERE ft.thread_id = {$thread_id} ";
+			"SELECT f.forum_sef, f.forum_id, ft.thread_name FROM `#forum` AS f 
+				LEFT JOIN `#forum_thread` AS ft ON f.forum_id = ft.thread_forum_id 
+					WHERE ft.thread_id = {$thread_id} ";
 
-		$row = $sql->retrieve($query, null, null, true);
-		return $row;
+		$result = $sql->gen($query);
+		$row = $sql->fetch($result);
+
+		return (array) $row ?: '[title un-resolved]';
 	}
 
 
