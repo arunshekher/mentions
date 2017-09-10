@@ -58,18 +58,6 @@ class MentionsNotification extends Mentions
 				e107::getEvent()->register('user_forum_post_created',
 					['MentionsNotification', 'forum']);
 			}
-
-			/*
-			if ($this->prefs['notify_forum_topic_mentions']) {
-				e107::getEvent()->register('user_forum_topic_created',
-					['MentionsNotification', 'forum']);
-			}
-
-			if ($this->prefs['notify_forum_reply_mentions']) {
-				e107::getEvent()->register('user_forum_post_created',
-					['MentionsNotification', 'forum']);
-			}
-			*/
 		}
 	}
 
