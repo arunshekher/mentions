@@ -58,7 +58,7 @@ class MentionsNotification extends Mentions
 	public function chatbox($data)
 	{
 		// Debug
-		// $this->log(json_encode($data), 'chatbox-trigger-data');
+		// $this->log(json_encode($data), 'chatbox-event-data');
 
 		// if no mentions abort
 		if ( ! $this->hasAtSign($data['cmessage'])) {
@@ -72,8 +72,10 @@ class MentionsNotification extends Mentions
 			$this->mentioner = USERNAME;
 			$this->mentionDate = $this->getMentionDate($data['datestamp']);
 			$this->itemTag = LAN_MENTIONS_TAG_CHATBOX;
+
 			// notify
 			$this->notifyAll();
+
 			// todo: unset some vars
 		}
 	}
@@ -88,13 +90,16 @@ class MentionsNotification extends Mentions
 	public function comment($data)
 	{
 		// Debug
-		// $this->log(json_encode($data), 'comments-trigger-data');
+		// $this->log(json_encode($data), 'comment-event-data');
 
-		// if no mentions abort
-		if ( ! $this->hasAtSign($data['comment_comment'])) {
+		// if no '@' signs or comment is blocked - abort
+		$hasAt = $this->hasAtSign($data['comment_comment']);
+
+		if ( ! $hasAt || $data['comment_blocked'] ) {
 			return false;
 		}
 
+		// get mentions
 		$mentions = $this->getAllMentions($data['comment_comment']);
 
 		if ($mentions) {
@@ -102,7 +107,7 @@ class MentionsNotification extends Mentions
 			$this->mentioner = $data['comment_author_name'];
 			$this->itemTag = LAN_MENTIONS_TAG_COMMENT;
 
-			// sets date
+			// set date
 			$this->mentionDate =
 				$this->getMentionDate($data['comment_datestamp']);
 
@@ -112,10 +117,8 @@ class MentionsNotification extends Mentions
 			// comment title
 			$this->itemTitle = $data['comment_subject'];
 
-			// notify if comment is not blocked
-			if ( ! $data['comment_blocked']) {
+			// notify
 				$this->notifyAll();
-			}
 
 			// todo: unset some vars
 		}
@@ -131,7 +134,7 @@ class MentionsNotification extends Mentions
 	public function forum($data)
 	{
 		// Debug
-		// $this->log(json_encode($data), 'forum-trigger-data');
+		// $this->log(json_encode($data), 'forum-event-data');
 
 		// if no mentions abort
 		if ( ! $this->hasAtSign($data['post_entry'])) {
@@ -467,6 +470,32 @@ class MentionsNotification extends Mentions
 		$row = $sql->fetch($result);
 
 		return (array)$row ?: '[title un-resolved]';
+	}
+
+
+
+	/**
+	 * Experimental: Link compiler method
+	 * @return string
+	 */
+	private function compileContentLink($linkData)
+	{
+		$tag = $this->itemTag;
+		switch ($tag) {
+			case 'chatbox':
+				$url = SITEURLBASE . e_PLUGIN_ABS . 'chatbox_menu/chat.php';
+				return '<a href="' . $url . '">this link</a>';
+				break;
+			case 'comment':
+				return '--COMMENT-LINK--';
+				break;
+			case 'forum':
+				return '--FORUM-LINK--';
+				break;
+			default:
+				return '[unresolved]';
+				break;
+		}
 	}
 
 
