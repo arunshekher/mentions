@@ -155,7 +155,7 @@ class MentionsNotification extends Mentions
 			// date/time
 			$this->mentionDate = $this->getMentionDate($data['post_datestamp']);
 
-			// todo: make it work - $data['thread_name'] is currently not accessible here
+			// get more forum data
 			$forumInfo = $this->getForumPostExtendedData($data['post_thread']);
 
 			$this->itemTitle = $forumInfo['thread_name'];
@@ -455,7 +455,7 @@ class MentionsNotification extends Mentions
 	 *
 	 * @param $thread_id
 	 *
-	 * @return string
+	 * @return array|bool
 	 */
 	private function getForumPostExtendedData($thread_id)
 	{
@@ -467,9 +467,12 @@ class MentionsNotification extends Mentions
 					. " WHERE ft.thread_id = {$thread_id} ";
 
 		$result = $sql->gen($query);
-		$row = $sql->fetch($result);
 
-		return (array)$row ?: '[title un-resolved]';
+		if ($result) {
+			return $sql->fetch($result);
+		}
+
+		return $result;
 	}
 
 
@@ -481,6 +484,7 @@ class MentionsNotification extends Mentions
 	private function compileContentLink($linkData)
 	{
 		$tag = $this->itemTag;
+
 		switch ($tag) {
 			case 'chatbox':
 				$url = SITEURLBASE . e_PLUGIN_ABS . 'chatbox_menu/chat.php';
@@ -496,6 +500,24 @@ class MentionsNotification extends Mentions
 				return '[unresolved]';
 				break;
 		}
+	}
+
+
+	/**
+	 * Returns forum topic link from link data
+	 * @param $linkData
+	 *
+	 * @return string
+	 */
+	private function getForumLink($linkData)
+	{
+
+		$opt = [
+			'mode' => 'full',
+			'legacy' => true
+		];
+
+		return e107::url('forum', 'topic', $linkData, $opt);
 	}
 
 
