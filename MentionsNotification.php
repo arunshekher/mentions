@@ -341,7 +341,6 @@ class MentionsNotification extends Mentions
 	 * @param $type
 	 *
 	 * @return string
-	 * @todo make language files compatible
 	 */
 	private function getMentionVerse($type)
 	{
@@ -462,7 +461,7 @@ class MentionsNotification extends Mentions
 		$sql = e107::getDb();
 		$thread_id = (int)$thread_id;
 
-		$query = "SELECT f.forum_sef, f.forum_id, ft.thread_name FROM `#forum` AS f "
+		$query = "SELECT f.forum_sef, f.forum_id, ft.thread_id, ft.thread_name FROM `#forum` AS f "
 				. "LEFT JOIN `#forum_thread` AS ft ON f.forum_id = ft.thread_forum_id "
 					. " WHERE ft.thread_id = {$thread_id} ";
 
@@ -484,17 +483,21 @@ class MentionsNotification extends Mentions
 	private function compileContentLink($linkData)
 	{
 		$tag = $this->itemTag;
+		$opt = [
+			'mode' => 'full',
+			'legacy' => false
+		];
 
 		switch ($tag) {
 			case 'chatbox':
 				$url = SITEURLBASE . e_PLUGIN_ABS . 'chatbox_menu/chat.php';
 				return '<a href="' . $url . '">this link</a>';
 				break;
-			case 'comment':
+			case 'comment': // news, downloads, polls
 				return '--COMMENT-LINK--';
 				break;
 			case 'forum':
-				return '--FORUM-LINK--';
+				return e107::url('forum', 'topic', $this->modifyForumData($linkData), $opt);
 				break;
 			default:
 				return '[unresolved]';
@@ -504,21 +507,45 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Returns forum topic link from link data
+	 * 
 	 * @param $linkData
 	 *
-	 * @return string
+	 * @return array
 	 */
-	private function getForumLink($linkData)
+	private function modifyForumData($linkData)
 	{
 
-		$opt = [
-			'mode' => 'full',
-			'legacy' => true
+		$linkData = [
+			'forum_sef' => $linkData['forum_sef'],
+			'thread_id' => $linkData['thread_id'],
+			'thread_sef' => eHelper::title2sef($linkData['thread_name'], 'dashl')
 		];
 
-		return e107::url('forum', 'topic', $linkData, $opt);
+		return $linkData;
 	}
 
+
+	/**
+	 * Get comment item links
+	 * @return string
+	 */
+	private function getCommentItemLink()
+	{
+		$type = $this->commentType;
+
+		switch ($type) {
+			case 'news':
+				break;
+			case 'downloads':
+				return e107::url('download', 'item'); // 'sef' => '{alias}/{download_id}/{download_sef}',
+				break;
+			case 'poll':
+				return '';
+				break;
+			default:
+				break;
+		}
+
+	}
 
 }
