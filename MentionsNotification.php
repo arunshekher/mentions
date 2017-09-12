@@ -28,7 +28,7 @@ class MentionsNotification extends Mentions
 	 */
 	private function perform()
 	{
-		if (USER && (strtolower($_SERVER['REQUEST_METHOD']) === 'post' || e_AJAX_REQUEST)) {
+		if (USER && $this->prefs['mentions_active'] && (strtolower($_SERVER['REQUEST_METHOD']) === 'post' || e_AJAX_REQUEST)) {
 
 			if ($this->prefs['notify_chatbox_mentions']) {
 				e107::getEvent()->register('user_chatbox_post_created',
