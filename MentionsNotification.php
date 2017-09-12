@@ -1,5 +1,7 @@
 <?php
-
+if ( ! defined('e107_INIT')) {
+	exit;
+}
 
 class MentionsNotification extends Mentions
 {
@@ -345,7 +347,7 @@ class MentionsNotification extends Mentions
 	private function getMentionVerse($type)
 	{
 		switch ($type) {
-			case 'chatbox':
+			case LAN_MENTIONS_TAG_CHATBOX:
 				$vars = [
 					'user' => $this->mentioner,
 					'tag'  => $this->itemTag,
@@ -356,7 +358,7 @@ class MentionsNotification extends Mentions
 					$vars);
 				break;
 
-			case 'comment':
+			case LAN_MENTIONS_TAG_COMMENT:
 				$vars = [
 					'user'  => $this->mentioner,
 					'tag'   => $this->itemTag,
@@ -369,7 +371,7 @@ class MentionsNotification extends Mentions
 					$vars);
 				break;
 
-			case 'forum':
+			case LAN_MENTIONS_TAG_FORUM:
 				$vars = [
 					'user'  => $this->mentioner,
 					'tag'   => $this->itemTag,
@@ -402,7 +404,7 @@ class MentionsNotification extends Mentions
 			return str_replace('{MENTIONER}', $this->mentioner, $subjectLine);
 		}
 
-		return 'You were mentioned by ' . $this->mentioner;
+		return LAN_MENTIONS_EMAIL_SUBJECTLINE . $this->mentioner;
 	}
 
 
@@ -437,13 +439,13 @@ class MentionsNotification extends Mentions
 
 		switch ($input) {
 			case 0:
-				return 'news';
+				return LAN_MENTIONS_COMMENT_NEWS;
 			case 4:
-				return 'poll';
+				return LAN_MENTIONS_COMMENT_POLL;
 			case 2:
-				return 'downloads';
+				return LAN_MENTIONS_COMMENT_DOWNLOADS;
 			default:
-				return 'unknown';
+				return LAN_MENTIONS_COMMENT_UNKNOWN;
 		}
 	}
 

@@ -1,5 +1,7 @@
 <?php
-
+if ( ! defined('e107_INIT')) {
+	exit;
+}
 
 class MentionsAutoComplete extends Mentions
 {
@@ -18,7 +20,7 @@ class MentionsAutoComplete extends Mentions
 
 
 	/**
-	 * Trigger response for the query
+	 * Static method to call mentions auto-complete 'respond' method
 	 *
 	 * @param $request
 	 */
@@ -29,7 +31,7 @@ class MentionsAutoComplete extends Mentions
 	}
 
 	/**
-	 * Load libraries
+	 * Static method to call loadLibs method
 	 */
 	public static function libs()
 	{
@@ -92,7 +94,7 @@ class MentionsAutoComplete extends Mentions
 
 
 	/**
-	 * Load javascript libraries.
+	 * Loads mentions auto-complete javascript libraries.
 	 */
 	public function loadLibs()
 	{
@@ -117,7 +119,7 @@ class MentionsAutoComplete extends Mentions
 
 
 	/**
-	 * Loads libraries from the global path
+	 * Loads javascript libraries from the global path
 	 */
 	protected function loadLibsGlobally()
 	{
@@ -127,7 +129,7 @@ class MentionsAutoComplete extends Mentions
 
 
 	/**
-	 * Loads libraries from the local path
+	 * Loads javascript libraries from the local path
 	 */
 	protected function loadLibsLocally()
 	{
@@ -142,7 +144,7 @@ class MentionsAutoComplete extends Mentions
 
 
 	/**
-	 * Javascript settings
+	 * Populates Auto-complete Javascript settings
 	 * @param $mentionsPref
 	 */
 	private function setLibOptions($mentionsPref)
