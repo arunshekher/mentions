@@ -10,3 +10,8 @@ define('LAN_MENTIONS_EMAIL_VERSE_CHATBOX', '[user] mentioned you in a [tag] post
 define('LAN_MENTIONS_EMAIL_VERSE_COMMENT', '[user] mentioned you in a [tag] post for the [type] item titled \'[title]\' on [date].');
 define('LAN_MENTIONS_EMAIL_VERSE_FORUM', '[user] mentioned you in a [tag] post titled \'[title]\' on [date].');
 define('LAN_MENTIONS_EMAIL_VERSE_UNRESOLVED', '[x] mentioned you in an un-resolvable post!');
+
+define('LAN_MENTIONS_COMMENT_NEWS', 'news');
+define('LAN_MENTIONS_COMMENT_POLL', 'poll');
+define('LAN_MENTIONS_COMMENT_DOWNLOADS', 'downloads');
+define('LAN_MENTIONS_COMMENT_UNKNOWN', 'unknown');

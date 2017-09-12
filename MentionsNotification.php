@@ -437,13 +437,13 @@ class MentionsNotification extends Mentions
 
 		switch ($input) {
 			case 0:
-				return 'news';
+				return LAN_MENTIONS_COMMENT_NEWS;
 			case 4:
-				return 'poll';
+				return LAN_MENTIONS_COMMENT_POLL;
 			case 2:
-				return 'downloads';
+				return LAN_MENTIONS_COMMENT_DOWNLOADS;
 			default:
-				return 'unknown';
+				return LAN_MENTIONS_COMMENT_UNKNOWN;
 		}
 	}
 
