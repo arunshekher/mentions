@@ -3,6 +3,7 @@ define('LAN_MENTIONS_TAG_CHATBOX', 'chatbox');
 define('LAN_MENTIONS_TAG_COMMENT', 'comment');
 define('LAN_MENTIONS_TAG_FORUM', 'forum');
 
+define('LAN_MENTIONS_EMAIL_SUBJECTLINE', 'You were mentioned by ');
 define('LAN_MENTIONS_EMAIL_HELLO', 'Hello');
 
 define('LAN_MENTIONS_EMAIL_VERSE_CHATBOX', '[user] mentioned you in a [tag] post on [date].');

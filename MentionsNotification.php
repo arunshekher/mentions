@@ -402,7 +402,7 @@ class MentionsNotification extends Mentions
 			return str_replace('{MENTIONER}', $this->mentioner, $subjectLine);
 		}
 
-		return 'You were mentioned by ' . $this->mentioner;
+		return LAN_MENTIONS_EMAIL_SUBJECTLINE . $this->mentioner;
 	}
 
 
