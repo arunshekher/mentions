@@ -345,7 +345,7 @@ class MentionsNotification extends Mentions
 	private function getMentionVerse($type)
 	{
 		switch ($type) {
-			case 'chatbox':
+			case LAN_MENTIONS_TAG_CHATBOX:
 				$vars = [
 					'user' => $this->mentioner,
 					'tag'  => $this->itemTag,
@@ -356,7 +356,7 @@ class MentionsNotification extends Mentions
 					$vars);
 				break;
 
-			case 'comment':
+			case LAN_MENTIONS_TAG_COMMENT:
 				$vars = [
 					'user'  => $this->mentioner,
 					'tag'   => $this->itemTag,
@@ -369,7 +369,7 @@ class MentionsNotification extends Mentions
 					$vars);
 				break;
 
-			case 'forum':
+			case LAN_MENTIONS_TAG_FORUM:
 				$vars = [
 					'user'  => $this->mentioner,
 					'tag'   => $this->itemTag,
