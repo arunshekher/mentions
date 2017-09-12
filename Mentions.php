@@ -1,5 +1,7 @@
 <?php
-
+if ( ! defined('e107_INIT')) {
+	exit;
+}
 e107::lan('mentions', 'front', true);
 
 class Mentions
