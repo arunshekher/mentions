@@ -92,7 +92,7 @@ class MentionsNotification extends Mentions
 	public function comment($data)
 	{
 		// Debug
-		// $this->log(json_encode($data), 'comment-event-data');
+		$this->log($data, 'comment-event-data');
 
 		// if no '@' signs or comment is blocked - abort
 		$hasAt = $this->hasAtSign($data['comment_comment']);
@@ -520,7 +520,7 @@ class MentionsNotification extends Mentions
 		$linkData = [
 			'forum_sef' => $linkData['forum_sef'],
 			'thread_id' => $linkData['thread_id'],
-			'thread_sef' => eHelper::title2sef($linkData['thread_name'], 'dashl')
+			'thread_sef' => $this->linkSlugFrom($linkData['thread_name'])
 		];
 
 		return $linkData;
@@ -548,6 +548,12 @@ class MentionsNotification extends Mentions
 				break;
 		}
 
+	}
+
+
+	private function linkSlugFrom($title, $type = 'dashl')
+	{
+		return eHelper::title2sef($title, $type);
 	}
 
 }
