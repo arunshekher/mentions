@@ -176,6 +176,11 @@ class Mentions
 	protected function log($content, $logname = 'mentions')
 	{
 		$path = e_PLUGIN . 'mentions/' . $logname . '.txt';
+
+		if ($content === (array)$content) {
+			$content = var_export($content, true);
+		}
+
 		file_put_contents($path, $content . "\n", FILE_APPEND);
 		unset($path, $content);
 	}
