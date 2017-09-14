@@ -1,6 +1,7 @@
 <?php
 define('LAN_MENTIONS_PREF_TAB_MAIN', 'Main');
 define('LAN_MENTIONS_PREF_TAB_ATWHO', 'Suggestion Pop-up');
+define('LAN_MENTIONS_PREF_TAB_NOTIFICATION', 'Notification');
 define('LAN_MENTIONS_PREF_LBL_ACTIVE', 'Enable/Disable');
 define('LAN_MENTIONS_PREF_LBL_CONTEXTS', 'Parse \'mentions\' in these contexts:');
 define('LAN_MENTIONS_PREF_LBL_GLOBAL_LIBS', 'Use global path for JS libraries:');
