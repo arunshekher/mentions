@@ -6,8 +6,6 @@ if ( ! getperms('P') || ! e107::isInstalled('mentions')) {
 }
 
 e107::lan('mentions', 'admin', true);
-e107::lan('mentions', 'global', true);
-
 
 class mentions_adminArea extends e_admin_dispatcher
 {
@@ -47,7 +45,7 @@ class mentions_ui extends e_admin_ui
 	protected $preftabs = [
 		LAN_MENTIONS_PREF_TAB_MAIN,
 		LAN_MENTIONS_PREF_TAB_ATWHO,
-		'Notification',
+		LAN_MENTIONS_PREF_TAB_NOTIFICATION,
 	];
 
 	protected $prefs = [
