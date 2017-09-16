@@ -170,12 +170,17 @@ class Mentions
 	/**
 	 * Does Debug logging
 	 *
-	 * @param string $content
+	 * @param string|array $content
 	 * @param string $logname
 	 */
 	protected function log($content, $logname = 'mentions')
 	{
 		$path = e_PLUGIN . 'mentions/' . $logname . '.txt';
+
+		if (is_array($content)) {
+			$content = var_export($content, true);
+		}
+
 		file_put_contents($path, $content . "\n", FILE_APPEND);
 		unset($path, $content);
 	}
