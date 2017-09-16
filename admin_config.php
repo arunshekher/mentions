@@ -54,7 +54,7 @@ class mentions_ui extends e_admin_ui
 				. '</p><small>' . LAN_MENTIONS_PREF_LBL_HINT_ACTIVATION . '</small>',
 			'tab'   => 0,
 			'type'  => 'boolean',
-			'data'  => 'int',
+			'data'  => 'boolean',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ACTIVATION,
 		],
 		'mentions_contexts'           => [
