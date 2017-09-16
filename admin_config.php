@@ -170,14 +170,22 @@ class mentions_ui extends e_admin_ui
 	{
 		$caption = LAN_MENTIONS_INFO_MENU_TITLE;
 		$text = '';
-		$text .= '<div style="text-align: center"><img src="http://www.e107.space/projects/mentions/svg" alt="Mentions" width="128" height="128"></div>';
+		$text .= '<div style="text-align: center">
+					<img src="http://www.e107.space/projects/mentions/svg" alt="Mentions" width="128" height="128">
+				  </div>';
 		$text .= '<br><h5>' . LAN_MENTIONS_INFO_MENU_SUBTITLE . '</h5>';
-		$text .= '<p><kbd style="word-wrap: break-word"><a href="http://github.com/arunshekher/mentions" target="_blank">http://github.com/arunshekher/mentions</a></kbd></p>';
+		$text .= '<p>
+					<kbd style="word-wrap: break-word">
+						<a href="http://github.com/arunshekher/mentions" target="_blank">http://github.com/arunshekher/mentions</a>
+					</kbd>
+				  </p>';
 		$text .= '<a class="github-button" href="https://github.com/arunshekher/mentions/subscription" data-icon="octicon-eye" aria-label="Watch arunshekher/mentions on GitHub">Watch</a>';
 		$text .= ' <a class="github-button" href="https://github.com/arunshekher/mentions" data-icon="octicon-star" aria-label="Star arunshekher/mentions on GitHub">Star</a>';
 		$text .= ' <a class="github-button" href="https://github.com/arunshekher/mentions/issues" data-icon="octicon-issue-opened" aria-label="Issue arunshekher/mentions on GitHub">Issue</a>';
 		$text .= '<h5>' . LAN_MENTIONS_INFO_MENU_SUBTITLE_DEV . '</h5>';
-		$text .= '<p><small>Arun S. Sekher</small></p>';
+		$text .= '<p>
+					<small>Arun S. Sekher</small>
+				  </p>';
 		$text .= '<a class="github-button" href="https://github.com/arunshekher" aria-label="Follow @arunshekher on GitHub">Follow</a>';
 		$text .= '<script async defer src="https://buttons.github.io/buttons.js"></script>';
 
