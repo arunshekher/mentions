@@ -10,6 +10,25 @@ class MentionsNotification extends Mentions
 	private $mentions;
 	private $mentioner;
 
+	private $itemTag;
+	private $itemTitle;
+	private $commentType;
+
+	private $mail;
+	private $eventData = [];
+
+
+	/**
+	 * MentionsNotification constructor.
+	 *
+	 * @param $mail
+	 */
+	public function __construct($mail)
+	{
+		Mentions::__construct();
+		$this->mail = e107::getEmail();
+	}
+
 
 	/**
 	 * Public static method to call perform()
@@ -60,7 +79,7 @@ class MentionsNotification extends Mentions
 	public function chatbox($data)
 	{
 		// Debug
-		// $this->log(json_encode($data), 'chatbox-trigger-data');
+		// $this->log($data, 'chatbox-trigger-data');
 
 		// if no mentions abort
 		if ( ! $this->hasAtSign($data['cmessage'])) {
@@ -68,6 +87,9 @@ class MentionsNotification extends Mentions
 		}
 
 		$mentions = $this->getAllMentions($data['cmessage']);
+
+		// Debug
+		// $this->log($mentions, 'chatbox-mentions-test');
 
 		if ($mentions) {
 			$this->mentions = $mentions;
@@ -90,7 +112,7 @@ class MentionsNotification extends Mentions
 	public function comment($data)
 	{
 		// Debug
-		// $this->log(json_encode($data), 'comments-trigger-data');
+		// $this->log($data, 'comments-trigger-data');
 
 		// if no mentions abort
 		if ( ! $this->hasAtSign($data['comment_comment'])) {
@@ -133,7 +155,7 @@ class MentionsNotification extends Mentions
 	public function forum($data)
 	{
 		// Debug
-		// $this->log(json_encode($data), 'forum-trigger-data');
+		// $this->log($data, 'forum-trigger-data');
 
 		// if no mentions abort
 		if ( ! $this->hasAtSign($data['post_entry'])) {
@@ -260,22 +282,25 @@ class MentionsNotification extends Mentions
 	 */
 	private function dispatchEmail()
 	{
-		$mail = e107::getEmail();
+		//$mail = e107::getEmail();
+		$mail = $this->mail;
 
-		$body = $this->emailBody();
-
-		$email = [];
-		$email['email_subject'] = $this->emailSubject();
-		$email['send_html'] = true;
-		$email['email_body'] = $body;
-		$email['template'] = 'default';
-		$email['e107_header'] = $this->mentioneeData['user_id'];
+		$email = [
+			'email_subject' =>  $this->emailSubject(),
+			'send_html' => true,
+			'email_body' =>  $this->emailBody(),
+			'template' => 'default',
+			'e107_header' => $this->mentioneeData['user_id']
+		];
 
 		$sendEmail = $mail->sendEmail($this->mentioneeData['user_email'],
 			$this->mentioneeData['user_name'], $email);
 
 		if ($sendEmail) {
-			unset($body, $email);
+
+			$email = null;
+			$mail = null;
+			unset($email, $mail);
 
 			return $sendEmail;
 		}
