@@ -191,7 +191,7 @@ class MentionsNotification extends Mentions
 		$pattern = '/(?<=\W|^)@([a-z0-9_.]*)/mis';
 
 		if (preg_match_all($pattern, $message, $matches) !== false) {
-			return $matches[0];
+			return $matches[0] ?: null;
 		}
 
 		return null;
