@@ -5,8 +5,8 @@ if ( ! defined('e107_INIT')) {
 
 class MentionsNotification extends Mentions
 {
-	protected $mentionDate;
-	protected $mentioneeData;
+	private $mentionDate;
+	private $mentioneeData;
 	private $mentions;
 	private $mentioner;
 
