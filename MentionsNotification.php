@@ -5,10 +5,28 @@ if ( ! defined('e107_INIT')) {
 
 class MentionsNotification extends Mentions
 {
-	protected $mentionDate;
-	protected $mentioneeData;
+	private $mentionDate;
+	private $mentioneeData;
 	private $mentions;
 	private $mentioner;
+
+	private $itemTag;
+	private $itemTitle;
+	private $commentType;
+
+	private $mail;
+	private $eventData = [];
+
+
+	/**
+	 * MentionsNotification constructor.
+	 *
+	 */
+	public function __construct()
+	{
+		Mentions::__construct();
+		$this->mail = e107::getEmail();
+	}
 
 
 	/**
@@ -62,12 +80,16 @@ class MentionsNotification extends Mentions
 		// Debug
 		// $this->log($data, 'chatbox-event-data');
 
+
 		// if no mentions abort
 		if ( ! $this->hasAtSign($data['cmessage'])) {
 			return false;
 		}
 
 		$mentions = $this->getAllMentions($data['cmessage']);
+
+		// Debug
+		// $this->log($mentions, 'chatbox-mentions-test');
 
 		if ($mentions) {
 			$this->mentions = $mentions;
@@ -91,6 +113,7 @@ class MentionsNotification extends Mentions
 	{
 		// Debug
 		// $this->log($data, 'comments-event-data');
+
 
 		// if no mentions abort
 		if ( ! $this->hasAtSign($data['comment_comment'])) {
@@ -134,6 +157,7 @@ class MentionsNotification extends Mentions
 	{
 		// Debug
 		// $this->log($data, 'forum-event-data');
+
 
 		// if no mentions abort
 		if ( ! $this->hasAtSign($data['post_entry'])) {
@@ -260,22 +284,24 @@ class MentionsNotification extends Mentions
 	 */
 	private function dispatchEmail()
 	{
-		$mail = e107::getEmail();
+		$mail = $this->mail;
 
-		$body = $this->emailBody();
-
-		$email = [];
-		$email['email_subject'] = $this->emailSubject();
-		$email['send_html'] = true;
-		$email['email_body'] = $body;
-		$email['template'] = 'default';
-		$email['e107_header'] = $this->mentioneeData['user_id'];
+		$email = [
+			'email_subject' =>  $this->emailSubject(),
+			'send_html' => true,
+			'email_body' =>  $this->emailBody(),
+			'template' => 'default',
+			'e107_header' => $this->mentioneeData['user_id']
+		];
 
 		$sendEmail = $mail->sendEmail($this->mentioneeData['user_email'],
 			$this->mentioneeData['user_name'], $email);
 
 		if ($sendEmail) {
-			unset($body, $email);
+
+			$email = null;
+			$mail = null;
+			unset($email, $mail);
 
 			return $sendEmail;
 		}
