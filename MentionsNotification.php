@@ -60,7 +60,7 @@ class MentionsNotification extends Mentions
 	public function chatbox($data)
 	{
 		// Debug
-		// $this->log(json_encode($data), 'chatbox-trigger-data');
+		// $this->log($data, 'chatbox-event-data');
 
 		// if no mentions abort
 		if ( ! $this->hasAtSign($data['cmessage'])) {
@@ -90,7 +90,7 @@ class MentionsNotification extends Mentions
 	public function comment($data)
 	{
 		// Debug
-		// $this->log(json_encode($data), 'comments-trigger-data');
+		// $this->log($data, 'comments-event-data');
 
 		// if no mentions abort
 		if ( ! $this->hasAtSign($data['comment_comment'])) {
@@ -133,7 +133,7 @@ class MentionsNotification extends Mentions
 	public function forum($data)
 	{
 		// Debug
-		// $this->log(json_encode($data), 'forum-trigger-data');
+		// $this->log($data, 'forum-event-data');
 
 		// if no mentions abort
 		if ( ! $this->hasAtSign($data['post_entry'])) {
@@ -237,7 +237,7 @@ class MentionsNotification extends Mentions
 			$this->mentioneeData = $this->getUserData($mention);
 
 			// Debug
-			// $this->log(json_encode($this->mentioneeData), 'mentionee-data');
+			// $this->log($this->mentioneeData, 'mentionee-data');
 
 			// Email
 			if (null !== $this->mentioneeData['user_email'] && null !== $this->mentioneeData['user_name']) {
