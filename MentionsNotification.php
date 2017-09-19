@@ -407,8 +407,7 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Gets comment's ascendant name from 'comment_type'
-	 * received from comment event data
+	 * Decide comment's inheritor's 'name' from 'comment_type' event data
 	 *
 	 * @param $input
 	 *
@@ -425,7 +424,8 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Returns comment type name string based on e107 comment type spec.
+	 * Returns 'comment_type' name string based on existing -
+	 * e107 'comment_types' spec.
 	 *
 	 * @param $input
 	 *
