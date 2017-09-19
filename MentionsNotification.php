@@ -454,21 +454,24 @@ class MentionsNotification extends Mentions
 	 *
 	 * @param $thread_id
 	 *
-	 * @return string
+	 * @return array|bool
 	 */
 	private function getForumPostExtendedData($thread_id)
 	{
 		$sql = e107::getDb();
 		$thread_id = (int)$thread_id;
 
-		$query = "SELECT f.forum_sef, f.forum_id, ft.thread_name FROM `#forum` AS f "
-				. "LEFT JOIN `#forum_thread` AS ft ON f.forum_id = ft.thread_forum_id "
-					. " WHERE ft.thread_id = {$thread_id} ";
+		$query = "SELECT f.forum_sef, f.forum_id, ft.thread_id, ft.thread_name FROM `#forum` AS f "
+			. "LEFT JOIN `#forum_thread` AS ft ON f.forum_id = ft.thread_forum_id "
+			. " WHERE ft.thread_id = {$thread_id} ";
 
 		$result = $sql->gen($query);
-		$row = $sql->fetch($result);
 
-		return (array)$row ?: '[title un-resolved]';
+		if ($result) {
+			return $sql->fetch($result);
+		}
+
+		return $result;
 	}
 
 
