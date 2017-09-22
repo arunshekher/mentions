@@ -3,10 +3,12 @@ if ( ! defined('e107_INIT')) {
 	exit;
 }
 
+
 class MentionsAutoComplete extends Mentions
 {
 	private $db;
 	private $ajax;
+
 
 	/**
 	 * MentionsAutoComplete constructor.
@@ -22,21 +24,12 @@ class MentionsAutoComplete extends Mentions
 	/**
 	 * Static method to call mentions auto-complete 'respond' method
 	 *
-	 * @param $request
+	 * @param $query
 	 */
-	public static function triggerResponse($request)
+	public static function getResponse($query)
 	{
 		$autoComplete = new MentionsAutoComplete;
-		$autoComplete->respond($request);
-	}
-
-	/**
-	 * Static method to call loadLibs method
-	 */
-	public static function libs()
-	{
-		$autoComplete = new MentionsAutoComplete;
-		$autoComplete->loadLibs();
+		$autoComplete->respond($query);
 	}
 
 
@@ -44,23 +37,25 @@ class MentionsAutoComplete extends Mentions
 	 * Responds to suggestions API requests,
 	 * returns JSON formatted response.
 	 *
-	 * @param $request
+	 * @param $query
 	 */
-	public function respond($request)
+	public function respond($query)
 	{
 
-		if (e_AJAX_REQUEST && USER && vartrue($request)) {
+		if (e_AJAX_REQUEST && USER && vartrue($query)) {
 
 			$db = $this->db;
 			$tp = $this->parse;
 			$ajax = $this->ajax;
 
-			$mq = $tp->filter($request);
+			$mq = $tp->filter($query);
 			$where = "user_name LIKE '" . $mq . "%' ";
 
-			if ($db->select('user', 'user_name, user_image, user_login',
-				$where . ' ORDER BY user_name')
-			) {
+			$result =
+				$db->select('user', 'user_name, user_image, user_login',
+				$where . ' ORDER BY user_name');
+
+			if ($result) {
 
 				$data = [];
 				while ($row = $db->fetch()) {
@@ -71,9 +66,8 @@ class MentionsAutoComplete extends Mentions
 					];
 				}
 
-				if (count($data)) {
-					$ajax->response($data);
-				}
+				$ajax->response($data);
+
 			} else {
 
 				$msg = [
@@ -91,6 +85,15 @@ class MentionsAutoComplete extends Mentions
 		die;
 	}
 
+
+	/**
+	 * Static method to call loadLibs method
+	 */
+	public static function libs()
+	{
+		$autoComplete = new MentionsAutoComplete;
+		$autoComplete->loadLibs();
+	}
 
 
 	/**
@@ -145,6 +148,7 @@ class MentionsAutoComplete extends Mentions
 
 	/**
 	 * Populates Auto-complete Javascript settings
+	 *
 	 * @param $mentionsPref
 	 */
 	private function setLibOptions($mentionsPref)

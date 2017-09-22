@@ -8,4 +8,4 @@ if ( ! e107::isInstalled('mentions') || ! USER) {
 require_once __DIR__ . '/MentionsAutoComplete.php';
 
 $request = $_GET['mq'];
-MentionsAutoComplete::triggerResponse($request);
+MentionsAutoComplete::getResponse($request);
