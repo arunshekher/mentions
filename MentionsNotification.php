@@ -261,7 +261,7 @@ class MentionsNotification extends Mentions
 			$this->mentioneeData = $this->getUserData($mention);
 
 			// Debug
-			// $this->log($this->mentioneeData, 'mentionee-data');
+			$this->log($this->mentioneeData, 'mentionee-data');
 
 			// Email
 			if (null !== $this->mentioneeData['user_email'] && null !== $this->mentioneeData['user_name']) {
@@ -317,23 +317,16 @@ class MentionsNotification extends Mentions
 	 * Parses and returns email body
 	 *
 	 * @return string
-	 * todo : tidy-up this method
 	 */
 	private function emailBody()
 	{
-		$EMAIL_TEMPLATE = $this->emailTemplate();
-
-		$mentionee_name = $this->mentioneeData['user_name'];
-		$mentioner = $this->mentioner;
-		$mention_verse = $this->getMentionVerse($this->itemTag);
-
 		$bodyVars = [
-			'MENTIONEE'     => $mentionee_name,
-			'MENTIONER'     => $mentioner,
-			'MENTION_VERSE' => $mention_verse,
+			'MENTIONEE'     => $this->mentioneeData['user_name'],
+			'MENTIONER'     => $this->mentioner,
+			'MENTION_TEXT' => $this->emailText($this->itemTag),
 		];
 
-		return $this->parse->simpleParse($EMAIL_TEMPLATE, $bodyVars);
+		return $this->parse->simpleParse($this->emailTemplate(), $bodyVars);
 	}
 
 
@@ -344,31 +337,30 @@ class MentionsNotification extends Mentions
 	 */
 	private function emailTemplate()
 	{
-		// $EMAIL_TEMPLATE = e107::getTemplate('mentions', 'mentions', 'notify');
-		$EMAIL_TEMPLATE = '';
+		// $emailTemplate = e107::getTemplate('mentions', 'mentions', 'notify');
+		$emailTemplate = '';
 
-		if (empty($EMAIL_TEMPLATE)) {
+		if (empty($emailTemplate)) {
 
-			$EMAIL_TEMPLATE = '<div>
+			$emailTemplate = '<div>
 				<p>' . LAN_MENTIONS_EMAIL_HELLO . ' {MENTIONEE},</p>
-				<p>{MENTION_VERSE}</p>
+				<p>{MENTION_TEXT}</p>
 			</div>';
 
 		}
 
-		return $EMAIL_TEMPLATE;
+		return $emailTemplate;
 	}
 
 
 	/**
-	 * Returns mention email notification sentense based on content tag
+	 * Returns mention 'email notification sentence' based on content tag
 	 *
 	 * @param $type
 	 *
 	 * @return string
-	 * @todo make language files compatible
 	 */
-	private function getMentionVerse($type)
+	private function emailText($type)
 	{
 		switch ($type) {
 			case LAN_MENTIONS_TAG_CHATBOX:
@@ -417,7 +409,7 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Preps subject line
+	 * Fetches subject line for email based on admin preference
 	 *
 	 * @return string
 	 */
