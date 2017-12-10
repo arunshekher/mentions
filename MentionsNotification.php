@@ -395,7 +395,7 @@ class MentionsNotification extends Mentions
 	 */
 	public function emailSubject()
 	{
-		$subjectLine = trim($this->prefs['email_subject_line']);
+		$subjectLine = trim($this->prefs['email_subject_line'][e_LANGUAGE]);
 		if (null !== $subjectLine && $subjectLine !== '') {
 			return str_replace('{MENTIONER}', $this->mentioner, $subjectLine);
 		}

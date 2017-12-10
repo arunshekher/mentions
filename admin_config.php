@@ -147,6 +147,7 @@ class mentions_ui extends e_admin_ui
 			'data'  => 'str',
 			'size'  => 'xxlarge',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT,
+			'multilan'=>true,
 		],
 
 	];
