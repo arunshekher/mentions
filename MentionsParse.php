@@ -15,7 +15,7 @@ class MentionsParse extends Mentions
 	 * @return string
 	 *  Parsed text string.
 	 */
-	protected function parseMentions($text, $context = '')
+	protected function parseMentions($text)
 	{
 		$mText = '';
 		$pattern = '#(^|\w*@\s*[a-z0-9._]+)#mi';
