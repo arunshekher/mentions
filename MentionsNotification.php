@@ -41,8 +41,8 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Listens to event triggers and
-	 * performs mentions notification
+	 * Listens to event triggers and performs mentions notification
+	 *
 	 */
 	private function perform()
 	{
@@ -71,9 +71,10 @@ class MentionsNotification extends Mentions
 	/**
 	 * Does Chatbox mentions notifications
 	 *
-	 * @param $data
-	 *
+	 * @param array $data
+	 *  'Chatbox' _POST data
 	 * @return bool
+	 *  Returns false if no mention in 'Chatbox' message.
 	 */
 	public function chatbox($data)
 	{
@@ -105,9 +106,11 @@ class MentionsNotification extends Mentions
 	/**
 	 * Does Comments mentions notifications
 	 *
-	 * @param $data
+	 * @param array $data
+	 *  'Comments' _POST data
 	 *
 	 * @return bool
+	 *  Returns false if no mention in 'comment_comment'.
 	 */
 	public function comment($data)
 	{
@@ -149,9 +152,10 @@ class MentionsNotification extends Mentions
 	/**
 	 * Does Forum mentions notifications
 	 *
-	 * @param $data
-	 *
+	 * @param array $data
+	 *   Forum _POST data
 	 * @return bool
+	 *  Returns false if no mention in 'post_entry'.
 	 */
 	public function forum($data)
 	{
@@ -191,10 +195,10 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Checks if the string passed in as argument has an @ sign
+	 * Checks if the string passed in has an '@' sign
 	 *
-	 * @param $input
-	 *
+	 * @param string $input
+	 *  String passed in as argument
 	 * @return bool
 	 */
 	protected function hasAtSign($input)
@@ -206,8 +210,8 @@ class MentionsNotification extends Mentions
 	/**
 	 * Gets all mentions in the message
 	 *
-	 * @param $message
-	 *
+	 * @param string $message
+	 *  String to match for mentions
 	 * @return array|null
 	 */
 	private function getAllMentions($message)
@@ -225,10 +229,12 @@ class MentionsNotification extends Mentions
 	/**
 	 * Prepares mention date
 	 *
-	 * @param        $date
+	 * @param integer $date
+	 *  Timestamp to be formatted
 	 * @param string $format
-	 *
-	 * @return \HTML
+	 *  Format type identifier - short | long | relative
+	 * @return string
+	 *  Formatted date as html
 	 */
 	private function getMentionDate($date, $format = 'long')
 	{
@@ -237,8 +243,9 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Notify each mentionees in a post after making sure
-	 * that the mentioner is not the mentionee
+	 * Notify each mentionees in a post after making sure that the
+	 *  mentioner is not the mentionee
+	 *
 	 */
 	private function notifyAll()
 	{
@@ -280,7 +287,8 @@ class MentionsNotification extends Mentions
 	/**
 	 * Dispatches email to the mentioned user
 	 *
-	 * @return boolean - true if success false if failed
+	 * @return bool
+	 *  true if success false if failure.
 	 */
 	private function dispatchEmail()
 	{
@@ -291,11 +299,14 @@ class MentionsNotification extends Mentions
 			'send_html' => true,
 			'email_body' =>  $this->emailBody(),
 			'template' => 'default',
-			'e107_header' => $this->mentioneeData['user_id']
+			'e107_header' => $this->mentioneeData['user_id'],
+			'extra_header' => 'X-e107-Plugin : Mentions-Plugin-v'
 		];
 
 		$sendEmail = $mail->sendEmail($this->mentioneeData['user_email'],
 			$this->mentioneeData['user_name'], $email);
+
+		$this->log($email, 'email-body-log');
 
 		if ($sendEmail) {
 
@@ -331,9 +342,10 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Returns Email template
+	 * Returns email content html
 	 *
 	 * @return string
+	 *  Html for email content
 	 */
 	private function emailTemplate()
 	{
@@ -354,11 +366,12 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Returns mention 'email notification sentence' based on content tag
+	 * Returns mention 'email notification citation' based on content tag
 	 *
-	 * @param $type
-	 *
+	 * @param string $type
+	 *  Content type for which the passage/citation is requested.
 	 * @return string
+	 *  Notification email passage/citation.
 	 */
 	private function emailText($type)
 	{
@@ -381,6 +394,7 @@ class MentionsNotification extends Mentions
 					'date'  => $this->mentionDate,
 					'type'  => $this->commentType,
 					'title' => $this->itemTitle,
+					//'title' => htmlentities($this->itemTitle),
 				];
 
 				return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_COMMENT,
@@ -409,9 +423,10 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Fetches subject line for email based on admin preference
+	 * Fetches the subject line for email based on plugin preference
 	 *
 	 * @return string
+	 *  Email subject line.
 	 */
 	public function emailSubject()
 	{
@@ -468,10 +483,10 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Get forum thread title and other info from thread_id
+	 * Get forum thread 'title' and other data from 'forum' & 'forum_thread' tables
 	 *
-	 * @param $thread_id
-	 *
+	 * @param integer $thread_id
+	 *  Id of forum thread.
 	 * @return array|bool
 	 */
 	private function getForumPostExtendedData($thread_id)
