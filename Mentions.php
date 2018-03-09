@@ -21,11 +21,13 @@ class Mentions
 	}
 
 	/**
-	 * Converts mention to user profile link if user matched exists in database
+	 * Converts valid user mention to user profile-link
 	 *
-	 * @param $mention
+	 * @param string $mention
+	 *  User mention string
 	 *
 	 * @return string
+	 *  User mention profile-link or string prepended with '@'
 	 */
 	protected function createUserLinkFrom($mention)
 	{
@@ -44,11 +46,13 @@ class Mentions
 
 
 	/**
-	 * Get user data drom database
+	 * Get user data from database
 	 *
-	 * @param $mention
+	 * @param string $mention
+	 *  String prepended with '@' which the parsing logic captured.
 	 *
 	 * @return array
+	 *  User details from 'user' table - user_id, user_name, user_email
 	 */
 	protected function getUserData($mention)
 	{
@@ -61,11 +65,12 @@ class Mentions
 
 
 	/**
-	 * Strips '@' sign from mention
+	 * Strips '@' sign from mention string
 	 *
-	 * @param $mention
-	 *
+	 * @param string $mention
+	 *  String prepended with '@'.
 	 * @return string
+	 *  String striped clean of '@'
 	 */
 	protected function stripAtFrom($mention)
 	{
@@ -77,7 +82,9 @@ class Mentions
 	 * Does Debug logging
 	 *
 	 * @param string|array $content
+	 *  The data to be logged - can be passed as string or array.
 	 * @param string $logname
+	 *  The name of log that need to be written to file-system.
 	 */
 	protected function log($content, $logname = 'mentions')
 	{
