@@ -8,13 +8,14 @@ class MentionsParse extends Mentions
 {
 
 	/**
-	 * Parse mentions in user submitted text
+	 * Parses mentions in user submitted text
 	 *
-	 * @param $text
-	 *
+	 * @param string $text
+	 *  The text string to be parsed.
 	 * @return string
+	 *  Parsed text string.
 	 */
-	protected function parseMentions($text, $context = '')
+	protected function parseMentions($text)
 	{
 		$mText = '';
 		$pattern = '#(^|\w*@\s*[a-z0-9._]+)#mi';
@@ -37,9 +38,10 @@ class MentionsParse extends Mentions
 	/**
 	 * Checks input for user mention match and return that if found
 	 *
-	 * @param $input
-	 *
+	 * @param string $input
+	 *  String to be parsed for user mentions.
 	 * @return bool
+	 *  Returns with boolean 'false' if no match and the matched string if match.
 	 */
 	protected function hasUserMentionIn($input)
 	{
@@ -52,9 +54,11 @@ class MentionsParse extends Mentions
 	}
 
 	/**
-	 * @param $context
-	 *
+	 * Determines if the context of current text is in plugins preferred context
+	 * @param string $context
+	 *  Context marker for current text
 	 * @return bool
+	 *  true if yes, false if not
 	 */
 	protected function isInContextOf($context)
 	{
@@ -73,7 +77,7 @@ class MentionsParse extends Mentions
 
 
 	/**
-	 * Gets admin chosen contexts as indexed array
+	 * Gets admin chosen text context preference as workable solution
 	 *
 	 * @return array|null
 	 */

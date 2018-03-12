@@ -5,10 +5,28 @@ if ( ! defined('e107_INIT')) {
 
 class MentionsNotification extends Mentions
 {
-	protected $mentionDate;
-	protected $mentioneeData;
+	private $mentionDate;
+	private $mentioneeData;
 	private $mentions;
 	private $mentioner;
+
+	private $itemTag;
+	private $itemTitle;
+	private $commentType;
+
+	private $mail;
+	private $eventData = [];
+
+
+	/**
+	 * MentionsNotification constructor.
+	 *
+	 */
+	public function __construct()
+	{
+		Mentions::__construct();
+		$this->mail = e107::getEmail();
+	}
 
 
 	/**
@@ -23,8 +41,8 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Listens to event triggers and
-	 * performs mentions notification
+	 * Listens to event triggers and performs mentions notification
+	 *
 	 */
 	private function perform()
 	{
@@ -53,14 +71,15 @@ class MentionsNotification extends Mentions
 	/**
 	 * Does Chatbox mentions notifications
 	 *
-	 * @param $data
-	 *
+	 * @param array $data
+	 *  'Chatbox' _POST data
 	 * @return bool
+	 *  Returns false if no mention in 'Chatbox' message.
 	 */
 	public function chatbox($data)
 	{
-		// Debug
-		// $this->log(json_encode($data), 'chatbox-event-data');
+
+		// $this->log($data, 'chatbox-event-data');
 
 		// if no mentions abort
 		if ( ! $this->hasAtSign($data['cmessage'])) {
@@ -68,6 +87,9 @@ class MentionsNotification extends Mentions
 		}
 
 		$mentions = $this->getAllMentions($data['cmessage']);
+
+		// Debug
+		// $this->log($mentions, 'chatbox-mentions-test');
 
 		if ($mentions) {
 			$this->mentions = $mentions;
@@ -85,14 +107,16 @@ class MentionsNotification extends Mentions
 	/**
 	 * Does Comments mentions notifications
 	 *
-	 * @param $data
+	 * @param array $data
+	 *  'Comments' _POST data
 	 *
 	 * @return bool
+	 *  Returns false if no mention in 'comment_comment'.
 	 */
 	public function comment($data)
 	{
 		// Debug
-		$this->log($data, 'comment-event-data');
+		// $this->log($data, 'comments-event-data');
 
 		// if no '@' signs or comment is blocked - abort
 		$hasAt = $this->hasAtSign($data['comment_comment']);
@@ -129,14 +153,15 @@ class MentionsNotification extends Mentions
 	/**
 	 * Does Forum mentions notifications
 	 *
-	 * @param $data
-	 *
+	 * @param array $data
+	 *   Forum _POST data
 	 * @return bool
+	 *  Returns false if no mention in 'post_entry'.
 	 */
 	public function forum($data)
 	{
 		// Debug
-		// $this->log(json_encode($data), 'forum-event-data');
+		// $this->log($data, 'forum-event-data');
 
 		// if no mentions abort
 		if ( ! $this->hasAtSign($data['post_entry'])) {
@@ -170,10 +195,10 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Checks if the string passed in as argument has an @ sign
+	 * Checks if the string passed in has an '@' sign
 	 *
-	 * @param $input
-	 *
+	 * @param string $input
+	 *  String passed in as argument
 	 * @return bool
 	 */
 	protected function hasAtSign($input)
@@ -185,8 +210,8 @@ class MentionsNotification extends Mentions
 	/**
 	 * Gets all mentions in the message
 	 *
-	 * @param $message
-	 *
+	 * @param string $message
+	 *  String to match for mentions
 	 * @return array|null
 	 */
 	private function getAllMentions($message)
@@ -194,7 +219,7 @@ class MentionsNotification extends Mentions
 		$pattern = '/(?<=\W|^)@([a-z0-9_.]*)/mis';
 
 		if (preg_match_all($pattern, $message, $matches) !== false) {
-			return $matches[0];
+			return $matches[0] ?: null;
 		}
 
 		return null;
@@ -204,10 +229,12 @@ class MentionsNotification extends Mentions
 	/**
 	 * Prepares mention date
 	 *
-	 * @param        $date
+	 * @param integer $date
+	 *  Timestamp to be formatted
 	 * @param string $format
-	 *
-	 * @return \HTML
+	 *  Format type identifier - short | long | relative
+	 * @return string
+	 *  Formatted date as html
 	 */
 	private function getMentionDate($date, $format = 'long')
 	{
@@ -216,8 +243,9 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Notify each mentionees in a post after making sure
-	 * that the mentioner is not the mentionee
+	 * Notify each mentionees in a post after making sure that the
+	 *  mentioner is not the mentionee
+	 *
 	 */
 	private function notifyAll()
 	{
@@ -240,7 +268,7 @@ class MentionsNotification extends Mentions
 			$this->mentioneeData = $this->getUserData($mention);
 
 			// Debug
-			// $this->log(json_encode($this->mentioneeData), 'mentionee-data');
+			$this->log($this->mentioneeData, 'mentionee-data');
 
 			// Email
 			if (null !== $this->mentioneeData['user_email'] && null !== $this->mentioneeData['user_name']) {
@@ -259,26 +287,32 @@ class MentionsNotification extends Mentions
 	/**
 	 * Dispatches email to the mentioned user
 	 *
-	 * @return boolean - true if success false if failed
+	 * @return bool
+	 *  true if success false if failure.
 	 */
 	private function dispatchEmail()
 	{
-		$mail = e107::getEmail();
+		$mail = $this->mail;
 
-		$body = $this->emailBody();
-
-		$email = [];
-		$email['email_subject'] = $this->emailSubject();
-		$email['send_html'] = true;
-		$email['email_body'] = $body;
-		$email['template'] = 'default';
-		$email['e107_header'] = $this->mentioneeData['user_id'];
+		$email = [
+			'email_subject' =>  $this->emailSubject(),
+			'send_html' => true,
+			'email_body' =>  $this->emailBody(),
+			'template' => 'default',
+			'e107_header' => $this->mentioneeData['user_id'],
+			'extra_header' => 'X-e107-Plugin : Mentions-Plugin-v'
+		];
 
 		$sendEmail = $mail->sendEmail($this->mentioneeData['user_email'],
 			$this->mentioneeData['user_name'], $email);
 
+		$this->log($email, 'email-body-log');
+
 		if ($sendEmail) {
-			unset($body, $email);
+
+			$email = null;
+			$mail = null;
+			unset($email, $mail);
 
 			return $sendEmail;
 		}
@@ -294,57 +328,52 @@ class MentionsNotification extends Mentions
 	 * Parses and returns email body
 	 *
 	 * @return string
-	 * todo : tidy-up this method
 	 */
 	private function emailBody()
 	{
-		$EMAIL_TEMPLATE = $this->emailTemplate();
-
-		$mentionee_name = $this->mentioneeData['user_name'];
-		$mentioner = $this->mentioner;
-		$mention_verse = $this->getMentionVerse($this->itemTag);
-
 		$bodyVars = [
-			'MENTIONEE'     => $mentionee_name,
-			'MENTIONER'     => $mentioner,
-			'MENTION_VERSE' => $mention_verse,
+			'MENTIONEE'     => $this->mentioneeData['user_name'],
+			'MENTIONER'     => $this->mentioner,
+			'MENTION_TEXT' => $this->emailText($this->itemTag),
 		];
 
-		return $this->parse->simpleParse($EMAIL_TEMPLATE, $bodyVars);
+		return $this->parse->simpleParse($this->emailTemplate(), $bodyVars);
 	}
 
 
 	/**
-	 * Returns Email template
+	 * Returns email content html
 	 *
 	 * @return string
+	 *  Html for email content
 	 */
 	private function emailTemplate()
 	{
-		// $EMAIL_TEMPLATE = e107::getTemplate('mentions', 'mentions', 'notify');
-		$EMAIL_TEMPLATE = '';
+		// $emailTemplate = e107::getTemplate('mentions', 'mentions', 'notify');
+		$emailTemplate = '';
 
-		if (empty($EMAIL_TEMPLATE)) {
+		if (empty($emailTemplate)) {
 
-			$EMAIL_TEMPLATE = '<div>
+			$emailTemplate = '<div>
 				<p>' . LAN_MENTIONS_EMAIL_HELLO . ' {MENTIONEE},</p>
-				<p>{MENTION_VERSE}</p>
+				<p>{MENTION_TEXT}</p>
 			</div>';
 
 		}
 
-		return $EMAIL_TEMPLATE;
+		return $emailTemplate;
 	}
 
 
 	/**
-	 * Returns mention email notification sentense based on content tag
+	 * Returns mention 'email notification citation' based on content tag
 	 *
-	 * @param $type
-	 *
+	 * @param string $type
+	 *  Content type for which the passage/citation is requested.
 	 * @return string
+	 *  Notification email passage/citation.
 	 */
-	private function getMentionVerse($type)
+	private function emailText($type)
 	{
 		switch ($type) {
 			case LAN_MENTIONS_TAG_CHATBOX:
@@ -365,6 +394,7 @@ class MentionsNotification extends Mentions
 					'date'  => $this->mentionDate,
 					'type'  => $this->commentType,
 					'title' => $this->itemTitle,
+					//'title' => htmlentities($this->itemTitle),
 				];
 
 				return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_COMMENT,
@@ -393,9 +423,10 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Preps subject line
+	 * Fetches the subject line for email based on plugin preference
 	 *
 	 * @return string
+	 *  Email subject line.
 	 */
 	public function emailSubject()
 	{
@@ -409,8 +440,7 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Gets comment's ascendant name from 'comment_type'
-	 * received from comment event data
+	 * Decide comment's inheritor's 'name' from 'comment_type' event data
 	 *
 	 * @param $input
 	 *
@@ -427,7 +457,8 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Returns comment type name string based on e107 comment type spec.
+	 * Returns 'comment_type' name string based on existing -
+	 * e107 'comment_types' spec.
 	 *
 	 * @param $input
 	 *
@@ -452,10 +483,10 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Get forum thread title and other info from thread_id
+	 * Get forum thread 'title' and other data from 'forum' & 'forum_thread' tables
 	 *
-	 * @param $thread_id
-	 *
+	 * @param integer $thread_id
+	 *  Id of forum thread.
 	 * @return array|bool
 	 */
 	private function getForumPostExtendedData($thread_id)
@@ -464,8 +495,8 @@ class MentionsNotification extends Mentions
 		$thread_id = (int)$thread_id;
 
 		$query = "SELECT f.forum_sef, f.forum_id, ft.thread_id, ft.thread_name FROM `#forum` AS f "
-				. "LEFT JOIN `#forum_thread` AS ft ON f.forum_id = ft.thread_forum_id "
-					. " WHERE ft.thread_id = {$thread_id} ";
+			. "LEFT JOIN `#forum_thread` AS ft ON f.forum_id = ft.thread_forum_id "
+			. " WHERE ft.thread_id = {$thread_id} ";
 
 		$result = $sql->gen($query);
 

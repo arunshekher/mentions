@@ -18,7 +18,7 @@ class mentions_parse extends MentionsParse
 	public function toHtml($text, $context = '')
 	{
 		if ($this->prefs['mentions_active'] && $this->isInContextOf($context)) {
-			return $this->parseMentions($text, $context);
+			return $this->parseMentions($text);
 		}
 
 		return $text;

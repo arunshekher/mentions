@@ -3,10 +3,12 @@ if ( ! defined('e107_INIT')) {
 	exit;
 }
 
+
 class MentionsAutoComplete extends Mentions
 {
 	private $db;
 	private $ajax;
+
 
 	/**
 	 * MentionsAutoComplete constructor.
@@ -20,60 +22,54 @@ class MentionsAutoComplete extends Mentions
 
 
 	/**
-	 * Static method to call mentions auto-complete 'respond' method
+	 * Static alias for MentionsAutoComplete::getResponse() method
 	 *
-	 * @param $request
+	 * @param string $queryParam
+	 *  _GET param to respond to.
 	 */
-	public static function triggerResponse($request)
+	public static function respond($queryParam)
 	{
 		$autoComplete = new MentionsAutoComplete;
-		$autoComplete->respond($request);
-	}
-
-	/**
-	 * Static method to call loadLibs method
-	 */
-	public static function libs()
-	{
-		$autoComplete = new MentionsAutoComplete;
-		$autoComplete->loadLibs();
+		$autoComplete->getResponse($queryParam);
 	}
 
 
 	/**
-	 * Responds to suggestions API requests,
+	 * Responds to auto-completion API HTTP requests,
 	 * returns JSON formatted response.
 	 *
-	 * @param $request
+	 * @param string $queryParam
+	 *  XHR _GET query param to give response for.
 	 */
-	public function respond($request)
+	public function getResponse($queryParam)
 	{
 
-		if (e_AJAX_REQUEST && USER && vartrue($request)) {
+		if (e_AJAX_REQUEST && USER && vartrue($queryParam)) {
 
 			$db = $this->db;
 			$tp = $this->parse;
 			$ajax = $this->ajax;
 
-			$mq = $tp->filter($request);
+			$mq = $tp->filter($queryParam);
 			$where = "user_name LIKE '" . $mq . "%' ";
 
-			if ($db->select('user', 'user_name, user_image, user_login',
-				$where . ' ORDER BY user_name')
-			) {
+			$result =
+				$db->select('user', 'user_name, user_image, user_login',
+				$where . ' ORDER BY user_name');
+
+			if ($result) {
 
 				$data = [];
 				while ($row = $db->fetch()) {
 					$data[] = [
-						'image'    => $row['user_image'],
+						'image'    => $row['user_image'], // todo: process avatar image (crop size) and send html rather.
 						'username' => $row['user_name'],
 						'name'     => $row['user_login'],
 					];
 				}
 
-				if (count($data)) {
-					$ajax->response($data);
-				}
+				$ajax->response($data);
+
 			} else {
 
 				$msg = [
@@ -91,6 +87,15 @@ class MentionsAutoComplete extends Mentions
 		die;
 	}
 
+
+	/**
+	 * Static alias for MentionsAutoComplete::loadLibs() method
+	 */
+	public static function libs()
+	{
+		$autoComplete = new MentionsAutoComplete;
+		$autoComplete->loadLibs();
+	}
 
 
 	/**
@@ -145,7 +150,9 @@ class MentionsAutoComplete extends Mentions
 
 	/**
 	 * Populates Auto-complete Javascript settings
-	 * @param $mentionsPref
+	 *
+	 * @param array $mentionsPref
+	 *  Plugin preference data.
 	 */
 	private function setLibOptions($mentionsPref)
 	{
