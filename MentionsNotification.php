@@ -481,6 +481,7 @@ class MentionsNotification extends Mentions
 	/**
 	 * Experimental: Link compiler method
 	 * @return string
+	 *  html markup for the content link
 	 */
 	private function compileContentLink($linkData)
 	{
@@ -495,7 +496,7 @@ class MentionsNotification extends Mentions
 				$url = SITEURLBASE . e_PLUGIN_ABS . 'chatbox_menu/chat.php';
 				return '<a href="' . $url . '">this link</a>';
 				break;
-			case 'comment': // news, downloads, polls
+			case 'comment': // news, downloads, polls, ? webomics and other third party plugins
 				return '--COMMENT-LINK--';
 				break;
 			case 'forum':
