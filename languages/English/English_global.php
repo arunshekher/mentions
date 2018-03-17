@@ -11,8 +11,11 @@ define('LAN_MENTIONS_EMAIL_SUBJECTLINE', 'You were mentioned by ');
 define('LAN_MENTIONS_EMAIL_HELLO', 'Hello');
 
 define('LAN_MENTIONS_EMAIL_VERSE_CHATBOX', '[user] mentioned you in a [tag] post on [date].');
+define('LAN_MENTIONS_EMAIL_VERSE_CHATBOX_NEW', '[user] mentioned you in a [link] post on [date].');
 define('LAN_MENTIONS_EMAIL_VERSE_COMMENT', '[user] mentioned you in a [tag] post for the [type] item titled &lsquo;[title]&rsquo; on [date].');
+define('LAN_MENTIONS_EMAIL_VERSE_COMMENT_NEW', '[user] mentioned you in a [tag] post for the [type] item titled [link] on [date].');
 define('LAN_MENTIONS_EMAIL_VERSE_FORUM', '[user] mentioned you in a [tag] post titled \'[title]\' on [date].');
+define('LAN_MENTIONS_EMAIL_VERSE_FORUM_NEW', '[user] mentioned you in a [tag] post titled [link] on [date].');
 define('LAN_MENTIONS_EMAIL_VERSE_UNRESOLVED', '[x] mentioned you in an un-resolvable post!');
 
 define('LAN_MENTIONS_COMMENT_NEWS', 'news');
