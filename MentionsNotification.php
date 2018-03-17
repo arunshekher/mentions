@@ -77,6 +77,18 @@ class MentionsNotification extends Mentions
 
 
 	/**
+	 * Sets comment type
+	 * @param mixed $commentType
+	 */
+	public function setCommentType($commentType)
+	{
+		$this->commentType = $commentType;
+	}
+
+
+
+
+	/**
 	 * Public static alias for MentionsNotification::perform()
 	 *
 	 */
@@ -182,7 +194,7 @@ class MentionsNotification extends Mentions
 		$this->setTag(LAN_MENTIONS_TAG_COMMENT);
 
 		// Debug
-		$this->log($data, 'comments-event-data');
+		// $this->log($data, 'comments-event-data');
 
 		// if no '@' signs or comment is blocked - abort
 		$hasAt = $this->hasAtSign($data['comment_comment']);
@@ -196,20 +208,18 @@ class MentionsNotification extends Mentions
 
 		if ($mentions) {
 
+			$this->setCommentType($this->interpretCommentType($data['comment_type']));
 			$this->setEventData($data);
 
 			$commentProp = [
 				'mentions' => $mentions,
 				'mentioner' => $data['comment_author_name'],
 				'date' => $this->getDate($data['comment_datestamp']),
-				'commentType' => $this->getCommentType($data['comment_type']),
-				'title' => $data['comment_subject']
+				'title' => $data['comment_subject'],
+				'link' => $this->getContentLink()
 			];
 
 			$this->setProperties($commentProp);
-			$this->setProperties(['link' => $this->getContentLink()]);
-
-
 
 			// notify
 				$this->notifyAll();
@@ -353,7 +363,7 @@ class MentionsNotification extends Mentions
 			$this->mentioneeData = $this->getUserData($mention);
 
 			// Debug
-			//$this->log($this->mentioneeData, 'mentionee-data-log');
+			// $this->log($this->mentioneeData, 'mentionee-data-log');
 
 			// send email
 			if (null !== $this->mentioneeData['user_email']
@@ -568,11 +578,11 @@ class MentionsNotification extends Mentions
 	 * Decides comment's inheritor's 'name' from 'comment_type'
 	 *
 	 * @param mixed $input
-	 *
+	 *  'comment_type' obtained from event data
 	 * @return string
-	 *  The name of comment type in words.
+	 *  The name of 'comment_type' in words.
 	 */
-	protected function getCommentType($input)
+	protected function interpretCommentType($input)
 	{
 		if (ctype_digit($input)) {
 			return $this->commentTypeName($input);
@@ -586,16 +596,16 @@ class MentionsNotification extends Mentions
 	 * Returns 'comment_type' name based on the current
 	 *  - e107 numerical 'comment_types' specification.
 	 *
-	 * @param int $input
+	 * @param int $number
 	 *
 	 * @return string
 	 *  'comment_type' string
 	 */
-	private function commentTypeName($input)
+	private function commentTypeName($number)
 	{
-		$input = (int)$input;
+		$number = (int)$number;
 
-		switch ($input) {
+		switch ($number) {
 			case 0:
 				return LAN_MENTIONS_COMMENT_NEWS;
 			case 4:
@@ -704,7 +714,7 @@ class MentionsNotification extends Mentions
 					'news_sef' => $this->createSlug($this->eventData['comment_subject'])
 					];
 				return e107::getUrl()->create('news/view/item', $news, $opt);
-				//return e107::url('news', 'item', $news, $opt); // todo: find out if this will work.
+				//return e107::url('news/view', 'item', $news, ['mode' => full]); // todo: find out if this will work.
 				break;
 
 			case LAN_MENTIONS_COMMENT_DOWNLOADS: // downloads
@@ -719,11 +729,8 @@ class MentionsNotification extends Mentions
 
 			case LAN_MENTIONS_COMMENT_POLL: // poll
 
-				// does not support on the fly url generation I suppose - plugin has no e_url addon
-				$poll = [
-					'poll_id' => $this->eventData['comment_item_id']
-				];
-				return e107::url('poll', 'item', $poll, $opt);
+				// does not support on the fly url generation now I suppose - plugin has no e_url addon
+				return SITEURLBASE . e_PLUGIN_ABS . 'poll/oldpolls.php?' . $this->eventData['comment_item_id'];
 				break;
 
 			case 'page':
