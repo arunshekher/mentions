@@ -154,7 +154,7 @@ class MentionsNotification extends Mentions
 			return false;
 		}
 
-		$mentions = $this->getAllMentions($data['cmessage']);
+		$mentions = $this->fetchAllMentions($data['cmessage']);
 
 		// Debug
 		//$this->log($mentions, 'chatbox-mentions-log');
@@ -204,7 +204,7 @@ class MentionsNotification extends Mentions
 		}
 
 		// get mentions
-		$mentions = $this->getAllMentions($data['comment_comment']);
+		$mentions = $this->fetchAllMentions($data['comment_comment']);
 
 		if ($mentions) {
 
@@ -252,7 +252,7 @@ class MentionsNotification extends Mentions
 		}
 
 		// get mentions
-		$mentions = $this->getAllMentions($data['post_entry']);
+		$mentions = $this->fetchAllMentions($data['post_entry']);
 
 		if ($mentions) {
 
@@ -303,13 +303,13 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Gets all mentions in the message
+	 * Fetches all mentions in the message
 	 *
 	 * @param string $message
 	 *  String to match for mentions
 	 * @return array|null
 	 */
-	private function getAllMentions($message)
+	private function fetchAllMentions($message)
 	{
 		$pattern = '/(?<=\W|^)@([a-z0-9_.]*)/mis';
 
