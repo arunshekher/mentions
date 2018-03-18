@@ -22,15 +22,16 @@ class MentionsAutoComplete extends Mentions
 
 
 	/**
-	 * Static alias for MentionsAutoComplete::getResponse() method
+	 * Static alias for MentionsAutoComplete::getResponse()
 	 *
-	 * @param string $queryParam
+	 * @param string $input
 	 *  _GET param to respond to.
+	 * @see MentionsAutoComplete::getResponse()
 	 */
-	public static function respond($queryParam)
+	public static function query($input)
 	{
 		$autoComplete = new MentionsAutoComplete;
-		$autoComplete->getResponse($queryParam);
+		$autoComplete->getResponse($input);
 	}
 
 
@@ -89,7 +90,8 @@ class MentionsAutoComplete extends Mentions
 
 
 	/**
-	 * Static alias for MentionsAutoComplete::loadLibs() method
+	 * Static alias for MentionsAutoComplete::loadLibs()
+	 * @see MentionsAutoComplete::loadLibs()
 	 */
 	public static function libs()
 	{
@@ -99,7 +101,9 @@ class MentionsAutoComplete extends Mentions
 
 
 	/**
-	 * Loads mentions auto-complete javascript libraries.
+	 * Loads mentions auto-complete Javascript libraries based on the plugin
+	 *  - preference as load it using local or global path. Only loaded if
+	 *  - the plugin is active, its a user area and the user is not a guest.
 	 */
 	public function loadLibs()
 	{
@@ -111,9 +115,9 @@ class MentionsAutoComplete extends Mentions
 			$libGlobal = $mentionsPref['use_global_path'];
 
 			if ($libGlobal) {
-				$this->loadLibsGlobally();
+				$this->loadLibsUsingGlobalPath();
 			} else {
-				$this->loadLibsLocally();
+				$this->loadLibsUsingLocalPath();
 			}
 
 			$this->setLibOptions($mentionsPref);
@@ -124,9 +128,9 @@ class MentionsAutoComplete extends Mentions
 
 
 	/**
-	 * Loads javascript libraries from the global path
+	 * Loads Javascript libraries from the global path
 	 */
-	protected function loadLibsGlobally()
+	protected function loadLibsUsingGlobalPath()
 	{
 		e107::library('load', 'ichord.caret', 'minified');
 		e107::library('load', 'ichord.atwho', 'minified');
@@ -134,9 +138,9 @@ class MentionsAutoComplete extends Mentions
 
 
 	/**
-	 * Loads javascript libraries from the local path
+	 * Loads Javascript libraries from the local path
 	 */
-	protected function loadLibsLocally()
+	protected function loadLibsUsingLocalPath()
 	{
 		e107::css('mentions', 'js/ichord.atwho/dist/css/jquery.atwho.min.css');
 		e107::js('footer',
@@ -149,14 +153,14 @@ class MentionsAutoComplete extends Mentions
 
 
 	/**
-	 * Populates Auto-complete Javascript settings
+	 * Lay-down auto-complete Javascript library settings
 	 *
 	 * @param array $mentionsPref
 	 *  Plugin preference data.
 	 */
 	private function setLibOptions($mentionsPref)
 	{
-		// Mentions Autocomplete/suggestion API path
+		// Mentions auto-complete API endpoint
 		$apiPath = e_PLUGIN_ABS . 'mentions/index.php';
 
 		$jsSettings = [
