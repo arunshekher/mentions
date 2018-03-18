@@ -22,8 +22,8 @@
         <pref name="atwho_item_limit">5</pref>
         <pref name="atwho_highlight_first">1</pref>
 		<pref name="notify_chatbox_mentions">0</pref>
-		<pref name="notify_comment_mentions">0</pref>
-		<pref name="notify_forum_mentions">0</pref>
+		<pref name="notify_comment_mentions">1</pref>
+		<pref name="notify_forum_mentions">1</pref>
 		<pref name="email_subject_line">You were mentioned by {MENTIONER}</pref>
 	</pluginPrefs>
 </e107Plugin>
