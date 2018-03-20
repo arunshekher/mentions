@@ -9,10 +9,10 @@ A user @mention plugin for e107 CMS.
 # Description
 A plugin that converts user mentions (‘@‘ sign prepended with usernames) in comments, chatbox posts, and forum posts in e107 CMS to user-profile links. Also displays an autocompletion/suggestion popup as a user types a username followed by ‘@‘ sign in chatbox and comment boxes.
 
-# Welcoming Contributions
+# Contributions
 Community emanated contributions to mentions plugin are welcome. Since the project is still in beta there are specific priorities for development right now. Please take a look at project [roadmap](https://github.com/arunshekher/mentions/projects/1 "Mentions Roadmap") before contributing via issues and pull requests.
 
-#Ways to contribute
+# Ways to contribute
 * Find bugs and file issues
 * Submit pull requests - fix errors, squash bugs, refactor for performance, write language packs
 * Submit feature requests
