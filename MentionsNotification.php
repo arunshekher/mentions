@@ -116,7 +116,9 @@ class MentionsNotification extends Mentions
 					['MentionsNotification', 'chatbox']);
 			}
 
-			if ($this->prefs['notify_comment_mentions']) {
+			if ($this->prefs['notify_comment_mentions']
+				&& ($this->prefs['mentions_contexts'] === 2
+					|| $this->prefs['mentions_contexts'] === 3)) {
 				e107::getEvent()->register('user_comment_posted',
 					['MentionsNotification', 'comment']);
 			}
@@ -322,6 +324,26 @@ class MentionsNotification extends Mentions
 
 
 	/**
+	 * Filters mentions array for duplicates and 'mentioner' themselves.
+	 * @param $mentions
+	 *  Mentions array passed by reference.
+	 * @return array
+	 *  Filtered array.
+	 */
+	private function filterMentions(&$mentions)
+	{
+		$mentions = array_values(array_unique($mentions, SORT_STRING));
+
+		foreach ($mentions as $key => $value) {
+			if ($this->mentioner === $this->stripAtFrom($value)) {
+				unset($mentions[$key]);
+			}
+		}
+
+		return $mentions;
+	}
+
+	/**
 	 * Prepares mention date
 	 *
 	 * @param integer $date
@@ -338,8 +360,8 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Notify each end every mentionee in _POST data
-	 *  - except the mentioner thyself
+	 * Notify each and every 'mentionee' in _POST data
+	 *  - except the 'mentioner' themself
 	 *
 	 */
 	private function notifyAll()
@@ -350,7 +372,37 @@ class MentionsNotification extends Mentions
 			return false;
 		}
 
-		foreach (array_unique($mentions, SORT_STRING) as $mention) {
+		// filter mentions for duplicates and 'mentioner' themself
+		$uniqueMentions = $this->filterMentions($mentions);
+
+		// Debug
+		$this->log($uniqueMentions, 'unique-mentions');
+
+		$maxEmails = $this->prefs['max_emails'];
+
+		for ($i = 0; $i < $maxEmails; $i++ ) {
+
+			// being paranoid - the 'mentioner' should NEVER get an email.
+			$mentionee = $this->stripAtFrom($uniqueMentions[$i]);
+
+			if ($this->mentioner === $mentionee) {
+				continue;
+			}
+
+			// get 'mentionee' details - email, username, userid
+			$this->mentioneeData = $this->getUserData($uniqueMentions[$i]);
+
+			// send email
+			if (null !== $this->mentioneeData['user_email']
+				&& null !== $this->mentioneeData['user_name']) {
+
+				$this->dispatchEmail();
+				continue;
+
+			}
+		}
+
+		/*foreach (array_unique($mentions, SORT_STRING) as $mention) {
 
 			// no notification if 'mentioner' is the 'mentionee'
 			$mentionee = $this->stripAtFrom($mention);
@@ -375,7 +427,7 @@ class MentionsNotification extends Mentions
 
 			}
 
-		}
+		}*/
 	}
 
 
@@ -811,8 +863,6 @@ class MentionsNotification extends Mentions
 
 		return [ 'mode' => 'full', 'legacy' => true ];
 	}
-
-
 
 
 }

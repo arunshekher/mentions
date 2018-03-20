@@ -43,6 +43,12 @@ class mentions_ui extends e_admin_ui
 		3 => LAN_MENTIONS_PREF_VAL_CONTEXT_03,
 	];
 
+	protected $maxNotificationEmails = [
+		5 => '5',
+		10 => '10',
+		15 => '15'
+	];
+
 	protected $preftabs = [
 		LAN_MENTIONS_PREF_TAB_MAIN,
 		LAN_MENTIONS_PREF_TAB_ATWHO,
@@ -142,6 +148,14 @@ class mentions_ui extends e_admin_ui
 			'data'  => 'int',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_FORUM_EMAIL,
 		],
+		'max_emails'   => [
+			'title' => '<p>' .LAN_MENTIONS_PREF_LBL_MAX_EMAILS .'</p><small>'
+			. LAN_MENTIONS_PREF_LBL_HINT_MAX_EMAILS . '</small>',
+			'tab'   => 2,
+			'type'  => 'dropdown',
+			'data'  => 'int',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_MAX_EMAILS,
+		],
 		'email_subject_line'      => [
 			'title' => '<p>' . LAN_MENTIONS_PREF_LBL_EMAIL_SUBJECT . '</p><small>'
 				. LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT_1 . '<kbd>{MENTIONER}</kbd>'
@@ -163,6 +177,8 @@ class mentions_ui extends e_admin_ui
 	{
 		$this->prefs['mentions_contexts']['writeParms'] =
 			$this->mentionsContexts;
+		$this->prefs['max_emails']['writeParms'] =
+			$this->maxNotificationEmails;
 	}
 
 
