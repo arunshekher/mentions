@@ -21,6 +21,7 @@ define('LAN_MENTIONS_PREF_LBL_FORUMTOPIC_EMAIL', 'Email notification for forum n
 define('LAN_MENTIONS_PREF_LBL_FORUM_EMAIL', 'Email notification for forum mentions');
 define('LAN_MENTIONS_PREF_LBL_FORUMREPLY_EMAIL', 'Email notification for forum reply mentions');
 define('LAN_MENTIONS_PREF_LBL_EMAIL_SUBJECT', 'Email subject-line text:');
+define('LAN_MENTIONS_PREF_LBL_MAX_EMAILS',  'Max. number of mention emails allowed per post.');
 
 define('LAN_MENTIONS_PREF_LBL_HINT_ACTIVATION', 'Turn On/Off Mentions Globally');
 define('LAN_MENTIONS_PREF_LBL_HINT_CONTEXT', 'All the content context in which \'mentions\' should be applied.');
@@ -38,6 +39,7 @@ define('LAN_MENTIONS_PREF_LBL_HINT_FORUM_EMAIL', 'Turn on email notification for
 define('LAN_MENTIONS_PREF_LBL_HINT_FORUMREPLY_EMAIL', 'Turn on email notification for forum reply mentions.');
 define('LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT_1', 'You can use the text macro ');
 define('LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT_2', ' in subject-line text, and it will be substituted with actual mentioner\'s username in the email subject field.');
+define('LAN_MENTIONS_PREF_LBL_HINT_MAX_EMAILS',  'Maximum allowed number of notification emails that would be sent-out per user-post. Any more number of mentioned users than this limit will not get email notification of their mentions.');
 
 
 define('LAN_MENTIONS_PREF_VAL_CONTEXT_01', 'Forum + Chatbox');
