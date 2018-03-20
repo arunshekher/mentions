@@ -672,7 +672,8 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Get forum thread 'title' and other data from 'forum' & 'forum_thread' tables
+	 * Get forum thread 'title' and other requisite data from 'forum' &
+	 *  - 'forum_thread' tables
 	 *
 	 * @param integer $thread_id
 	 *  Id of forum thread.
