@@ -18,6 +18,9 @@ Community emanated contributions to mentions plugin are welcome. Since the proje
 * Submit feature requests
 * Simply express gratitude - scientific studies continually prove that showing appreciation/gratitude to others can make you happier :wink: :laughing: :heart_eyes:
 
+# Known Bugs
+1. When the forum title has a @ sign prepended to username it cause rendering issues to the rest of the forum thread sometimes (some replies in the thread go missing!)
+
 
 # Release History
 + [v1.4.0-beta.1](https://github.com/arunshekher/mentions/releases/tag/v1.4.0-beta.1) - Beta Release
