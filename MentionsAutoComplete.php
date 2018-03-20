@@ -156,7 +156,7 @@ class MentionsAutoComplete extends Mentions
 	 * Lay-down auto-complete Javascript library settings
 	 *
 	 * @param array $mentionsPref
-	 *  Plugin preference data.
+	 *  'mention' plugin preference data array.
 	 */
 	private function setLibOptions($mentionsPref)
 	{
@@ -170,10 +170,29 @@ class MentionsAutoComplete extends Mentions
 				'maxChar'    => $mentionsPref['atwho_max_char'],
 				'entryLimit' => $mentionsPref['atwho_item_limit'],
 			],
+			'inputFields' => ['activeOnes' => $this->obtainFields($mentionsPref)]
 		];
 
 		// Footer - settings + script
 		e107::js('settings', ['mentions' => $jsSettings]);
+	}
+
+
+	/**
+	 * Returns all e107 'texarea' form fields that need to have auto-complete
+	 *  - based on 'mentions_contexts'  plugin preference.
+	 * @param array $pref
+	 *
+	 * @return string
+	 *  comma separated string of form field ids that require auto-complete
+	 */
+	private function obtainFields($pref)
+	{
+		if ($pref['mentions_contexts'] === 1) {
+			return '#cmessage, #forum-quickreply-text, #post';
+		}
+		
+		return '#cmessage, #comment, #forum-quickreply-text, #post';
 	}
 
 }
