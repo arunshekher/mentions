@@ -158,9 +158,6 @@ class MentionsNotification extends Mentions
 
 		$mentions = $this->fetchAllMentions($data['cmessage']);
 
-		// Debug
-		//$this->log($mentions, 'chatbox-mentions-log');
-
 		if ($mentions) {
 
 			$chatProp = [
@@ -402,32 +399,6 @@ class MentionsNotification extends Mentions
 			}
 		}
 
-		/*foreach (array_unique($mentions, SORT_STRING) as $mention) {
-
-			// no notification if 'mentioner' is the 'mentionee'
-			$mentionee = $this->stripAtFrom($mention);
-
-			if ($this->mentioner === $mentionee) {
-				continue;
-			}
-
-			// get 'mentionee' details - email, username, userid
-			$this->mentioneeData = $this->getUserData($mention);
-
-			// Debug
-			// $this->log($this->mentioneeData, 'mentionee-data-log');
-
-			// send email
-			if (null !== $this->mentioneeData['user_email']
-				&& null !== $this->mentioneeData['user_name']) {
-
-				$this->dispatchEmail();
-				//unset($this->mentioneeData);
-				continue;
-
-			}
-
-		}*/
 	}
 
 
@@ -767,7 +738,7 @@ class MentionsNotification extends Mentions
 					'news_sef' => $this->createSlug($this->eventData['comment_subject'])
 					];
 				return e107::getUrl()->create('news/view/item', $news, $opt);
-				//return e107::url('news/view', 'item', $news, ['mode' => full]); // todo: find out if this will work.
+				//return e107::url('news/view', 'item', $news, ['mode' => full]); // todo: find out if this will work for news
 				break;
 
 			case LAN_MENTIONS_COMMENT_DOWNLOADS: // downloads

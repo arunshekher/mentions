@@ -13,10 +13,6 @@ jQuery(function ($) {
     var atwhoHiFirst = mentionsOpts.suggestions.hiFirst;
     var mentionFields = mentionsOpts.inputFields.activeOnes;
 
-    // debug
-    console.error(mentionFields);
-
-
     $(mentionFields).atwho({
         at: "@",
         displayTpl: "<li>${username}<small>  ${name}</small></li>",
