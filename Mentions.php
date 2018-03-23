@@ -79,7 +79,7 @@ class Mentions
 
 
 	/**
-	 * Does Debug logging
+	 * Does Debug logging by writing a log file to the plugin directory
 	 *
 	 * @param string|array $content
 	 *  The data to be logged - can be passed as string or array.
