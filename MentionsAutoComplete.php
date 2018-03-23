@@ -107,20 +107,18 @@ class MentionsAutoComplete extends Mentions
 	 */
 	public function loadLibs()
 	{
-		// plugin preferences
-		$mentionsPref = $this->prefs;
 
-		if ($mentionsPref['mentions_active'] && USER_AREA && USER) {
+		if ($this->prefs['mentions_active'] && USER_AREA && USER) {
 
-			$libGlobal = $mentionsPref['use_global_path'];
+			if ($this->prefs['use_global_path']) {
 
-			if ($libGlobal) {
 				$this->loadLibsUsingGlobalPath();
 			} else {
+
 				$this->loadLibsUsingLocalPath();
 			}
 
-			$this->setLibOptions($mentionsPref);
+			$this->setLibOptions();
 
 			e107::js('footer', '{e_PLUGIN}mentions/js/mentions.js', 'jquery');
 		}
@@ -155,10 +153,8 @@ class MentionsAutoComplete extends Mentions
 	/**
 	 * Lay-down auto-complete Javascript library settings
 	 *
-	 * @param array $mentionsPref
-	 *  'mention' plugin preference data array.
 	 */
-	private function setLibOptions($mentionsPref)
+	private function setLibOptions()
 	{
 		// Mentions auto-complete API endpoint
 		$apiPath = e_PLUGIN_ABS . 'mentions/index.php';
@@ -166,11 +162,11 @@ class MentionsAutoComplete extends Mentions
 		$jsSettings = [
 			'api_endpoint' => $apiPath,
 			'suggestions'  => [
-				'minChar'    => $mentionsPref['atwho_min_char'],
-				'maxChar'    => $mentionsPref['atwho_max_char'],
-				'entryLimit' => $mentionsPref['atwho_item_limit'],
+				'minChar'    => $this->prefs['atwho_min_char'],
+				'maxChar'    => $this->prefs['atwho_max_char'],
+				'entryLimit' => $this->prefs['atwho_item_limit'],
 			],
-			'inputFields' => ['activeOnes' => $this->obtainFields($mentionsPref)]
+			'inputFields' => ['activeOnes' => $this->obtainFields()]
 		];
 
 		// Footer - settings + script
@@ -181,14 +177,13 @@ class MentionsAutoComplete extends Mentions
 	/**
 	 * Returns all e107 'texarea' form fields that need to have auto-complete
 	 *  - based on 'mentions_contexts'  plugin preference.
-	 * @param array $pref
 	 *
 	 * @return string
 	 *  comma separated string of form field ids that require auto-complete
 	 */
-	private function obtainFields($pref)
+	private function obtainFields()
 	{
-		if ($pref['mentions_contexts'] === 1) {
+		if ($this->prefs['mentions_contexts'] === 1) {
 			return '#cmessage, #forum-quickreply-text, #post';
 		}
 		
