@@ -15,11 +15,11 @@ define('LAN_MENTIONS_PREF_LBL_ATWHO_MAXCHARS_3', 'Upto: 20');
 define('LAN_MENTIONS_PREF_LBL_ATWHO_LIMIT_1', 'Number of username entries to show in popup-list');
 define('LAN_MENTIONS_PREF_LBL_ATWHO_LIMIT_2', 'Recommended: 5');
 define('LAN_MENTIONS_PREF_LBL_ATWHO_HIGHLIGHT', 'Highlight first entry in popup-list:');
-define('LAN_MENTIONS_PREF_LBL_CHATBOX_EMAIL', 'Email notification for chatbox mentions');
-define('LAN_MENTIONS_PREF_LBL_COMMENT_EMAIL', 'Email notification for comment mentions');
-define('LAN_MENTIONS_PREF_LBL_FORUMTOPIC_EMAIL', 'Email notification for forum new topic mentions');
-define('LAN_MENTIONS_PREF_LBL_FORUM_EMAIL', 'Email notification for forum mentions');
-define('LAN_MENTIONS_PREF_LBL_FORUMREPLY_EMAIL', 'Email notification for forum reply mentions');
+define('LAN_MENTIONS_PREF_LBL_CHATBOX_EMAIL', 'Chatbox mentions email notification:');
+define('LAN_MENTIONS_PREF_LBL_COMMENT_EMAIL', 'Comment mentions email notification:');
+define('LAN_MENTIONS_PREF_LBL_FORUMTOPIC_EMAIL', 'Forum topic mentions email notification:');
+define('LAN_MENTIONS_PREF_LBL_FORUM_EMAIL', 'Forum mentions email notification:');
+define('LAN_MENTIONS_PREF_LBL_FORUMREPLY_EMAIL', 'Forum reply mentions email notification:');
 define('LAN_MENTIONS_PREF_LBL_EMAIL_SUBJECT', 'Email subject-line text:');
 define('LAN_MENTIONS_PREF_LBL_MAX_EMAILS',  'Max. number of mention emails allowed per post.');
 
@@ -37,9 +37,9 @@ define('LAN_MENTIONS_PREF_LBL_HINT_COMMENT_EMAIL', 'Turn on email notification f
 define('LAN_MENTIONS_PREF_LBL_HINT_FORUMTOPIC_EMAIL', 'Turn on email notification for new forum topic mentions.');
 define('LAN_MENTIONS_PREF_LBL_HINT_FORUM_EMAIL', 'Turn on email notification for forum mentions.');
 define('LAN_MENTIONS_PREF_LBL_HINT_FORUMREPLY_EMAIL', 'Turn on email notification for forum reply mentions.');
-define('LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT_1', 'You can use the text macro ');
+define('LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT_1', 'You can use the placeholder variable ');
 define('LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT_2', ' in subject-line text, and it will be substituted with actual mentioner\'s username in the email subject field.');
-define('LAN_MENTIONS_PREF_LBL_HINT_MAX_EMAILS',  'Maximum allowed number of notification emails that would be sent-out per user-post. Any more number of mentioned users than this limit will not get email notification of their mentions.');
+define('LAN_MENTIONS_PREF_LBL_HINT_MAX_EMAILS',  'Maximum allowed number of notification emails that would be sent-out per user-post. (Any more number of mentioned users than this limit will not get email notification of their mentions.)');
 
 
 define('LAN_MENTIONS_PREF_VAL_CONTEXT_01', 'Forum + Chatbox');
