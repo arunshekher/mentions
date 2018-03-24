@@ -13,10 +13,25 @@ jQuery(function ($) {
     var atwhoHiFirst = mentionsOpts.suggestions.hiFirst;
     var mentionFields = mentionsOpts.inputFields.activeOnes;
 
+
     $(mentionFields).atwho({
+
         at: "@",
-        displayTpl: "<li>${username}<small>  ${name}</small></li>",
+
+        displayTpl: function (data) {
+
+            var image = data.image;
+
+            if (typeof image === 'undefined' || image.length <= 0) {
+                return "<li>${username}<small>  ${name}</small></li>";
+            }
+
+            return "<li>${image} ${username}<small>  ${name}</small></li>";
+        },
+
         insertTpl: "${atwho-at}${username}",
+
+
         callbacks: {
             remoteFilter: function (query, callback) {
 
@@ -46,12 +61,13 @@ jQuery(function ($) {
                 });
             }
         },
+
         searchKey: "username",
         limit: atwhoLimit,
         maxLen: atwhoMax,
         minLen: atwhoMin,
         displayTimeout: 300,
-        highlightFirst: atwhoHiFirst,
+        highlightFirst: atwhoHiFirst
 
     });
 

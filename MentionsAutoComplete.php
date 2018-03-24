@@ -62,11 +62,19 @@ class MentionsAutoComplete extends Mentions
 
 				$data = [];
 				while ($row = $db->fetch()) {
-					$data[] = [
-						'image'    => $row['user_image'], // todo: process avatar image (crop size) and send html rather.
-						'username' => $row['user_name'],
-						'name'     => $row['user_login'],
-					];
+
+					if ($this->prefs['atwho_avatar']) {
+						$data[] = [
+							'image'    => $this->getAvatar($row['user_image']),
+							'username' => $row['user_name'],
+							'name'     => $row['user_login'],
+						];
+					} else {
+						$data[] = [
+							'username' => $row['user_name'],
+							'name'     => $row['user_login'],
+						];
+					}
 				}
 
 				$ajax->response($data);
@@ -164,7 +172,7 @@ class MentionsAutoComplete extends Mentions
 			'suggestions'  => [
 				'minChar'    => $this->prefs['atwho_min_char'],
 				'maxChar'    => $this->prefs['atwho_max_char'],
-				'entryLimit' => $this->prefs['atwho_item_limit'],
+				'entryLimit' => $this->prefs['atwho_item_limit']
 			],
 			'inputFields' => ['activeOnes' => $this->obtainFields()]
 		];
@@ -189,5 +197,38 @@ class MentionsAutoComplete extends Mentions
 		
 		return '#cmessage, #comment, #forum-quickreply-text, #post';
 	}
+
+
+	/**
+	 * Parse and return user avatar image markup ready to be rendered on page.
+	 *
+	 * @param string $userImage
+	 *  User image string obtained from db
+	 * @return mixed|null|string
+	 *  Html markup with '<img' tag and specified user's avatar image file sourced.
+	 */
+	private function getAvatar($userImage)
+	{
+		// todo: preference
+		$measure = 24;
+
+		// todo: preference
+		$shape = 'circle'; // can be rounded, thumbnail, circle, responsive - for getting square you need to put some gibberish
+
+		return $this->parse->toAvatar(
+
+			['user_image' => $userImage],
+
+			[
+				'w' => $measure,
+				'h' => $measure,
+				'crop' => 'C',
+				'shape' => $shape
+			]
+
+		);
+
+	}
+
 
 }

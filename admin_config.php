@@ -127,6 +127,13 @@ class mentions_ui extends e_admin_ui
 			'data'  => 'int',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_HIGHLIGHT,
 		],
+		'atwho_avatar'   => [
+			'title' => 'Show user image in popup',
+			'tab'   => 1,
+			'type'  => 'boolean',
+			'data'  => 'int',
+			'help'  => 'Show user avatar image in auto-complete popup',
+		],
 		'notify_chatbox_mentions' => [
 			'title' => LAN_MENTIONS_PREF_LBL_CHATBOX_EMAIL,
 			'tab'   => 2,
