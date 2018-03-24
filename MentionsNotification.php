@@ -195,7 +195,7 @@ class MentionsNotification extends Mentions
 		// Debug
 		// $this->log($data, 'comments-event-data');
 
-		// if no '@' signs or comment is blocked - abort
+		// if no '@' signs or if comment is blocked - abort
 		$hasAt = $this->hasAtSign($data['comment_comment']);
 
 		if ( ! $hasAt || $data['comment_blocked'] ) {
@@ -207,7 +207,7 @@ class MentionsNotification extends Mentions
 
 		if ($mentions) {
 
-			$this->setCommentType($this->interpretCommentType($data['comment_type']));
+			$this->setCommentType($this->solveCommentType($data['comment_type']));
 			$this->setEventData($data);
 
 			$commentProp = [
@@ -605,10 +605,11 @@ class MentionsNotification extends Mentions
 	 * @return string
 	 *  The name of 'comment_type' in words.
 	 */
-	protected function interpretCommentType($input)
+	protected function solveCommentType($input)
 	{
 		if (ctype_digit($input)) {
-			return $this->commentTypeName($input);
+
+			return $this->nameCommentType($input);
 		}
 
 		return $input;
@@ -624,7 +625,7 @@ class MentionsNotification extends Mentions
 	 * @return string
 	 *  'comment_type' string
 	 */
-	private function commentTypeName($number)
+	private function nameCommentType($number)
 	{
 		$number = (int)$number;
 
