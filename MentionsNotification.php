@@ -160,20 +160,17 @@ class MentionsNotification extends Mentions
 
 		if ($mentions) {
 
-			$chatProp = [
+			$this->setProperties([
 				'mentions' => $mentions,
 				'mentioner' => USERNAME,
 				'date' => $this->getDate($data['datestamp']),
 				'link' => $this->getContentLink()
-				];
+				]);
 			
-			$this->setProperties($chatProp);
-
 			// notify
 			$this->notifyAll();
-
-			unset($chatProp, $mentions);
 		}
+		unset($mentions);
 	}
 
 	/**
@@ -210,21 +207,18 @@ class MentionsNotification extends Mentions
 			$this->setCommentType($this->solveCommentType($data['comment_type']));
 			$this->setEventData($data);
 
-			$commentProp = [
+			$this->setProperties([
 				'mentions' => $mentions,
 				'mentioner' => $data['comment_author_name'],
 				'date' => $this->getDate($data['comment_datestamp']),
 				'title' => $data['comment_subject'],
 				'link' => $this->getContentLink()
-			];
-
-			$this->setProperties($commentProp);
+			]);
 
 			// notify
-				$this->notifyAll();
-
-			// todo: unset some vars
+			$this->notifyAll();
 		}
+		unset($mentions);
 	}
 
 	/**
@@ -257,14 +251,11 @@ class MentionsNotification extends Mentions
 
 			$this->setEventData($data);
 
-			$this->setProperties(
-				[
+			$this->setProperties([
 					'mentions' => $mentions,
 				    'mentioner' => USERNAME,
-				    'date' => $this->getDate($data['post_datestamp']),
-				]
-			);
-
+				    'date' => $this->getDate($data['post_datestamp'])
+			]);
 
 			// get more forum data
 			$forumInfo = $this->getRequisiteForumData($data['post_thread']);
@@ -274,17 +265,15 @@ class MentionsNotification extends Mentions
 			$link = $this->getContentLink();
 
 			// set more properties
-			$forumProp = [
+			$this->setProperties([
 				'title' => $title,
 				'link' => $link
-			];
+			]);
 
-			$this->setProperties($forumProp);
-
+			// notify
 			$this->notifyAll();
-			// todo: unset some vars
 		}
-
+		unset($mentions);
 	}
 
 
