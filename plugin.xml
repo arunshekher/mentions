@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e107Plugin name="Mentions" lan="LAN_MENTIONS_PLUGIN_NAME" version="1.4.1" date="2017-07-17" compatibility="2.0" installRequired="true" >
+<e107Plugin name="Mentions" lan="LAN_MENTIONS_PLUGIN_NAME" version="1.6.2" date="2017-07-17" compatibility="2.0" installRequired="true" >
 	<author name="Arun S. Sekher" url="https://github.com/arunshekher" />
 	<summary>An @mention plugin</summary>
 	<description lan="LAN_MENTIONS_PLUGIN_DESCRIPTION">It provides Twitter or GitHub like '@username' mention functionality for e107.</description>
@@ -21,9 +21,11 @@
         <pref name="atwho_max_char">15</pref>
         <pref name="atwho_item_limit">5</pref>
         <pref name="atwho_highlight_first">1</pref>
+		<pref name="atwho_avatar">0</pref>
 		<pref name="notify_chatbox_mentions">0</pref>
 		<pref name="notify_comment_mentions">1</pref>
 		<pref name="notify_forum_mentions">1</pref>
 		<pref name="email_subject_line">You were mentioned by {MENTIONER}</pref>
+		<pref name="max_emails">10</pref>
 	</pluginPrefs>
 </e107Plugin>
