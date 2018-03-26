@@ -46,7 +46,9 @@ class mentions_ui extends e_admin_ui
 	protected $maxNotificationEmails = [
 		5 => '5',
 		10 => '10',
-		15 => '15'
+		15 => '15',
+		20 => '20',
+		25 => '25',
 	];
 
 	protected $preftabs = [
@@ -128,11 +130,11 @@ class mentions_ui extends e_admin_ui
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_HIGHLIGHT,
 		],
 		'atwho_avatar'   => [
-			'title' => 'Show user image in popup',
+			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_AVATAR,
 			'tab'   => 1,
 			'type'  => 'boolean',
 			'data'  => 'int',
-			'help'  => 'Show user avatar image in auto-complete popup',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_AVATAR,
 		],
 		'notify_chatbox_mentions' => [
 			'title' => LAN_MENTIONS_PREF_LBL_CHATBOX_EMAIL,
@@ -168,11 +170,12 @@ class mentions_ui extends e_admin_ui
 		],
 		'max_emails'   => [
 			'title' => '<p>' .LAN_MENTIONS_PREF_LBL_MAX_EMAILS .'</p><small>'
-				. LAN_MENTIONS_PREF_LBL_HINT_MAX_EMAILS . '</small>',
+				. LAN_MENTIONS_PREF_LBL_HINT_MAX_EMAILS_1 . '<br><br>'
+				.  LAN_MENTIONS_PREF_LBL_HINT_MAX_EMAILS_2 . '</small>',
 			'tab'   => 2,
 			'type'  => 'dropdown',
 			'data'  => 'int',
-			'help'  => LAN_MENTIONS_PREF_LBL_HINT_MAX_EMAILS,
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_MAX_EMAILS_1,
 		]
 
 	];
@@ -191,28 +194,13 @@ class mentions_ui extends e_admin_ui
 
 	public function renderHelp()
 	{
-		$caption = LAN_MENTIONS_INFO_MENU_TITLE;
-		$text = '';
-		$text .= '<div style="text-align: center">
-					<img src="http://www.e107.space/projects/mentions/svg" alt="Mentions" width="128" height="128">
-				  </div>';
-		$text .= '<br><h5>' . LAN_MENTIONS_INFO_MENU_SUBTITLE . '</h5>';
-		$text .= '<p>
-					<kbd style="word-wrap: break-word">
-						<a href="http://github.com/arunshekher/mentions" target="_blank">http://github.com/arunshekher/mentions</a>
-					</kbd>
-				  </p>';
-		$text .= '<a class="github-button" href="https://github.com/arunshekher/mentions/subscription" data-icon="octicon-eye" aria-label="Watch arunshekher/mentions on GitHub">Watch</a>';
-		$text .= ' <a class="github-button" href="https://github.com/arunshekher/mentions" data-icon="octicon-star" aria-label="Star arunshekher/mentions on GitHub">Star</a>';
-		$text .= ' <a class="github-button" href="https://github.com/arunshekher/mentions/issues" data-icon="octicon-issue-opened" aria-label="Issue arunshekher/mentions on GitHub">Issue</a>';
-		$text .= '<h5>' . LAN_MENTIONS_INFO_MENU_SUBTITLE_DEV . '</h5>';
-		$text .= '<p>
-					<small>Arun S. Sekher</small>
-				  </p>';
-		$text .= '<a class="github-button" href="https://github.com/arunshekher" aria-label="Follow @arunshekher on GitHub">Follow</a>';
-		$text .= '<script async defer src="https://buttons.github.io/buttons.js"></script>';
+		$template   = e107::getTemplate('mentions', 'project_info_menu');
+		$text = e107::getParser()->parseTemplate($template['content'], false);
 
-		return ['caption' => $caption, 'text' => $text];
+		return [
+			'caption' =>  LAN_MENTIONS_INFO_MENU_TITLE,
+			'text' => $text
+		];
 
 	}
 
