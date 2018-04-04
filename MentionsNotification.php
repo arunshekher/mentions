@@ -457,18 +457,17 @@ class MentionsNotification extends Mentions
 	 */
 	private function emailTemplate()
 	{
-		// $emailTemplate = e107::getTemplate('mentions', 'mentions', 'notify');
-		$emailTemplate = '';
+		$template = e107::getTemplate('mentions', 'email');
 
-		if (empty($emailTemplate)) {
+		if (empty($template)) {
 
-			$emailTemplate = '<div>
+			$template = '<div>
 				<p>' . LAN_MENTIONS_EMAIL_HELLO . ' {MENTIONEE},</p>
 				<p>{MENTION_TEXT}</p>
 			</div>';
 		}
 
-		return $emailTemplate;
+		return $template;
 	}
 
 
