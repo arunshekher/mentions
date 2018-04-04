@@ -9,8 +9,6 @@ class Mentions
 	protected $prefs;
 	protected $parse;
 
-	protected $dataVars = [];
-
 	/**
 	 * Mentions constructor.
 	 */
