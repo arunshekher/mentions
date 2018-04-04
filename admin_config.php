@@ -6,7 +6,6 @@ if ( ! getperms('P') || ! e107::isInstalled('mentions')) {
 }
 
 e107::lan('mentions', 'admin', true);
-e107::lan('mentions', 'global', true);
 
 
 class mentions_adminArea extends e_admin_dispatcher
@@ -44,110 +43,170 @@ class mentions_ui extends e_admin_ui
 		3 => LAN_MENTIONS_PREF_VAL_CONTEXT_03,
 	];
 
+	protected $maxNotificationEmails = [
+		5 => '5',
+		10 => '10',
+		15 => '15',
+		20 => '20',
+		25 => '25',
+	];
+
+	protected $avatarSizesList = [
+		16 => '16',
+		24 => '24',
+		32 => '32'
+	];
+	/**
+	 * @todo language constants for these
+	 */
+	protected $avatarBorderList = [
+		'circle' => 'Circle',
+		'rounded' => 'Rounded',
+		'none' => 'Square'
+	];
+
 	protected $preftabs = [
 		LAN_MENTIONS_PREF_TAB_MAIN,
 		LAN_MENTIONS_PREF_TAB_ATWHO,
-		'Notification',
+		LAN_MENTIONS_PREF_TAB_NOTIFICATION,
 	];
 
 	protected $prefs = [
-		'mentions_active'             => [
-			'title' => '<p>' . LAN_MENTIONS_PREF_LBL_ACTIVE
-				. '</p><small>' . LAN_MENTIONS_PREF_LBL_HINT_ACTIVATION . '</small>',
+		'mentions_active'         => [
+			'title' => '<p>' . LAN_MENTIONS_PREF_LBL_ACTIVE . '</p><small>'
+				. LAN_MENTIONS_PREF_LBL_HINT_ACTIVATION . '</small>',
 			'tab'   => 0,
 			'type'  => 'boolean',
 			'data'  => 'int',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ACTIVATION,
 		],
-		'mentions_contexts'           => [
-			'title' => '<p>' . LAN_MENTIONS_PREF_LBL_CONTEXTS
-				. '</p><small>' . LAN_MENTIONS_PREF_LBL_HINT_CONTEXT . '</small>',
+		'mentions_contexts'       => [
+			'title' => '<p>' . LAN_MENTIONS_PREF_LBL_CONTEXTS . '</p><small>'
+				. LAN_MENTIONS_PREF_LBL_HINT_CONTEXT . '</small>',
 			'tab'   => 0,
 			'type'  => 'dropdown',
 			'size'  => 'xxxlarge',
 			'data'  => 'int',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_CONTEXT,
 		],
-		'use_global_path'             => [
-			'title' => '<p>' . LAN_MENTIONS_PREF_LBL_GLOBAL_LIBS
-				. '</p><small>' . LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS . '</small>',
+		'use_global_path'         => [
+			'title' => '<p>' . LAN_MENTIONS_PREF_LBL_GLOBAL_LIBS . '</p><small>'
+				. LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS_1
+				. '<kbd><a href="https://github.com/ichord/Caret.js" target="_blank">Caret.js</a></kbd>'
+				. LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS_2
+				. '<kbd><a href="https://github.com/ichord/At.js" target="_blank">At.js</a></kbd>'
+				. LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS_3 . '</small>',
 			'tab'   => 0,
 			'type'  => 'boolean',
 			'data'  => 'int',
-			'help'  => LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS,
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS_1
+				. '<kbd><a href="https://github.com/ichord/Caret.js" target="_blank">Caret.js</a></kbd>'
+				. LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS_2
+				. '<kbd><a href="https://github.com/ichord/At.js" target="_blank">At.js</a></kbd>'
+				. LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS_3,
 		],
-		'atwho_min_char'              => [
-			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_MINCHARS,
+		'atwho_min_char'          => [
+			'title' => '<p>' . LAN_MENTIONS_PREF_LBL_ATWHO_MINCHARS_1 . '<kbd>@</kbd>'
+				. LAN_MENTIONS_PREF_LBL_ATWHO_MINCHARS_2 . '</p><kbd>'
+				. LAN_MENTIONS_PREF_LBL_ATWHO_MINCHARS_3 . '</kbd>',
 			'tab'   => 1,
 			'type'  => 'number',
 			'data'  => 'int',
-			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_MINCHAR,
+			'help'  => '<p>' . LAN_MENTIONS_PREF_LBL_ATWHO_MINCHARS_1 . '<kbd>@</kbd>'
+				. LAN_MENTIONS_PREF_LBL_ATWHO_MINCHARS_2 . '</p><kbd>'
+				. LAN_MENTIONS_PREF_LBL_ATWHO_MINCHARS_3 . '</kbd>',
 		],
-		'atwho_max_char'              => [
-			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_MAXCHARS,
+		'atwho_max_char'          => [
+			'title' => '<p>' . LAN_MENTIONS_PREF_LBL_ATWHO_MAXCHARS_1 . '<kbd>@</kbd>'
+				. LAN_MENTIONS_PREF_LBL_ATWHO_MAXCHARS_2
+				. '</p><kbd>' . LAN_MENTIONS_PREF_LBL_ATWHO_MAXCHARS_3 . '</kbd>',
 			'tab'   => 1,
 			'type'  => 'number',
 			'data'  => 'int',
-			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_MAXCHAR,
+			'help'  => '<p>' . LAN_MENTIONS_PREF_LBL_ATWHO_MAXCHARS_1 . '<kbd>@</kbd>'
+				. LAN_MENTIONS_PREF_LBL_ATWHO_MAXCHARS_2
+				. '</p><kbd>' . LAN_MENTIONS_PREF_LBL_ATWHO_MAXCHARS_3 . '</kbd>',
 		],
-		'atwho_item_limit'            => [
-			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_LIMIT,
+		'atwho_item_limit'        => [
+			'title' => '<p>' . LAN_MENTIONS_PREF_LBL_ATWHO_LIMIT_1
+				. '</p><kbd>' . LAN_MENTIONS_PREF_LBL_ATWHO_LIMIT_2 . '</kbd>',
 			'tab'   => 1,
 			'type'  => 'number',
 			'data'  => 'int',
-			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_LIMIT,
+			'help'  => '<p>' . LAN_MENTIONS_PREF_LBL_ATWHO_LIMIT_1
+				. '</p><kbd>' . LAN_MENTIONS_PREF_LBL_ATWHO_LIMIT_2 . '</kbd>',
 		],
-		'atwho_highlight_first'       => [
+		'atwho_highlight_first'   => [
 			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_HIGHLIGHT,
 			'tab'   => 1,
 			'type'  => 'boolean',
-			'data'  => 'boolean',
+			'data'  => 'int',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_HIGHLIGHT,
 		],
-		'notify_chatbox_mentions'     => [
+		'atwho_avatar'   => [
+			'title' => LAN_MENTIONS_PREF_LBL_ATWHO_AVATAR,
+			'tab'   => 1,
+			'type'  => 'boolean',
+			'data'  => 'int',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_ATWHO_AVATAR,
+		],
+		'notify_chatbox_mentions' => [
 			'title' => LAN_MENTIONS_PREF_LBL_CHATBOX_EMAIL,
 			'tab'   => 2,
 			'type'  => 'boolean',
-			'data'  => 'boolean',
+			'data'  => 'int',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_CHATBOX_EMAIL,
 		],
-		'notify_comment_mentions'     => [
+		'notify_comment_mentions' => [
 			'title' => LAN_MENTIONS_PREF_LBL_COMMENT_EMAIL,
 			'tab'   => 2,
 			'type'  => 'boolean',
-			'data'  => 'boolean',
+			'data'  => 'int',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_COMMENT_EMAIL,
 		],
-		/*'notify_forum_topic_mentions' => [
-			'title' => LAN_MENTIONS_PREF_LBL_FORUMTOPIC_EMAIL,
-			'tab'   => 2,
-			'type'  => 'boolean',
-			'data'  => 'boolean',
-			'help'  => LAN_MENTIONS_PREF_LBL_HINT_FORUMTOPIC_EMAIL,
-		],
-		'notify_forum_reply_mentions' => [
-			'title' => LAN_MENTIONS_PREF_LBL_FORUMREPLY_EMAIL,
-			'tab'   => 2,
-			'type'  => 'boolean',
-			'data'  => 'boolean',
-			'help'  => LAN_MENTIONS_PREF_LBL_HINT_FORUMREPLY_EMAIL,
-		],*/
-		'notify_forum_mentions' => [
+		'notify_forum_mentions'   => [
 			'title' => LAN_MENTIONS_PREF_LBL_FORUM_EMAIL,
 			'tab'   => 2,
 			'type'  => 'boolean',
-			'data'  => 'boolean',
+			'data'  => 'int',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_FORUM_EMAIL,
 		],
-		'email_subject_line'          => [
-			'title' => '<p>' . LAN_MENTIONS_PREF_LBL_EMAIL_SUBJECT
-				. '</p><small>' . LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT . '</small>',
+		'email_subject_line'      => [
+			'title' => '<p>' . LAN_MENTIONS_PREF_LBL_EMAIL_SUBJECT . '</p><small>'
+				. LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT_1 . '<kbd>{MENTIONER}</kbd>'
+				. LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT_2 . '</small>',
 			'tab'   => 2,
 			'type'  => 'text',
 			'data'  => 'str',
 			'size'  => 'xxlarge',
-			'help'  => LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT,
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT_1 . '<kbd>{MENTIONER}</kbd>'
+				. LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT_2,
 		],
+		'max_emails'   => [
+			'title' => '<p>' .LAN_MENTIONS_PREF_LBL_MAX_EMAILS .'</p><small>'
+				. LAN_MENTIONS_PREF_LBL_HINT_MAX_EMAILS_1 . '<br><br>'
+				.  LAN_MENTIONS_PREF_LBL_HINT_MAX_EMAILS_2 . '</small>',
+			'tab'   => 2,
+			'type'  => 'dropdown',
+			'data'  => 'int',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_MAX_EMAILS_1,
+		],
+		// todo: replace with language constants
+		'avatar_size' => [
+			'title' => 'Avatar Size',
+			'tab'   => 1,
+			'type'  => 'dropdown',
+			'data'  => 'int',
+			'help'  => 'Set avatar size',
+		],
+		// todo: replace with language constants
+		'avatar_border' => [
+			'title' => 'Avatar Border Style',
+			'tab'   => 1,
+			'type'  => 'dropdown',
+			'data'  => 'str',
+			'help'  => 'Set avatar border style',
+		]
 
 	];
 
@@ -158,25 +217,31 @@ class mentions_ui extends e_admin_ui
 	{
 		$this->prefs['mentions_contexts']['writeParms'] =
 			$this->mentionsContexts;
+		$this->prefs['max_emails']['writeParms'] =
+			$this->maxNotificationEmails;
+		$this->prefs['avatar_size']['writeParms'] =
+			$this->avatarSizesList;
+		$this->prefs['avatar_border']['writeParms'] =
+			$this->avatarBorderList;
 	}
 
 
 	public function renderHelp()
 	{
-		$caption = LAN_MENTIONS_INFO_MENU_TITLE;
-		$text = '';
-		$text .= LAN_MENTIONS_INFO_MENU_LOGO;
-		$text .= LAN_MENTIONS_INFO_MENU_SUBTITLE;
-		$text .= LAN_MENTIONS_INFO_MENU_REPO_URL;
-		$text .= LAN_MENTIONS_INFO_MENU_REPO_BUTTON_WATCH;
-		$text .= LAN_MENTIONS_INFO_MENU_REPO_BUTTON_STAR;
-		$text .= LAN_MENTIONS_INFO_MENU_REPO_BUTTON_ISSUE;
-		$text .= LAN_MENTIONS_INFO_MENU_SUBTITLE_DEV;
-		$text .= LAN_MENTIONS_INFO_MENU_DEV;
-		$text .= LAN_MENTIONS_INFO_MENU_REPO_BUTTON_FOLLOW;
-		$text .= LAN_MENTIONS_INFO_MENU_GITHUB_BUTTONS_SCRIPT;
+		$template   = e107::getTemplate('mentions', 'project_menu');
+		$text = e107::getParser()->parseTemplate(
+			$template,
+			true,
+			[
+				'DEV_SUPPORT' => LAN_MENTIONS_INFO_MENU_SUPPORT_DEV_TEXT,
+				'SIGN' => LAN_MENTIONS_INFO_MENU_SUPPORT_DEV_TEXT_SIGN
+			]
+		);
 
-		return ['caption' => $caption, 'text' => $text];
+		return [
+			'caption' =>  LAN_MENTIONS_INFO_MENU_TITLE,
+			'text' => $text
+		];
 
 	}
 

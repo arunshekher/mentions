@@ -1,10 +1,14 @@
 <?php
+if ( ! defined('e107_INIT')) {
+	exit;
+}
 
 
 class MentionsAutoComplete extends Mentions
 {
 	private $db;
 	private $ajax;
+
 
 	/**
 	 * MentionsAutoComplete constructor.
@@ -18,60 +22,63 @@ class MentionsAutoComplete extends Mentions
 
 
 	/**
-	 * Trigger response for the query
+	 * Static alias for MentionsAutoComplete::getResponse()
 	 *
-	 * @param $request
+	 * @param string $input
+	 *  _GET param to respond to.
+	 * @see MentionsAutoComplete::getResponse()
 	 */
-	public static function triggerResponse($request)
+	public static function query($input)
 	{
 		$autoComplete = new MentionsAutoComplete;
-		$autoComplete->respond($request);
-	}
-
-	/**
-	 * Load libraries
-	 */
-	public static function libs()
-	{
-		$autoComplete = new MentionsAutoComplete;
-		$autoComplete->loadLibs();
+		$autoComplete->getResponse($input);
 	}
 
 
 	/**
-	 * Responds to suggestions API requests,
+	 * Responds to auto-completion API HTTP requests,
 	 * returns JSON formatted response.
 	 *
-	 * @param $request
+	 * @param string $queryParam
+	 *  XHR _GET query param to give response for.
 	 */
-	public function respond($request)
+	public function getResponse($queryParam)
 	{
 
-		if (e_AJAX_REQUEST && USER && vartrue($request)) {
+		if (e_AJAX_REQUEST && USER && vartrue($queryParam)) {
 
 			$db = $this->db;
 			$tp = $this->parse;
 			$ajax = $this->ajax;
 
-			$mq = $tp->filter($request);
+			$mq = $tp->filter($queryParam);
 			$where = "user_name LIKE '" . $mq . "%' ";
 
-			if ($db->select('user', 'user_name, user_image, user_login',
-				$where . ' ORDER BY user_name')
-			) {
+			$result =
+				$db->select('user', 'user_name, user_image, user_login',
+				$where . ' ORDER BY user_name');
+
+			if ($result) {
 
 				$data = [];
 				while ($row = $db->fetch()) {
-					$data[] = [
-						'image'    => $row['user_image'],
-						'username' => $row['user_name'],
-						'name'     => $row['user_login'],
-					];
+
+					if ($this->prefs['atwho_avatar']) {
+						$data[] = [
+							'image'    => $this->getAvatar($row['user_image']),
+							'username' => $row['user_name'],
+							'name'     => $row['user_login'],
+						];
+					} else {
+						$data[] = [
+							'username' => $row['user_name'],
+							'name'     => $row['user_login'],
+						];
+					}
 				}
 
-				if (count($data)) {
-					$ajax->response($data);
-				}
+				$ajax->response($data);
+
 			} else {
 
 				$msg = [
@@ -90,26 +97,36 @@ class MentionsAutoComplete extends Mentions
 	}
 
 
+	/**
+	 * Static alias for MentionsAutoComplete::loadLibs()
+	 * @see MentionsAutoComplete::loadLibs()
+	 */
+	public static function libs()
+	{
+		$autoComplete = new MentionsAutoComplete;
+		$autoComplete->loadLibs();
+	}
+
 
 	/**
-	 * Load javascript libraries.
+	 * Loads mentions auto-complete Javascript libraries based on the plugin
+	 *  - preference as load it using local or global path. Only loaded if
+	 *  - the plugin is active, its a user area and the user is not a guest.
 	 */
 	public function loadLibs()
 	{
-		// plugin preferences
-		$mentionsPref = $this->prefs;
 
-		if ($mentionsPref['mentions_active'] && USER_AREA && USER) {
+		if ($this->prefs['mentions_active'] && USER_AREA && USER) {
 
-			$libGlobal = $mentionsPref['use_global_path'];
+			if ($this->prefs['use_global_path']) {
 
-			if ($libGlobal) {
-				$this->loadLibsGlobally();
+				$this->loadLibsUsingGlobalPath();
 			} else {
-				$this->loadLibsLocally();
+
+				$this->loadLibsUsingLocalPath();
 			}
 
-			$this->setLibOptions($mentionsPref);
+			$this->setLibOptions();
 
 			e107::js('footer', '{e_PLUGIN}mentions/js/mentions.js', 'jquery');
 		}
@@ -117,9 +134,9 @@ class MentionsAutoComplete extends Mentions
 
 
 	/**
-	 * Loads libraries from the global path
+	 * Loads Javascript libraries from the global path
 	 */
-	protected function loadLibsGlobally()
+	protected function loadLibsUsingGlobalPath()
 	{
 		e107::library('load', 'ichord.caret', 'minified');
 		e107::library('load', 'ichord.atwho', 'minified');
@@ -127,9 +144,9 @@ class MentionsAutoComplete extends Mentions
 
 
 	/**
-	 * Loads libraries from the local path
+	 * Loads Javascript libraries from the local path
 	 */
-	protected function loadLibsLocally()
+	protected function loadLibsUsingLocalPath()
 	{
 		e107::css('mentions', 'js/ichord.atwho/dist/css/jquery.atwho.min.css');
 		e107::js('footer',
@@ -142,25 +159,74 @@ class MentionsAutoComplete extends Mentions
 
 
 	/**
-	 * Javascript settings
-	 * @param $mentionsPref
+	 * Lay-down auto-complete Javascript library settings
+	 *
 	 */
-	private function setLibOptions($mentionsPref)
+	private function setLibOptions()
 	{
-		// Mentions Autocomplete/suggestion API path
+		// Mentions auto-complete API endpoint
 		$apiPath = e_PLUGIN_ABS . 'mentions/index.php';
 
 		$jsSettings = [
 			'api_endpoint' => $apiPath,
 			'suggestions'  => [
-				'minChar'    => $mentionsPref['atwho_min_char'],
-				'maxChar'    => $mentionsPref['atwho_max_char'],
-				'entryLimit' => $mentionsPref['atwho_item_limit'],
+				'minChar'    => $this->prefs['atwho_min_char'],
+				'maxChar'    => $this->prefs['atwho_max_char'],
+				'entryLimit' => $this->prefs['atwho_item_limit']
 			],
+			'inputFields' => ['activeOnes' => $this->obtainFields()]
 		];
 
 		// Footer - settings + script
 		e107::js('settings', ['mentions' => $jsSettings]);
 	}
+
+
+	/**
+	 * Returns all e107 'texarea' form fields that need to have auto-complete
+	 *  - based on 'mentions_contexts'  plugin preference.
+	 *
+	 * @return string
+	 *  comma separated string of form field ids that require auto-complete
+	 */
+	private function obtainFields()
+	{
+		if ($this->prefs['mentions_contexts'] === 1) {
+			return '#cmessage, #forum-quickreply-text, #post';
+		}
+		
+		return '#cmessage, #comment, #forum-quickreply-text, #post';
+	}
+
+
+	/**
+	 * Parse and return user avatar image markup ready to be rendered on page.
+	 *
+	 * @param string $userImage
+	 *  User image string obtained from db
+	 * @return mixed|null|string
+	 *  Html markup with '<img' tag and specified user's avatar image file sourced.
+	 */
+	private function getAvatar($userImage)
+	{
+		$measure = $this->prefs['avatar_size'];
+
+		$shape = $this->prefs['avatar_border'];
+
+		return $this->parse->toAvatar(
+
+			['user_image' => $userImage],
+
+			[
+				'w' => $measure,
+				'h' => $measure,
+				'crop' => 'C',
+				'shape' => $shape
+			]
+
+		);
+
+	}
+
 
 }

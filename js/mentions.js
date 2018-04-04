@@ -11,16 +11,31 @@ jQuery(function ($) {
     var atwhoMax = mentionsOpts.suggestions.maxChar;
     var atwhoMin = mentionsOpts.suggestions.minChar;
     var atwhoHiFirst = mentionsOpts.suggestions.hiFirst;
+    var mentionFields = mentionsOpts.inputFields.activeOnes;
 
 
-    $('#cmessage, #comment, #forum-quickreply-text, #post').atwho({
+    $(mentionFields).atwho({
+
         at: "@",
-        displayTpl: "<li>${username}<small>  ${name}</small></li>",
+
+        displayTpl: function (data) {
+
+            var image = data.image;
+
+            if (typeof image === 'undefined' || image.length <= 0) {
+                return "<li>${username}<small>  ${name}</small></li>";
+            }
+
+            return "<li>${image} ${username}<small>  ${name}</small></li>";
+        },
+
         insertTpl: "${atwho-at}${username}",
+
+
         callbacks: {
             remoteFilter: function (query, callback) {
 
-                console.log('Query: ', query);
+                // console.log('Query: ', query);
 
                 if(query === null || query.length < 0) {
                     return callback(null);
@@ -33,11 +48,11 @@ jQuery(function ($) {
 
                     success: function (data) {
                         callback(data);
-                        console.log('Success: ', data);
+                        // console.log('Success: ', data);
                     },
 
                     error: function (xhr, textStatus, errorThrown) {
-                        console.warn('Error: ' + textStatus + ' : ' + errorThrown);
+                        console.error('Error: ' + textStatus + ' : ' + errorThrown);
                     },
 
                     beforeSend: function (xhr) {
@@ -46,12 +61,13 @@ jQuery(function ($) {
                 });
             }
         },
+
         searchKey: "username",
         limit: atwhoLimit,
         maxLen: atwhoMax,
         minLen: atwhoMin,
         displayTimeout: 300,
-        highlightFirst: atwhoHiFirst,
+        highlightFirst: atwhoHiFirst
 
     });
 
