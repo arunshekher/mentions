@@ -27,5 +27,7 @@
 		<pref name="notify_forum_mentions">1</pref>
 		<pref name="email_subject_line">You were mentioned by {MENTIONER}</pref>
 		<pref name="max_emails">10</pref>
+		<pref name="avatar_size">32</pref>
+		<pref name="avatar_border">circle</pref>
 	</pluginPrefs>
 </e107Plugin>

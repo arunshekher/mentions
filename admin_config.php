@@ -51,6 +51,20 @@ class mentions_ui extends e_admin_ui
 		25 => '25',
 	];
 
+	protected $avatarSizesList = [
+		16 => '16',
+		24 => '24',
+		32 => '32'
+	];
+	/**
+	 * @todo language constants for these
+	 */
+	protected $avatarBorderList = [
+		'circle' => 'Circle',
+		'rounded' => 'Rounded',
+		'none' => 'Square'
+	];
+
 	protected $preftabs = [
 		LAN_MENTIONS_PREF_TAB_MAIN,
 		LAN_MENTIONS_PREF_TAB_ATWHO,
@@ -176,6 +190,22 @@ class mentions_ui extends e_admin_ui
 			'type'  => 'dropdown',
 			'data'  => 'int',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_MAX_EMAILS_1,
+		],
+		// todo: replace with language constants
+		'avatar_size' => [
+			'title' => 'Avatar Size',
+			'tab'   => 1,
+			'type'  => 'dropdown',
+			'data'  => 'int',
+			'help'  => 'Set avatar size',
+		],
+		// todo: replace with language constants
+		'avatar_border' => [
+			'title' => 'Avatar Border Style',
+			'tab'   => 1,
+			'type'  => 'dropdown',
+			'data'  => 'str',
+			'help'  => 'Set avatar border style',
 		]
 
 	];
@@ -189,6 +219,10 @@ class mentions_ui extends e_admin_ui
 			$this->mentionsContexts;
 		$this->prefs['max_emails']['writeParms'] =
 			$this->maxNotificationEmails;
+		$this->prefs['avatar_size']['writeParms'] =
+			$this->avatarSizesList;
+		$this->prefs['avatar_border']['writeParms'] =
+			$this->avatarBorderList;
 	}
 
 

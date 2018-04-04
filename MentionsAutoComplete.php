@@ -209,11 +209,9 @@ class MentionsAutoComplete extends Mentions
 	 */
 	private function getAvatar($userImage)
 	{
-		// todo: preference
-		$measure = 24;
+		$measure = $this->prefs['avatar_size'];
 
-		// todo: preference
-		$shape = 'circle'; // can be rounded, thumbnail, circle, responsive - for getting square you need to put some gibberish
+		$shape = $this->prefs['avatar_border'];
 
 		return $this->parse->toAvatar(
 
