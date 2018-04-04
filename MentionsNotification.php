@@ -141,7 +141,6 @@ class MentionsNotification extends Mentions
 	 *  'Chatbox' event trigger _POST data
 	 * @return bool
 	 *  Returns false if no mention in 'cmessage'.
-	 * @todo find the correct sequence of things and organize!
 	 */
 	public function chatbox($data)
 	{
@@ -182,7 +181,7 @@ class MentionsNotification extends Mentions
 	 *
 	 * @return bool
 	 *  Returns false if no mention in 'comment_comment'.
-	 * @todo find the correct sequence of things and organize!
+	 * @todo revisit to tidy up the sequence of routines
 	 */
 	public function comment($data)
 	{
@@ -229,7 +228,7 @@ class MentionsNotification extends Mentions
 	 *   Forum event trigger _POST data
 	 * @return bool
 	 *  Returns false if no mention in 'post_entry'.
-	 * @todo find the correct sequence of things and organize!
+	 * @todo revisit to tidy up the sequence of routines
 	 */
 	public function forum($data)
 	{
