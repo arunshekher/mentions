@@ -22,5 +22,6 @@ Community contributions to mentions plugin are welcome. Since the project is sti
 1. When the forum title has a word prepended with an '@' sign in it, it causes rendering issues to the rest of the forum thread (sometimes some replies in the thread go missing!). As soon as the @ sign is removed or a space added in between the word and the '@' sign by editing all replies in the thread renders properly. At present I'm at a loss for a fix.
 
 # Release History
++ Apr 04, 2018 [v1.6.2-rc.1](https://github.com/arunshekher/mentions/releases/tag/v1.6.2-rc.1) - release candidate
 + Sep 11, 2017 [v1.4.0-beta.1](https://github.com/arunshekher/mentions/releases/tag/v1.4.0-beta.1) - beta release
 + Jul 31, 2017 [v1.2.0-beta.1](https://github.com/arunshekher/mentions/releases/tag/v1.2.0-beta.1) - beta release
