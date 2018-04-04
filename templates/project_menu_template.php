@@ -12,9 +12,9 @@ if (deftrue('BOOTSTRAP') && deftrue('FONTAWESOME')) {
 	define('MENTIONS_SMILE_ICON', ':)');
 }
 
-$PROJECT_INFO_MENU_TEMPLATE['content'] = '
+$PROJECT_MENU_TEMPLATE = '
 <div style="text-align: center">
-<img src="http://www.e107.space/projects/mentions/svg" alt="Mentions" width="128" height="128">
+<img src="https://www.e107.space/projects/mentions/svg" alt="Mentions" width="128" height="128">
 </div>
 <ul class="list-unstyled">
 	<li>
@@ -42,7 +42,7 @@ $PROJECT_INFO_MENU_TEMPLATE['content'] = '
 	</li>
 	<li>
 		<p>
-			<small>' . LAN_MENTIONS_INFO_MENU_SUPPORT_DEV_TEXT . '</small>
+			<small>{DEV_SUPPORT}</small>
 		</p>
 	</li>
 	<li class="text-center">
@@ -55,10 +55,9 @@ $PROJECT_INFO_MENU_TEMPLATE['content'] = '
 	</li>
 	<li class="text-center">
 		<p style="padding-top:10px;">
-			<small>' . LAN_MENTIONS_INFO_MENU_SUPPORT_DEV_TEXT_SIGN . '</small>
+			<small>{SIGN}</small>
 		</p>
 		<p>' . MENTIONS_SMILE_ICON .'</p>
 	</li>
-	<li>&nbsp;</li>
 </ul>
 <script async defer src="https://buttons.github.io/buttons.js"></script>';

@@ -194,8 +194,15 @@ class mentions_ui extends e_admin_ui
 
 	public function renderHelp()
 	{
-		$template   = e107::getTemplate('mentions', 'project_info_menu');
-		$text = e107::getParser()->parseTemplate($template['content'], false);
+		$template   = e107::getTemplate('mentions', 'project_menu');
+		$text = e107::getParser()->parseTemplate(
+			$template,
+			true,
+			[
+				'DEV_SUPPORT' => LAN_MENTIONS_INFO_MENU_SUPPORT_DEV_TEXT,
+				'SIGN' => LAN_MENTIONS_INFO_MENU_SUPPORT_DEV_TEXT_SIGN
+			]
+		);
 
 		return [
 			'caption' =>  LAN_MENTIONS_INFO_MENU_TITLE,
