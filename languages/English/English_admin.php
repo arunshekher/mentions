@@ -22,7 +22,9 @@ define('LAN_MENTIONS_PREF_LBL_FORUMTOPIC_EMAIL', 'Forum topic mentions email not
 define('LAN_MENTIONS_PREF_LBL_FORUM_EMAIL', 'Forum mentions email notification:');
 define('LAN_MENTIONS_PREF_LBL_FORUMREPLY_EMAIL', 'Forum reply mentions email notification:');
 define('LAN_MENTIONS_PREF_LBL_EMAIL_SUBJECT', 'Email subject-line text:');
-define('LAN_MENTIONS_PREF_LBL_MAX_EMAILS',  'Max. number of mention emails allowed per post.');
+define('LAN_MENTIONS_PREF_LBL_MAX_EMAILS', 'Max. number of mention emails allowed per post.');
+define('LAN_MENTIONS_PREF_LBL_AVATAR_SIZE',  'Choose avatar size:');
+define('LAN_MENTIONS_PREF_LBL_AVATAR_BORDER', 'Choose avatar border style:');
 
 define('LAN_MENTIONS_PREF_LBL_HINT_ACTIVATION', 'Turn On/Off Mentions Globally');
 define('LAN_MENTIONS_PREF_LBL_HINT_CONTEXT', 'All content contexts that require parsing of \'mentions\'.');
@@ -43,11 +45,24 @@ define('LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT_1', 'You can use the placeholde
 define('LAN_MENTIONS_PREF_LBL_HINT_EMAIL_SUBJECT_2', ' in subject-line text, and it will be substituted with actual mentioner\'s username in the email subject field.');
 define('LAN_MENTIONS_PREF_LBL_HINT_MAX_EMAILS_1',  'Maximum allowed number of notification emails that would be sent-out per comment/chatbox-post/forum-post.');
 define('LAN_MENTIONS_PREF_LBL_HINT_MAX_EMAILS_2',  'Any more number of mentioned users than this limit (in one post) will not get email notification about their mentions.');
+define('LAN_MENTIONS_PREF_LBL_HINT_AVATAR_SIZE', 'Choose the avatar size');
+define('LAN_MENTIONS_PREF_LBL_HINT_AVATAR_BORDER', 'Choose avatar border style');
 
 
 define('LAN_MENTIONS_PREF_VAL_CONTEXT_01', 'Forum + Chatbox');
 define('LAN_MENTIONS_PREF_VAL_CONTEXT_02', 'Forum + Chatbox + Comments');
 define('LAN_MENTIONS_PREF_VAL_CONTEXT_03', 'Forum + Chatbox + Comments + News');
+define('LAN_MENTIONS_PREF_VAL_AVATAR_SIZE_16', '16x16px');
+define('LAN_MENTIONS_PREF_VAL_AVATAR_SIZE_24', '24x24px');
+define('LAN_MENTIONS_PREF_VAL_AVATAR_SIZE_32', '32x32px');
+define('LAN_MENTIONS_PREF_VAL_AVATAR_BORDER_CIRCLE', 'Circle');
+define('LAN_MENTIONS_PREF_VAL_AVATAR_BORDER_ROUNDED', 'Rounded');
+define('LAN_MENTIONS_PREF_VAL_AVATAR_BORDER_SQUARE', 'Square');
+define('LAN_MENTIONS_PREF_VAL_MAX_EMAIL_5', '5');
+define('LAN_MENTIONS_PREF_VAL_MAX_EMAIL_10', '10');
+define('LAN_MENTIONS_PREF_VAL_MAX_EMAIL_15', '15');
+define('LAN_MENTIONS_PREF_VAL_MAX_EMAIL_20', '20');
+define('LAN_MENTIONS_PREF_VAL_MAX_EMAIL_25', '25');
 
 // Project Info Menu
 define('LAN_MENTIONS_INFO_MENU_TITLE', 'Project Info');

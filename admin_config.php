@@ -44,25 +44,23 @@ class mentions_ui extends e_admin_ui
 	];
 
 	protected $maxNotificationEmails = [
-		5 => '5',
-		10 => '10',
-		15 => '15',
-		20 => '20',
-		25 => '25',
+		5 => LAN_MENTIONS_PREF_VAL_MAX_EMAIL_5,
+		10 => LAN_MENTIONS_PREF_VAL_MAX_EMAIL_10,
+		15 => LAN_MENTIONS_PREF_VAL_MAX_EMAIL_15,
+		20 => LAN_MENTIONS_PREF_VAL_MAX_EMAIL_20,
+		25 => LAN_MENTIONS_PREF_VAL_MAX_EMAIL_25,
 	];
 
 	protected $avatarSizesList = [
-		16 => '16',
-		24 => '24',
-		32 => '32'
+		16 => LAN_MENTIONS_PREF_VAL_AVATAR_SIZE_16,
+		24 => LAN_MENTIONS_PREF_VAL_AVATAR_SIZE_24,
+		32 => LAN_MENTIONS_PREF_VAL_AVATAR_SIZE_32
 	];
-	/**
-	 * @todo language constants for these
-	 */
+
 	protected $avatarBorderList = [
-		'circle' => 'Circle',
-		'rounded' => 'Rounded',
-		'none' => 'Square'
+		'circle' => LAN_MENTIONS_PREF_VAL_AVATAR_BORDER_CIRCLE,
+		'rounded' => LAN_MENTIONS_PREF_VAL_AVATAR_BORDER_ROUNDED,
+		'none' => LAN_MENTIONS_PREF_VAL_AVATAR_BORDER_SQUARE
 	];
 
 	protected $preftabs = [
@@ -191,21 +189,19 @@ class mentions_ui extends e_admin_ui
 			'data'  => 'int',
 			'help'  => LAN_MENTIONS_PREF_LBL_HINT_MAX_EMAILS_1,
 		],
-		// todo: replace with language constants
 		'avatar_size' => [
-			'title' => 'Avatar Size',
+			'title' => LAN_MENTIONS_PREF_LBL_AVATAR_SIZE,
 			'tab'   => 1,
 			'type'  => 'dropdown',
 			'data'  => 'int',
-			'help'  => 'Set avatar size',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_AVATAR_SIZE,
 		],
-		// todo: replace with language constants
 		'avatar_border' => [
-			'title' => 'Avatar Border Style',
+			'title' => LAN_MENTIONS_PREF_LBL_AVATAR_BORDER,
 			'tab'   => 1,
 			'type'  => 'dropdown',
 			'data'  => 'str',
-			'help'  => 'Set avatar border style',
+			'help'  => LAN_MENTIONS_PREF_LBL_HINT_AVATAR_BORDER,
 		]
 
 	];
