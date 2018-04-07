@@ -148,6 +148,8 @@ class MentionsAutoComplete extends Mentions
 	 */
 	protected function loadLibsUsingLocalPath()
 	{
+		$stylesheet = $this->getStyleSheetPath();
+
 		e107::css('mentions', 'js/ichord.atwho/dist/css/jquery.atwho.min.css');
 		e107::js('footer',
 			e_PLUGIN . 'mentions/js/ichord.caret/dist/jquery.caret.min.js',
@@ -226,6 +228,31 @@ class MentionsAutoComplete extends Mentions
 
 		);
 
+	}
+
+
+	/**
+	 * Returns stylesheet path based on existence of the file in the -
+	 * pre-destined paths. Looks in current theme and mentions plugin -
+	 * css directories before returning the default path.
+	 * @return string
+	 *  The stylesheet file path
+	 * @todo implement and test.
+	 */
+	private function getStyleSheetPath()
+	{
+		$themePath = THEME . 'mentions.css';
+		$pluginPath = e_PLUGIN . 'mentions/css/mentions.css';
+
+		if (file_exists($themePath)) {
+			return $pluginPath;
+		}
+
+		if (file_exists($pluginPath)) {
+			return $pluginPath;
+		}
+
+		return 'js/ichord.atwho/dist/css/jquery.atwho.min.css';
 	}
 
 
