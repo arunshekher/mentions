@@ -7,7 +7,7 @@ A user @mention plugin for e107 CMS.
 ![mentions](https://user-images.githubusercontent.com/315195/28443458-307b897a-6dc7-11e7-981f-1ecc3f64c5d8.gif)
 
 # Description
-This plugin converts user mentions (usernames prepended with '@' sign) in comments, chatbox posts, and forum posts to matching user-profile links in your e107 powered websites. It also helpfully renders a username auto completion/suggestion popup-list as you start to type-in a username followed by an '@' sign in plugin supported text areas.
+This plugin converts user mentions (usernames prepended with '@' sign) in comments, chatbox posts, and forum posts to matching user-profile links in your e107 powered websites. It also helpfully renders a username auto completion/suggestion popup-list as you start to type-in a username followed by an '@' sign in plugin supported text areas. Lastly it notifies the user who has been mentioned via email with a note on time, who mentioned the user and a link to the content where the user has been mentioned.
 
 # Contributions
 Community contributions to mentions plugin are welcome. Since the project is still in its infancy there are specific priorities for development right now. Please take a look at project [roadmap](https://github.com/arunshekher/mentions/projects/1 "Mentions Roadmap") before contributing via issues and pull requests.
