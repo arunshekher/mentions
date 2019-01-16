@@ -183,8 +183,8 @@ class MentionsAutoComplete extends Mentions
 
 
 	/**
-	 * Returns all e107 'texarea' form fields that need to have auto-complete
-	 *  - based on 'mentions_contexts'  plugin preference.
+	 * Returns all e107 'texarea' form fields selector ids that need to have -
+	 * auto-complete based on 'mentions_contexts'  plugin preference.
 	 *
 	 * @return string
 	 *  comma separated string of form field ids that require auto-complete

@@ -68,6 +68,6 @@ define('LAN_MENTIONS_PREF_VAL_MAX_EMAIL_25', '25');
 define('LAN_MENTIONS_INFO_MENU_TITLE', 'Project Info');
 define('LAN_MENTIONS_INFO_MENU_SUBTITLE', 'Project on GitHub:');
 define('LAN_MENTIONS_INFO_MENU_SUBTITLE_ISSUES', 'Report Issues:');
-define('LAN_MENTIONS_INFO_MENU_SUBTITLE_DEV', 'Thank the Developer!');
+define('LAN_MENTIONS_INFO_MENU_SUBTITLE_DEV', 'Show your Appreciation!');
 define('LAN_MENTIONS_INFO_MENU_SUPPORT_DEV_TEXT', 'If you enjoy this plugin, please consider supporting what I do.');
-define('LAN_MENTIONS_INFO_MENU_SUPPORT_DEV_TEXT_SIGN', '"Thank you" &mdash; Arun');
+define('LAN_MENTIONS_INFO_MENU_SUPPORT_DEV_TEXT_SIGN', 'However, if it breaks something please don\'t blame me! &mdash; Arun');
