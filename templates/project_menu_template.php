@@ -28,7 +28,7 @@ $PROJECT_MENU_TEMPLATE = '
 	<li>&nbsp;</li>
 	<li class="text-center">
 		<a class="github-button" href="https://github.com/arunshekher/mentions/subscription" data-icon="octicon-eye" aria-label="Watch arunshekher/mentions on GitHub">Watch</a>
-		<a class="github-button" href="https://github.com/arunshekher/mentions" data-icon="octicon-star" aria-label="Star arunshekher/mentions on GitHub">Star</a>
+		<a class="github-button" href="https://github.com/arunshekher/mentions" data-icon="octicon-star"  data-show-count="true" aria-label="Star arunshekher/mentions on GitHub">Star</a>
 	</li>
 	<li>
 		<h5>' . LAN_MENTIONS_INFO_MENU_SUBTITLE_ISSUES . '</h5>
@@ -42,7 +42,7 @@ $PROJECT_MENU_TEMPLATE = '
 	</li>
 	<li>
 		<p>
-			<small>{DEV_SUPPORT}</small>
+			<small>'.LAN_MENTIONS_INFO_MENU_SUPPORT_DEV_TEXT.'</small>
 		</p>
 	</li>
 	<li class="text-center">
@@ -50,12 +50,24 @@ $PROJECT_MENU_TEMPLATE = '
 		<script type="text/javascript">kofiwidget2.init("Buy Me a Coffee", "#46b798", "E1E4B43T");kofiwidget2.draw();</script>  
 	</li>
 	<li>&nbsp;</li>
-	<li class="text-center">
-		<a class="github-button" href="https://github.com/arunshekher" aria-label="Follow @arunshekher on GitHub">Follow @arunshekher</a>
+	<li class="text-center" style="height: 50px">&nbsp;
+		<script src="https://www.e107.space/bcwidget/coin.js"></script>
+	<script>
+	CoinWidget.go({
+		wallet_address: "1FgXdXePYLGSsyDztWvZw99Ki3i2eVWbDe", 
+		currency: "bitcoin", 
+		counter: "hide", 
+		alignment: "bc", 
+		qrcode: true, 
+		auto_show: false, 
+		lbl_button: "Donate Bitcoins", 
+		lbl_address: "Donate bitcoin to this address:"
+	});
+	</script>
 	</li>
 	<li class="text-center">
 		<p style="padding-top:10px;">
-			<small>{SIGN}</small>
+			<small>'.LAN_MENTIONS_INFO_MENU_SUPPORT_DEV_TEXT_SIGN.'</small>
 		</p>
 		<p>' . MENTIONS_SMILE_ICON .'</p>
 	</li>
