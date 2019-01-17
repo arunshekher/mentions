@@ -17,20 +17,96 @@ class MentionsNotification extends Mentions
 	private $link;
 	private $commentType;
 
-	private $mail;
 	private $eventData;
 
 
+
+
+
 	/**
-	 * MentionsNotification constructor.
+	 * @param mixed $mentioneeData
 	 *
+	 * @return MentionsNotification
 	 */
-	public function __construct()
+	public function setMentioneeData($mentioneeData)
 	{
-		Mentions::__construct();
-		$this->mail = e107::getEmail();
+		$this->mentioneeData = $mentioneeData;
+
+		return $this;
 	}
 
+
+	/**
+	 * @param mixed $mentions
+	 *
+	 * @return MentionsNotification
+	 */
+	public function setMentions($mentions)
+	{
+		$this->mentions = $mentions;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param mixed $mentioner
+	 *
+	 * @return MentionsNotification
+	 */
+	public function setMentioner($mentioner)
+	{
+		$this->mentioner = $mentioner;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param mixed $date
+	 *
+	 * @return MentionsNotification
+	 */
+	public function setDate($date)
+	{
+		$this->date = $date;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param mixed $title
+	 *
+	 * @return MentionsNotification
+	 */
+	public function setTitle($title)
+	{
+		$this->title = $title;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param mixed $link
+	 *
+	 * @return MentionsNotification
+	 */
+	public function setLink($link)
+	{
+		$this->link = $link;
+
+		return $this;
+	}
+
+
+	private function init($tag, $data)
+	{
+		// start by setting identifier
+		$this->setTag($tag);
+
+	}
 
 
 	/**
@@ -51,19 +127,25 @@ class MentionsNotification extends Mentions
 	/**
 	 * Sets tag - an identifier that helps the ensuing member methods differentiate
 	 *  - between what they are dealing with - 'forum', 'chatbox' or 'comment'
-	 * @param mixed $tag
+	 *
+	 * @param $tag
+	 *
+	 * @return $this
 	 */
 	public function setTag($tag)
 	{
 		$this->tag = $tag;
+		return $this;
 	}
-
 
 
 	/**
 	 * Sets eventData
+	 *
 	 * @param mixed $eventData
 	 * @param bool  $appendFlag
+	 *
+	 * @return \MentionsNotification
 	 */
 	public function setEventData($eventData, $appendFlag = false)
 	{
@@ -72,17 +154,21 @@ class MentionsNotification extends Mentions
 		} else {
 			$this->eventData = array_merge($this->eventData, $eventData);
 		}
-
+		return $this;
 	}
 
 
 	/**
 	 * Sets comment type
+	 *
 	 * @param mixed $commentType
+	 *
+	 * @return \MentionsNotification
 	 */
 	public function setCommentType($commentType)
 	{
 		$this->commentType = $commentType;
+		return $this;
 	}
 
 
@@ -94,7 +180,7 @@ class MentionsNotification extends Mentions
 	 */
 	public static function execute()
 	{
-		$notification = new MentionsNotification;
+		$notification = new self;
 		$notification->perform();
 	}
 
@@ -144,32 +230,46 @@ class MentionsNotification extends Mentions
 	 */
 	public function chatbox($data)
 	{
-		// set tag - chatbox
-		$this->setTag(LAN_MENTIONS_TAG_CHATBOX);
+		if ($this->hasAtSign($data['cmessage'])) {
 
-		// Debug
-		// $this->log($data, 'chatbox-event-data');
+			$this->setTag(LAN_MENTIONS_TAG_CHATBOX)
+				->setMentions($this->fetchAllMentions($data['cmessage']))
+				->setMentioner(USERNAME)
+				->setDate($this->prepareDate($data['datestamp']))
+				->setLink($this->getContentLink());
 
-		// if no mentions abort
-		if ( ! $this->hasAtSign($data['cmessage'])) {
-			return false;
-		}
-
-		$mentions = $this->fetchAllMentions($data['cmessage']);
-
-		if ($mentions) {
-
-			$this->setProperties([
-				'mentions' => $mentions,
-				'mentioner' => USERNAME,
-				'date' => $this->getDate($data['datestamp']),
-				'link' => $this->getContentLink()
-				]);
-			
 			// notify
-			$this->notifyAll();
+			return $this->notifyAll();
 		}
-		unset($mentions);
+		return false;
+		//----------------
+
+//		// set tag - chatbox
+//		$this->setTag(LAN_MENTIONS_TAG_CHATBOX);
+//
+//		// Debug
+//		// $this->log($data, 'chatbox-event-data');
+//
+//		// if no mentions abort
+//		if ( ! $this->hasAtSign($data['cmessage'])) {
+//			return false;
+//		}
+//
+//		$mentions = $this->fetchAllMentions($data['cmessage']);
+//
+//		if ($mentions) {
+//
+//			$this->setProperties([
+//				'mentions' => $mentions,
+//				'mentioner' => USERNAME,
+//				'date' => $this->prepareDate($data['datestamp']),
+//				'link' => $this->getContentLink()
+//				]);
+//
+//			// notify
+//			$this->notifyAll();
+//		}
+//		unset($mentions);
 	}
 
 	/**
@@ -209,7 +309,7 @@ class MentionsNotification extends Mentions
 			$this->setProperties([
 				'mentions' => $mentions,
 				'mentioner' => $data['comment_author_name'],
-				'date' => $this->getDate($data['comment_datestamp']),
+				'date' => $this->prepareDate($data['comment_datestamp']),
 				'title' => $data['comment_subject'],
 				'link' => $this->getContentLink()
 			]);
@@ -253,7 +353,7 @@ class MentionsNotification extends Mentions
 			$this->setProperties([
 					'mentions' => $mentions,
 				    'mentioner' => USERNAME,
-				    'date' => $this->getDate($data['post_datestamp'])
+				    'date' => $this->prepareDate($data['post_datestamp'])
 			]);
 
 			// get more forum data
@@ -298,9 +398,11 @@ class MentionsNotification extends Mentions
 	 */
 	private function fetchAllMentions($message)
 	{
-		$pattern = '/(?<=\W|^)@([a-z0-9_.]*)/mis';
+		//$pattern = '/(?<=\W|^)@([a-z0-9_.]*)/mis';
+		$pattern = $this->obtainMatchPattern();
 
 		if (preg_match_all($pattern, $message, $matches) !== false) {
+			$this->log($matches, 'fetch-all-matches');
 			return $matches[0] ?: null;
 		}
 
@@ -309,7 +411,8 @@ class MentionsNotification extends Mentions
 
 
 	/**
-	 * Filters mentions array for duplicates and 'mentioner' themselves.
+	 * Filters mentions array for duplicates and 'mentioner' thyself.
+	 *
 	 * @param $mentions
 	 *  Mentions array passed by reference.
 	 * @return array
@@ -338,15 +441,15 @@ class MentionsNotification extends Mentions
 	 * @return string
 	 *  Formatted date as html
 	 */
-	private function getDate($date, $format = 'long')
+	private function prepareDate($date, $format = 'long')
 	{
-		return $this->parse->toDate($date, $format);
+		return e107::getParser()->toDate($date, $format);
 	}
 
 
 	/**
 	 * Notify each and every 'mentionee' in _POST data
-	 *  - except the 'mentioner' themself
+	 *  - except the 'mentioner' thyself
 	 *
 	 */
 	private function notifyAll()
@@ -361,7 +464,7 @@ class MentionsNotification extends Mentions
 		$uniqueMentions = $this->filterMentions($mentions);
 
 		// Debug
-		$this->log($uniqueMentions, 'unique-mentions');
+		//$this->log($uniqueMentions, 'unique-mentions');
 
 		$maxEmails = $this->prefs['max_emails'];
 
@@ -398,7 +501,7 @@ class MentionsNotification extends Mentions
 	 */
 	private function dispatchEmail()
 	{
-		$mail = $this->mail;
+		$mail = e107::getEmail();
 
 		$emailContent = [
 			'email_subject' =>  $this->emailSubject(),
@@ -416,7 +519,7 @@ class MentionsNotification extends Mentions
 		$emailSent = $mail->sendEmail($userEmail, $userName, $emailContent);
 
 		// Debug
-		$this->log($emailContent, 'email-content-array-log');
+		//$this->log($emailContent, 'email-content-array-log');
 
 		if (true === $emailSent) {
 			$emailContent = null;
@@ -425,7 +528,7 @@ class MentionsNotification extends Mentions
 			return $emailSent;
 		}
 		// Debug
-		$this->log($emailSent, 'email-send-error-log');
+		//$this->log($emailSent, 'email-send-error-log');
 
 		return false;
 	}
@@ -504,6 +607,7 @@ class MentionsNotification extends Mentions
 
 	/**
 	 * Parses and returns text for 'forum' notification email.
+	 *
 	 * @return string
 	 *  Parsed text passage for 'forum' notification email.
 	 */
@@ -523,6 +627,7 @@ class MentionsNotification extends Mentions
 
 	/**
 	 * Parses and returns text for 'comment' notification email.
+	 *
 	 * @return string
 	 *  Parsed text passage for 'comment' notification email.
 	 */
@@ -551,6 +656,7 @@ class MentionsNotification extends Mentions
 
 	/**
 	 * Parses and returns text for 'chatbox' notification email.
+	 *
 	 * @return string
 	 *  Parsed text passage for 'chatbox' notification email.
 	 */
@@ -644,9 +750,10 @@ class MentionsNotification extends Mentions
 		$sql = e107::getDb();
 		$thread_id = (int)$thread_id;
 
-		$query = "SELECT f.forum_sef, f.forum_id, ft.thread_id, ft.thread_name FROM `#forum` AS f "
-			. "LEFT JOIN `#forum_thread` AS ft ON f.forum_id = ft.thread_forum_id "
-			. " WHERE ft.thread_id = {$thread_id} ";
+		$query = "SELECT f.forum_sef, f.forum_id, ft.thread_id, ft.thread_name 
+					FROM `#forum` AS f 
+						LEFT JOIN `#forum_thread` AS ft ON f.forum_id = ft.thread_forum_id 
+							WHERE ft.thread_id = {$thread_id} ";
 
 		$result = $sql->gen($query);
 
@@ -690,6 +797,7 @@ class MentionsNotification extends Mentions
 
 	/**
 	 * Parse and return 'forum' item link
+	 *
 	 * @return string
 	 *  Forum item URL
 	 */
@@ -708,6 +816,7 @@ class MentionsNotification extends Mentions
 
 	/**
 	 * Parse and return 'comment' items link based on comment type.
+	 *
 	 * @return string
 	 *  Comment item URL
 	 */
@@ -768,6 +877,7 @@ class MentionsNotification extends Mentions
 
 	/**
 	 * Create slug from title
+	 *
 	 * @param  string $title
 	 * @param string $type
 	 *
