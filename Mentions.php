@@ -3,11 +3,14 @@ if ( ! defined('e107_INIT')) {
 	exit;
 }
 
-class Mentions
+abstract class Mentions
 {
 
 	protected $prefs;
-	protected $parse;
+	protected $parse; // todo: can be removed
+
+	protected $splitRegEx;
+	protected $matchRegEx;
 
 	/**
 	 * Mentions constructor.
@@ -77,6 +80,35 @@ class Mentions
 
 
 	/**
+	 * Returns RegEx pattern to split text in a consumable manner
+	 *
+	 * @return string
+	 */
+	protected function obtainSplitPattern()
+	{
+		if ($this->prefs['support_v1_chars']) {
+			return '/(^|\w*@\s*[\p{L}\p{N}._#~*]+)/mu';
+		}
+		return '/(^|\p{L}*@\s*[\p{L}\p{N}._]+)/mu';
+	}
+
+
+	/**
+	 * Returns RegEx pattern to match username including '@' symbol
+	 *
+	 * @return string
+	 */
+	protected function obtainMatchPattern()
+	{
+		if ($this->prefs['support_v1_chars']) {
+			return '/@([\p{L}\p{N}_.#~*@!]{2,100})/u'; //todo: ? need I take the core pref into account here?
+		}
+		return '/(@[\p{L}\p{N}_.]{2,100})/u';
+	}
+
+
+
+	/**
 	 * Does Debug logging by writing a log file to the plugin directory
 	 *
 	 * @param string|array $content
@@ -86,14 +118,19 @@ class Mentions
 	 */
 	protected function log($content, $logname = 'mentions')
 	{
-		$path = e_PLUGIN . 'mentions/' . $logname . '.txt';
+		$path = e_PLUGIN . 'mentions/logs/';
+
+		if ( ! file_exists($path)) {
+			mkdir($path, 0777, true);
+		}
+
+		$fileName = $path . $logname . '.txt';
 
 		if (is_array($content)) {
 			$content = var_export($content, true);
 		}
 
-		file_put_contents($path, $content . "\n", FILE_APPEND);
-		unset($path, $content);
+		file_put_contents($fileName, $content . PHP_EOL, FILE_APPEND);
 	}
 
 

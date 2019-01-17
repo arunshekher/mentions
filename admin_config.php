@@ -93,6 +93,13 @@ class mentions_ui extends e_admin_ui
 			'data'  => 'int',
 			'help'  => MENTIONS_ADMIN_JSPATH_HINT,
 		],
+		'support_v1_chars'         => [
+			'title' => MENTIONS_ADMIN_V1CHARSUPPORT_TITLE,
+			'tab'   => 0,
+			'type'  => 'boolean',
+			'data'  => 'int',
+			'help'  => LAN_MENTIONS_PREF_LBL_V1_CHAR_SUPPORT,
+		],
 		'atwho_min_char'          => [
 			'title' => MENTIONS_ADMIN_MINCHAR_TITLE,
 			'tab'   => 1,
@@ -226,6 +233,9 @@ class mentions_ui extends e_admin_ui
 		define('MENTIONS_ADMIN_MAXEMAILS_TITLE', '<p>' . LAN_MENTIONS_PREF_LBL_MAX_EMAILS . '</p><small>'
 			. LAN_MENTIONS_PREF_LBL_HINT_MAX_EMAILS_1 . '<br><br>'
 			. LAN_MENTIONS_PREF_LBL_HINT_MAX_EMAILS_2 . '</small>');
+		define('MENTIONS_ADMIN_V1CHARSUPPORT_TITLE', '<p>'
+			. LAN_MENTIONS_PREF_LBL_V1_CHAR_SUPPORT . '</p><small>'
+			. LAN_MENTIONS_PREF_LBL_HINT_V1_CHAR_SUPPORT . '</small>' );
 	}
 
 	public function renderHelp()

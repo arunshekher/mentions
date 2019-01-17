@@ -5,6 +5,7 @@ define('LAN_MENTIONS_PREF_TAB_NOTIFICATION', 'Email notification');
 define('LAN_MENTIONS_PREF_LBL_ACTIVE', 'Enable/Disable');
 define('LAN_MENTIONS_PREF_LBL_CONTEXTS', 'Parse \'mentions\' in these contexts:');
 define('LAN_MENTIONS_PREF_LBL_GLOBAL_LIBS', 'Use global path for JS libraries:');
+define('LAN_MENTIONS_PREF_LBL_V1_CHAR_SUPPORT', 'Turn-on limited support e107 v1 username characters:');
 
 define('LAN_MENTIONS_PREF_LBL_ATWHO_MINCHARS_1', 'Min. number of characters to input after ');
 define('LAN_MENTIONS_PREF_LBL_ATWHO_MINCHARS_2', 'to trigger the display of auto-complete popup-list:');
@@ -31,6 +32,7 @@ define('LAN_MENTIONS_PREF_LBL_HINT_CONTEXT', 'All content contexts that require 
 define('LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS_1', 'Turn this on if you wish to share ');
 define('LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS_2', ' and ');
 define('LAN_MENTIONS_PREF_LBL_HINT_GLOBAL_LIBS_3', ' libraries with other e107 plugins and/or themes. This plugin uses these libraries.');
+define('LAN_MENTIONS_PREF_LBL_HINT_V1_CHAR_SUPPORT', 'This is recommended for e107 v1 upgraded sites only. Turning this on will provide limited support for characters used in v1 usernames. (\s [space], @ are not supported.)');
 define('LAN_MENTIONS_PREF_LBL_HINT_ATWHO_MINCHAR', 'Minimum number of characters required to input after `@` sign to show suggestion popup-list (0 - 20):');
 define('LAN_MENTIONS_PREF_LBL_HINT_ATWHO_MAXCHAR', 'Max number of characters after `@` that would be matched to populate suggestion.');
 define('LAN_MENTIONS_PREF_LBL_HINT_ATWHO_LIMIT', 'Number of username entries to show in suggestion popup-list');
