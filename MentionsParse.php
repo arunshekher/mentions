@@ -18,7 +18,9 @@ class MentionsParse extends Mentions
 	protected function parseMentions($text)
 	{
 		$mText = '';
-		$pattern = '#(^|\w*@\s*[a-z0-9._]+)#mi';
+		//$pattern = '#(^|\w*@\s*[a-z0-9._]+)#mi';
+		$pattern = $this->obtainSplitPattern();
+
 		$phrases = preg_split($pattern, $text, -1,
 			PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 
@@ -45,7 +47,9 @@ class MentionsParse extends Mentions
 	 */
 	protected function hasUserMentionIn($input)
 	{
-		$pattern = '#^(@[a-z0-9_.]*)$#i';
+		//$pattern = '#^(@[a-z0-9_.]*)$#i';
+		$pattern = $this->obtainMatchPattern();
+
 		if (preg_match($pattern, $input, $matches)) {
 			return $matches[0];
 		}
@@ -55,6 +59,7 @@ class MentionsParse extends Mentions
 
 	/**
 	 * Determines if the context of current text is in plugins preferred context
+	 *
 	 * @param string $context
 	 *  Context marker for current text
 	 * @return bool
@@ -100,5 +105,7 @@ class MentionsParse extends Mentions
 				break;
 		}
 	}
+
+
 
 }
