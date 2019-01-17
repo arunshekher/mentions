@@ -1,7 +1,7 @@
 <?php
 define('LAN_MENTIONS_PLUGIN_NAME', 'Mentions');
-define('LAN_MENTIONS_PLUGIN_SUMMARY', 'A user @mention plugin');
-define('LAN_MENTIONS_PLUGIN_DESCRIPTION', 'It brings Twitter or GitHub like \'@username\' mentioning functionality for e107.');
+define('LAN_MENTIONS_PLUGIN_SUMMARY', 'A @username mention plugin that in-turn sends the mentioned user a notification email.');
+define('LAN_MENTIONS_PLUGIN_DESCRIPTION', 'It brings Twitter or GitHub like \'@username\' mentioning functionality to e107. Mentioned users in-turn receives an email letting them know that they were mentioned in your post.');
 define('LAN_MENTIONS_PLUGIN_CONFIGURE', 'Configure Mentions Plugin');
 
 define('LAN_MENTIONS_TAG_CHATBOX', 'chatbox');
