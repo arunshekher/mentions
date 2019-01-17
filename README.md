@@ -18,10 +18,12 @@ Community contributions to mentions plugin are welcome. Since the project is sti
 * Submit feature requests
 * Express gratitude - scientific studies continually prove that expressing gratitude can make you happier :wink: :laughing: :heart_eyes:
 
-### Known Bugs
-1. When the forum title has a word prepended with an '@' sign in it, it causes rendering issues to the rest of the forum thread (sometimes some replies in the thread go missing!). As soon as the @ sign is removed or a space added in between the word and the '@' sign by editing all replies in the thread renders properly. At present I'm at a loss for a fix.
+### Known Issues
+1. Non-latin characters not yet supported.
+2. When the forum title has a word prepended with an '@' sign in it, it causes rendering issues to the rest of the forum thread (sometimes some replies in the thread go missing!). As soon as the @ sign is removed or a space added in between the word and the '@' sign by editing all replies in the thread renders properly. At present I'm at a loss for a fix.
 
 # Release History
++ Jan 16 2019 [v1.6.3-rc.2](https://github.com/arunshekher/mentions/releases/tag/v1.6.3-rc.2) - release candidate
 + Apr 04, 2018 [v1.6.2-rc.1](https://github.com/arunshekher/mentions/releases/tag/v1.6.2-rc.1) - release candidate
 + Sep 11, 2017 [v1.4.0-beta.1](https://github.com/arunshekher/mentions/releases/tag/v1.4.0-beta.1) - beta release
 + Jul 31, 2017 [v1.2.0-beta.1](https://github.com/arunshekher/mentions/releases/tag/v1.2.0-beta.1) - beta release
