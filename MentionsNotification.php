@@ -565,7 +565,7 @@ class MentionsNotification extends Mentions
 			'MENTION_TEXT' => $this->emailText(),
 		];
 
-		return $this->parse->simpleParse($this->emailTemplate(), $bodyVars);
+		return e107::getParser()->simpleParse($this->emailTemplate(), $bodyVars);
 	}
 
 
@@ -616,7 +616,7 @@ class MentionsNotification extends Mentions
 				break;
 
 			default:
-				return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_UNRESOLVED,
+				return e107::getParser()->lanVars(LAN_MENTIONS_EMAIL_VERSE_UNRESOLVED,
 					$this->mentioner);
 				break;
 		}
@@ -640,7 +640,7 @@ class MentionsNotification extends Mentions
 			'link' => $link,
 		];
 
-		return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_FORUM_NEW, $vars);
+		return e107::getParser()->lanVars(LAN_MENTIONS_EMAIL_VERSE_FORUM_NEW, $vars);
 	}
 
 	/**
@@ -668,7 +668,7 @@ class MentionsNotification extends Mentions
 			'link'  => $link
 		];
 
-		return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_COMMENT_NEW, $vars);
+		return e107::getParser()->lanVars(LAN_MENTIONS_EMAIL_VERSE_COMMENT_NEW, $vars);
 	}
 
 
@@ -687,7 +687,7 @@ class MentionsNotification extends Mentions
 			'link' => $link
 		];
 
-		return $this->parse->lanVars(LAN_MENTIONS_EMAIL_VERSE_CHATBOX_NEW, $vars);
+		return e107::getParser()->lanVars(LAN_MENTIONS_EMAIL_VERSE_CHATBOX_NEW, $vars);
 	}
 
 

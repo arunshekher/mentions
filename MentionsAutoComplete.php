@@ -48,7 +48,7 @@ class MentionsAutoComplete extends Mentions
 		if (e_AJAX_REQUEST && USER && vartrue($queryParam)) {
 
 			$db = $this->db;
-			$tp = $this->parse;
+			$tp = e107::getParser();
 			$ajax = $this->ajax;
 
 			$mq = $tp->filter($queryParam);
@@ -209,11 +209,13 @@ class MentionsAutoComplete extends Mentions
 	 */
 	private function getAvatar($userImage)
 	{
+		$tp = e107::getParser();
+
 		$measure = $this->prefs['avatar_size'];
 
 		$shape = $this->prefs['avatar_border'];
 
-		return $this->parse->toAvatar(
+		return $tp->toAvatar(
 
 			['user_image' => $userImage],
 

@@ -20,7 +20,6 @@ abstract class Mentions
 	public function __construct()
 	{
 		$this->prefs = e107::getPlugPref('mentions');
-		$this->parse = e107::getParser();
 	}
 
 
@@ -38,8 +37,10 @@ abstract class Mentions
 		$data = $this->getUserData($mention);
 
 		if ($data['user_name'] === $this->stripAtFrom($mention)) {
+
 			$userData =
 				['id' => $data['user_id'], 'name' => $data['user_name']];
+
 			$link = e107::getUrl()->create('user/profile/view', $userData);
 
 			return '<a href="' . $link . '">' . $mention . '</a>';
@@ -61,6 +62,7 @@ abstract class Mentions
 	protected function getUserData($mention)
 	{
 		$username = e107::getParser()->toDB($this->stripAtFrom($mention));
+
 		$row = e107::getDb()->retrieve('user', 'user_name, user_id, user_email',
 			"user_name = '{$username}' ");
 
@@ -109,7 +111,7 @@ abstract class Mentions
 	{
 		if ($this->prefs['support_v1_chars']) {
 
-			return '/@([\p{L}\p{N}_.#~*@!]{2,100})/u'; //todo: ? need I take the core pref into account here?
+			return '/@([\p{L}\p{N}_.#~*@!]{2,100})/u';
 
 		}
 
