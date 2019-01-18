@@ -50,7 +50,6 @@ class MentionsLinksResource extends Mentions
 	 */
 	public function get()
 	{
-		$this->log($this->data, 'from-resource-get-method');
 		if (LAN_MENTIONS_TAG_CHATBOX === $this->category) {
 			return $this->itemLink =
 				SITEURLBASE . e_PLUGIN_ABS . 'chatbox_menu/chat.php';

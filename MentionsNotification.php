@@ -387,8 +387,7 @@ class MentionsNotification extends Mentions
 			$this->notifyAll();
 		}
 		unset($mentions);
-		//test
-		$this->log($this->linksResource()->get());
+
 		return true;
 	}
 
@@ -419,7 +418,7 @@ class MentionsNotification extends Mentions
 		$pattern = $this->obtainMatchPattern();
 
 		if (preg_match_all($pattern, $message, $matches) !== false) {
-			$this->log($matches, 'fetch-all-matches');
+
 			return $matches[0] ?: null;
 		}
 
