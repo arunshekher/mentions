@@ -175,4 +175,37 @@ class MentionsLinksResource extends Mentions
 		return ['mode' => 'full', 'legacy' => true];
 	}
 
+
+	/**
+	 * Decides comment's inheritor's 'name' from 'comment_type'
+	 *
+	 * @param mixed $input
+	 *  'comment_type' obtained from event data
+	 * @return string
+	 *  The name of 'comment_type' in words.
+	 */
+	private function solveCommentType($input)
+	{
+		if (is_numeric($input)) {
+
+			if (0 === (int)$input) {
+				return LAN_MENTIONS_COMMENT_NEWS;
+			}
+
+			if (2 === (int)$input) {
+				return LAN_MENTIONS_COMMENT_DOWNLOADS;
+			}
+
+			if (4 === (int)$input) {
+				return LAN_MENTIONS_COMMENT_POLL;
+			}
+			return LAN_MENTIONS_COMMENT_UNKNOWN;
+		}
+
+		return $input;
+	}
+
+
+
+
 }
