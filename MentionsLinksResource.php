@@ -11,6 +11,20 @@ class MentionsLinksResource extends Mentions
 	public function set($category, $data)
 	{
 		$this->setCategory($category)->setData($data);
+
+		return $this;
+	}
+
+
+	/**
+	 * @param mixed $data
+	 *
+	 * @return \MentionsLinksResource
+	 */
+	public function setData($data)
+	{
+		$this->data = $data;
+
 		return $this;
 	}
 
@@ -29,18 +43,6 @@ class MentionsLinksResource extends Mentions
 
 
 	/**
-	 * @param mixed $data
-	 *
-	 * @return \MentionsLinksResource
-	 */
-	public function setData($data)
-	{
-		$this->data = $data;
-
-		return $this;
-	}
-
-	/**
 	 * Returns the content entity links for notification email.
 	 *
 	 * @return string
@@ -50,7 +52,8 @@ class MentionsLinksResource extends Mentions
 	{
 		$this->log($this->data, 'from-resource-get-method');
 		if (LAN_MENTIONS_TAG_CHATBOX === $this->category) {
-			return $this->itemLink = SITEURLBASE . e_PLUGIN_ABS . 'chatbox_menu/chat.php';
+			return $this->itemLink =
+				SITEURLBASE . e_PLUGIN_ABS . 'chatbox_menu/chat.php';
 		}
 
 		if (LAN_MENTIONS_TAG_COMMENT === $this->category) {
@@ -65,18 +68,17 @@ class MentionsLinksResource extends Mentions
 	}
 
 
-
-
 	private function commentItemLink()
 	{
 	}
 
 
-
-
 	private function forumItemLink()
 	{
+		$this->setMissingForumData();
+
 		$data = $this->data;
+
 		$data['thread_sef'] = $this->getThreadSlug();
 
 		$opt = $this->getLinkOptions('forum');
@@ -85,10 +87,13 @@ class MentionsLinksResource extends Mentions
 	}
 
 
+	private function setMissingForumData()
+	{
+		array_merge($this->data, $this->getMissingForumData());
+	}
 
 
-
-	private function getThreadSlug()
+	private function getMissingForumData()
 	{
 		$sql = e107::getDb();
 		$thread_id = (int) $this->data['post_thread'];
@@ -101,20 +106,25 @@ class MentionsLinksResource extends Mentions
 		$result = $sql->gen($query);
 
 		if ($result) {
-			//return $sql->fetch($result);
-			return $this->createSlug($result['thread_name']);
+			return $sql->fetch($result);
 		}
 
 		return null;
 	}
 
 
+	private function getThreadSlug()
+	{
 
+		return $this->createSlug($this->data['thread_name']);
+
+	}
 
 
 	private function createSlug($title, $type = null)
 	{
 		$type = $type ?: e107::getPref('url_sef_translate');
+
 		return eHelper::title2sef($title, $type);
 	}
 
@@ -135,31 +145,34 @@ class MentionsLinksResource extends Mentions
 		switch ($type) {
 
 			case 'news':
-				return [ 'full' => true ];
+				return ['full' => true];
 				break;
 
 			case 'page':
-				return [ 'full' => true ];
+				return ['full' => true];
 				break;
 
 			case 'downloads':
 				if ($coreUrlPref['download']) {
-					return [ 'mode' => 'full',
-					         'legacy' => false ];
+					return [
+						'mode'   => 'full',
+						'legacy' => false,
+					];
 				}
 				break;
 
 			case 'forum':
 				if ($coreUrlPref['forum']) {
 					return [
-						'mode' => 'full',
-						'query' => ['last' => 1],
-						'legacy' => false ];
+						'mode'   => 'full',
+						'query'  => ['last' => 1],
+						'legacy' => false,
+					];
 				}
 				break;
 		}
 
-		return [ 'mode' => 'full', 'legacy' => true ];
+		return ['mode' => 'full', 'legacy' => true];
 	}
 
 }
