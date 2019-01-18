@@ -2,6 +2,7 @@
 if ( ! defined('e107_INIT')) {
 	exit;
 }
+require_once __DIR__ . '/MentionsLinksResource.php';
 
 class MentionsNotification extends Mentions
 {
@@ -18,6 +19,16 @@ class MentionsNotification extends Mentions
 	private $commentType;
 
 	private $eventData;
+
+
+	/**
+	 * @return \MentionsLinksResource
+	 */
+	public function linksResource()
+	{
+		$resource = new MentionsLinksResource;
+		return $resource->set($this->tag, $this->eventData);
+	}
 
 
 
@@ -238,6 +249,9 @@ class MentionsNotification extends Mentions
 				->setDate($this->prepareDate($data['datestamp']))
 				->setLink($this->getContentLink());
 
+			// test
+			$this->log($this->linksResource()->get(), 'links-via-provider');
+
 			// notify
 			return $this->notifyAll();
 		}
@@ -373,6 +387,9 @@ class MentionsNotification extends Mentions
 			$this->notifyAll();
 		}
 		unset($mentions);
+		//test
+		$this->log($this->linksResource()->get());
+		return true;
 	}
 
 
@@ -460,7 +477,9 @@ class MentionsNotification extends Mentions
 			return false;
 		}
 
-		// filter mentions for duplicates and 'mentioner' themself
+		// filter mentions for duplicates and 'mentioner' thyself
+		// even if a mentionee was mentioned more than once in a post
+		// only 1 email is warranted
 		$uniqueMentions = $this->filterMentions($mentions);
 
 		// Debug
@@ -522,13 +541,12 @@ class MentionsNotification extends Mentions
 		//$this->log($emailContent, 'email-content-array-log');
 
 		if (true === $emailSent) {
-			$emailContent = null;
-			$mail = null;
-			//unset($emailContent, $mail);
 			return $emailSent;
 		}
 		// Debug
-		//$this->log($emailSent, 'email-send-error-log');
+		e107::getLog()->add('Mentions Email Sent Failure', $emailSent,
+			E_LOG_WARNING, 'MENTIONS_01',
+			LOG_TO_ADMIN, ['user_name' => $userName]);
 
 		return false;
 	}
