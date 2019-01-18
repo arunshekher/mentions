@@ -3,6 +3,7 @@ if ( ! defined('e107_INIT')) {
 	exit;
 }
 
+
 abstract class Mentions
 {
 
@@ -12,6 +13,7 @@ abstract class Mentions
 	protected $splitRegEx;
 	protected $matchRegEx;
 
+
 	/**
 	 * Mentions constructor.
 	 */
@@ -20,6 +22,7 @@ abstract class Mentions
 		$this->prefs = e107::getPlugPref('mentions');
 		$this->parse = e107::getParser();
 	}
+
 
 	/**
 	 * Converts valid user mention to user profile-link
@@ -58,8 +61,8 @@ abstract class Mentions
 	protected function getUserData($mention)
 	{
 		$username = e107::getParser()->toDB($this->stripAtFrom($mention));
-		$row = e107::getDb()->retrieve("user", "user_name, user_id, user_email",
-			"user_name = '" . $username . "' ");
+		$row = e107::getDb()->retrieve('user', 'user_name, user_id, user_email',
+			"user_name = '{$username}' ");
 
 		return $row;
 	}
@@ -70,6 +73,7 @@ abstract class Mentions
 	 *
 	 * @param string $mention
 	 *  String prepended with '@'.
+	 *
 	 * @return string
 	 *  String striped clean of '@'
 	 */
@@ -87,8 +91,11 @@ abstract class Mentions
 	protected function obtainSplitPattern()
 	{
 		if ($this->prefs['support_v1_chars']) {
+
 			return '/(^|\w*@\s*[\p{L}\p{N}._#~*]+)/mu';
+
 		}
+
 		return '/(^|\p{L}*@\s*[\p{L}\p{N}._]+)/mu';
 	}
 
@@ -101,11 +108,13 @@ abstract class Mentions
 	protected function obtainMatchPattern()
 	{
 		if ($this->prefs['support_v1_chars']) {
+
 			return '/@([\p{L}\p{N}_.#~*@!]{2,100})/u'; //todo: ? need I take the core pref into account here?
+
 		}
+
 		return '/(@[\p{L}\p{N}_.]{2,100})/u';
 	}
-
 
 
 	/**
@@ -113,7 +122,7 @@ abstract class Mentions
 	 *
 	 * @param string|array $content
 	 *  The data to be logged - can be passed as string or array.
-	 * @param string $logname
+	 * @param string       $logname
 	 *  The name of log that need to be written to file-system.
 	 */
 	protected function log($content, $logname = 'mentions')
