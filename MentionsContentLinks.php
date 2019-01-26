@@ -21,8 +21,19 @@ class ContentLinksFactory
 
 	public function create()
 	{
+		if ($this->id === 'forum')
+		{
+			$forum = new ForumLinks($this->data);
+			return $forum->createLink();
+		}
 
+		return null;
 	}
+}
+
+class ChatboxLinks
+{
+
 }
 
 class CommentLinks
@@ -66,23 +77,26 @@ class ForumLinks
 	private function setMissingForumData()
 	{
 		if (is_array($this->forumData)) {
+
 			array_merge($this->forumData, $this->getMissingForumData());
-			// todo: create thread_sef here?
+
+			// todo: create thread_sef here link so:
+			// $this->forumData['thread_sef'] = $this->getThreadSlug();
 		}
 		return $this;
 	}
 
 
-
-
-	private function createSlug($title, $type = null)
+	public function createLink()
 	{
-		$type = $type ?: e107::getPref('url_sef_translate');
-
-		return eHelper::title2sef($title, $type);
+		return e107::url('forum', 'topic', $this->forumData, $this->getLinkOptions());
 	}
 
 
+	/**
+	 * @return string
+	 * @deprecated - use ForumLinks::createLink()
+	 */
 	private function createForumItemLink()
 	{
 
@@ -93,6 +107,14 @@ class ForumLinks
 		$opt = $this->getLinkOptions();
 
 		return e107::url('forum', 'topic', $data, $opt);
+	}
+
+
+	private function createSlug($title, $type = null)
+	{
+		$type = $type ?: e107::getPref('url_sef_translate');
+
+		return eHelper::title2sef($title, $type);
 	}
 
 
