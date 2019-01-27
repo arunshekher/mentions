@@ -12,7 +12,7 @@ abstract class Mentions
 	 * --------------------------------------
 	 */
 
-	const SPLIT_REGEX_V1 = '/(^|[\pL\pN\pM]*@\s*[\pL\pN\pM._-~#!@*]+)/u';
+	const SPLIT_REGEX_V1 = '/(^|[\pL\pN\pM]*@\s*[\pL\pN\pM._-~#!@\*]+)/u';
 	/**
 	 * Split text regex - v2 sites
 	 * --------------------------------------
@@ -24,7 +24,7 @@ abstract class Mentions
 	 * --------------------------------------
 	 */
 
-	const MATCH_REGEX_V1 = '/@([\pL\pN\pM._-~#!@*]+)/u';
+	const MATCH_REGEX_V1 = '/@([\pL\pN\pM._-~#!@\*]+)/u';
 	/**
 	 * Match username regex - v2 sites
 	 * --------------------------------------
@@ -36,7 +36,7 @@ abstract class Mentions
 	 * --------------------------------------
 	 */
 
-	const SPLIT_REGEX_V1_FALLBACK = '/(^|\w*@\s*[a-z0-9._#~*]+)/mui';
+	const SPLIT_REGEX_V1_FALLBACK = '/(^|\w*@\s*[a-z0-9._#~\*]+)/mui';
 	/**
 	 * Split text regex fallback - v2 sites
 	 * --------------------------------------
@@ -48,7 +48,7 @@ abstract class Mentions
 	 * --------------------------------------
 	 */
 
-	const MATCH_REGEX_V1_FALLBACK = '/@([\w\X._-~#!@*]+)/ui';
+	const MATCH_REGEX_V1_FALLBACK = '/@([\w\X._-~#!@\*]+)/ui';
 	/**
 	 * Match username regex fallback - v1 upgraded sites
 	 * --------------------------------------
