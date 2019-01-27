@@ -18,8 +18,8 @@ class MentionsParse extends Mentions
 	protected function parseMentions($text)
 	{
 		$mText = '';
-		//$pattern = '#(^|\w*@\s*[a-z0-9._]+)#mi';
-		$pattern = $this->obtainSplitPattern();
+
+		$pattern = $this->obtainSplitRegEx();
 
 		$phrases = preg_split($pattern, $text, -1,
 			PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
@@ -47,11 +47,12 @@ class MentionsParse extends Mentions
 	 */
 	protected function hasUserMentionIn($input)
 	{
-		//$pattern = '#^(@[a-z0-9_.]*)$#i';
-		$pattern = $this->obtainMatchPattern();
+
+		$pattern = $this->obtainMatchRegEx();
 
 		if (preg_match($pattern, $input, $matches)) {
-			return $matches[0];
+			//$this->log($input, '1-matches-hasusermention');
+			return $matches;
 		}
 
 		return false;
