@@ -48,12 +48,12 @@ abstract class Mentions
 	 * --------------------------------------
 	 */
 
-	const MATCH_REGEX_V1_FALLBACK = '/@([\w\X._-~#!@*]+)/u';
+	const MATCH_REGEX_V1_FALLBACK = '/@([\w\X._-~#!@*]+)/ui';
 	/**
 	 * Match username regex fallback - v1 upgraded sites
 	 * --------------------------------------
 	 */
-	const MATCH_REGEX_V2_FALLBACK = '/@([\w\X._]+)/u';
+	const MATCH_REGEX_V2_FALLBACK = '/@([\w\X._]+)/ui';
 
 
 	/**
@@ -67,13 +67,44 @@ abstract class Mentions
 	private $userName;
 	private $userData;
 
+	private $pcreCompatibility = false;
+
 
 	/**
 	 * Mentions constructor.
 	 */
 	public function __construct()
 	{
-		$this->prefs = e107::getPlugPref('mentions');
+		$this->setPrefs()->setPcreCompatibility();
+		$this->log($this->pcreCompatibility, 'PCRE-compatibility');
+	}
+
+
+	/**
+	 * @param mixed $prefs
+	 *
+	 * @return Mentions
+	 */
+	public function setPrefs()
+	{
+		$this->prefs =  e107::getPlugPref('mentions');
+
+		return $this;
+	}
+
+
+	private function setPcreCompatibility()
+	{
+		// Need to check PCRE version because some environments are
+		// running older versions of the PCRE library
+		// (run in *nix environment `pcretest -C`)
+
+		if (defined('PCRE_VERSION')) {
+			if ((int) PCRE_VERSION >= 7) { // constant available since PHP 5.2.4
+				$this->pcreCompatibility = true;
+			}
+		}
+		return $this;
 	}
 
 
