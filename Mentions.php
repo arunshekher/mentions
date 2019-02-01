@@ -80,19 +80,6 @@ abstract class Mentions
 	}
 
 
-	/**
-	 * @param mixed $prefs
-	 *
-	 * @return Mentions
-	 */
-	public function setPrefs()
-	{
-		$this->prefs =  e107::getPlugPref('mentions');
-
-		return $this;
-	}
-
-
 	private function setPcreCompatibility()
 	{
 		// Need to check PCRE version because some environments are
@@ -100,11 +87,54 @@ abstract class Mentions
 		// (run in *nix environment `pcretest -C`)
 
 		if (defined('PCRE_VERSION')) {
-			if ((int) PCRE_VERSION >= 7) { // constant available since PHP 5.2.4
+			if ((int)PCRE_VERSION >= 7) { // constant available since PHP 5.2.4
 				$this->pcreCompatibility = true;
 			}
 		}
+
 		return $this;
+	}
+
+
+	/**
+	 * @param mixed $prefs
+	 *
+	 * @return Mentions
+	 */
+	public function setPrefs()
+	{
+		$this->prefs = e107::getPlugPref('mentions');
+
+		return $this;
+	}
+
+
+	/**
+	 * Does Debug logging by writing a log file to the plugin directory
+	 *
+	 * @param mixed  $content
+	 *  The data to be logged - can be passed as string or array.
+	 * @param string $logname
+	 *  The name of log that need to be written to file-system.
+	 */
+	protected function log($content, $logname = 'mentions')
+	{
+		$path = e_PLUGIN . 'mentions/logs/';
+
+		if ( ! file_exists($path) && ! mkdir($path, 0777,
+				true) && ! is_dir($path)) {
+			throw new \RuntimeException(sprintf('Directory "%s" was not created',
+				$path));
+		}
+
+		$fileName = $path . $logname . '.txt';
+
+		if (is_array($content) || is_object($content)) {
+			$content = var_export($content, true);
+		}
+
+		file_put_contents($fileName, $content . PHP_EOL, FILE_APPEND);
+
 	}
 
 
@@ -119,8 +149,8 @@ abstract class Mentions
 	 */
 	protected function createUserLinkFrom($mention)
 	{
-		$userMention = $mention[0];
-		$userName = $mention[1];
+
+		[$userMention, $userName] = $mention;
 
 		$data = $this->getUserData($userName);
 
@@ -131,7 +161,7 @@ abstract class Mentions
 
 			$link = e107::getUrl()->create('user/profile/view', $userData);
 
-			return '<a href="' . $link . '">' . $userMention . '</a>';
+			return '<a href="' . $link . '" class="mentions-user-link">' . $userMention . '</a>';
 		}
 
 		return $userMention;
@@ -139,27 +169,30 @@ abstract class Mentions
 
 
 	/**
-	 * Get user data from database
+	 * Get user data (user_id, user_name, user_email) from user table
 	 *
-	 * @param string $mention
-	 *  String prepended with '@' which the parsing logic captured.
+	 * @param string $userName
 	 *
 	 * @return array
-	 *  User details from 'user' table - user_id, user_name, user_email
+	 *      User details from 'user' table
+	 * @todo make regex parsing of spaces in username work so that
+	 *      v1 support for data retrieval can be implemented
 	 */
-	protected function getUserData($mention)
+	protected function getUserData($userName)
 	{
 		$sql = e107::getDb();
-		$username = e107::getParser()->toDB($mention);
+		$tp = e107::getParser();
 
-		$row = $sql->retrieve('user', 'user_name, user_id, user_email',
-			"user_name = '{$username}' ");
+		$userName = $tp->toDB($userName);
 
-		if ($row) {
-			return $row;
+		if ($this->prefs['support_v1_chars']) {
+			return $sql->retrieve('user', 'user_name, user_id, user_email',
+				"user_name = '{$userName}' OR REPLACE(user_name, ' ', '-') = '{$userName}' ");
 		}
+
 		return $sql->retrieve('user', 'user_name, user_id, user_email',
-					"user_name LIKE '%{$username}%' ");
+			"user_name = '{$userName}' ");
+
 	}
 
 
@@ -239,35 +272,6 @@ abstract class Mentions
 		}
 
 		return self::MATCH_REGEX_V2_FALLBACK;
-	}
-
-
-	/**
-	 * Does Debug logging by writing a log file to the plugin directory
-	 *
-	 * @param mixed $content
-	 *  The data to be logged - can be passed as string or array.
-	 * @param string       $logname
-	 *  The name of log that need to be written to file-system.
-	 */
-	protected function log($content, $logname = 'mentions')
-	{
-		$path = e_PLUGIN . 'mentions/logs/';
-
-		if ( ! file_exists($path) && ! mkdir($path, 0777,
-				true) && ! is_dir($path)) {
-					throw new \RuntimeException(sprintf('Directory "%s" was not created',
-						$path));
-				}
-
-		$fileName = $path . $logname . '.txt';
-
-		if (is_array($content) || is_object($content)) {
-			$content = var_export($content, true);
-		}
-
-		file_put_contents($fileName, $content . PHP_EOL, FILE_APPEND);
-
 	}
 
 
