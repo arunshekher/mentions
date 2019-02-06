@@ -1,5 +1,18 @@
 <?php
 
+
+trait Sluggable
+{
+	private function createSlug($title, $type = null)
+	{
+		$type = $type ?: e107::getPref('url_sef_translate');
+
+		return eHelper::title2sef($title, $type);
+	}
+
+}
+
+
 class ContentLinksFactory
 {
 	private $id;
@@ -21,28 +34,258 @@ class ContentLinksFactory
 
 	public function create()
 	{
-		if ($this->id === 'forum')
-		{
+		if ($this->id === 'forum') {
 			$forum = new ForumLinks($this->data);
+
 			return $forum->createLink();
 		}
 
 		return null;
 	}
+
+
+	public function generate()
+	{
+		$class = ucfirst($this->id) . 'Links';
+		$controller = new $class($this->data);
+
+		return $controller->createLink();
+	}
 }
 
+
+/**
+ * Class ChatboxLinks
+ */
 class ChatboxLinks
 {
+	private $chatData;
+
+
+	/**
+	 * ChatboxLinks constructor.
+	 *
+	 * @param $chatData
+	 */
+	public function __construct($chatData)
+	{
+		$this->setChatData($chatData);
+	}
+
+
+	/**
+	 * @param mixed $chatData
+	 *
+	 * @return ChatboxLinks
+	 */
+	public function setChatData($chatData)
+	{
+		$this->chatData = $chatData;
+
+		return $this;
+	}
+
+
+	public function createLink()
+	{
+		return SITEURLBASE . e_PLUGIN_ABS . 'chatbox_menu/chat.php';
+	}
+
 
 }
 
+
+/**
+ * Class CommentLinks
+ */
 class CommentLinks
 {
 
+	use Sluggable;
+
+	public $link;
+	private $linkConfig;
+
+	private $data;
+	private $type;
+
+
+	/**
+	 * CommentLinks constructor.
+	 *
+	 * @param $commentData
+	 */
+	public function __construct($data)
+	{
+		$this->setData($data)->setType((int)$data['comment_type'])
+			->setLinkConfig($this->getLinkConfig());
+
+		file_put_contents(e_PLUGIN . 'mentions/logs/content-links-factory-comment.txt', var_export($this->linkConfig, true) . PHP_EOL, FILE_APPEND);
+	}
+
+
+	/**
+	 * @param mixed $linkConfig
+	 *
+	 * @return CommentLinks
+	 */
+	public function setLinkConfig($linkConfig)
+	{
+		$this->linkConfig = $linkConfig;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param mixed $type
+	 *
+	 * @return CommentLinks
+	 */
+	protected function setType($type)
+	{
+		$this->type = $type;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param mixed $data
+	 *
+	 * @return CommentLinks
+	 */
+	protected function setData($data)
+	{
+		$this->data = $data;
+
+		return $this;
+	}
+
+
+	/**
+	 * Returns options for link creation based on core URL preference.
+	 *
+	 * @param string $type
+	 *
+	 * @return array
+	 *  URL creation options array
+	 * @todo for URL configuration types, preference 'url_config' should be
+	 *     considered rather than 'e_url_list'
+	 */
+	private function getLinkConfig()
+	{
+		$type = $this->type;
+
+		$urlPref = e107::getPref('e_url_list');
+
+		if ($type === 0) {
+			return ['full' => true];
+		}
+
+		if ($type === 'page') {
+			return ['full' => true];
+		}
+
+		if ($type === 2 && $urlPref['download']) {
+			return ['mode' => 'full', 'legacy' => false];
+		}
+
+		if ($type === 'profile') {
+			return ['full' => true];
+		}
+
+		return ['mode' => 'full', 'full' => true, 'legacy' => true];
+	}
+
+
+	/**
+	 * @param mixed $link
+	 *
+	 * @return CommentLinks
+	 */
+	public function setLink($link)
+	{
+		$this->link = $link;
+	}
+
+
+	public function generate()
+	{
+		return $this->createLink();
+	}
+
+
+	public function createLink()
+	{
+		$config = $this->linkConfig;
+
+		if ($this->type === 0) { /** @var  $type : news */
+
+			$urlData = [
+				'news_id'  => $this->data['comment_item_id'],
+				'news_sef' => $this->createSlug($this->data['comment_subject']),
+			];
+
+			return e107::getUrl()->create('news/view/item', $urlData, $config);
+		}
+
+		if ($this->type === 2) { /** @var  $type : download */
+
+			$urlData = [
+				'download_id'  => $this->data['comment_item_id'],
+				'download_sef' => $this->createSlug($this->data['comment_subject']),
+			];
+
+			return e107::url('download', 'item', $urlData, $config);
+		}
+
+		if ($this->type === 4) { /** @var  $type : poll */
+
+			return SITEURLBASE . e_PLUGIN_ABS . 'poll/oldpolls.php?' . $this->data['comment_item_id'];
+		}
+
+		if ($this->type === 'page') {
+
+			$urlData = [
+				'page_id'    => $this->data['comment_item_id'],
+				'page_title' => $this->data['comment_subject'],
+				'page_sef'   => $this->createSlug($this->data['comment_subject']),
+			];
+
+			return e107::getUrl()->create('page/view', $urlData, $config);
+		}
+
+		if ($this->type === 'profile') {
+
+			$urlData = [
+				'id'   => $this->data['comment_item_id'],
+				'name' => $this->data['comment_subject'],
+			];
+
+			return e107::getUrl()
+				->create('user/profile/view', $urlData, $config);
+		}
+
+		if ($this->type === null) {
+			return SITEURLBASE;
+		}
+
+		return null;
+	}
+
+
+
+
 }
 
+
+/**
+ * Class ForumLinks
+ */
 class ForumLinks
 {
+	use Sluggable;
 
 	private $forumData;
 
@@ -59,6 +302,49 @@ class ForumLinks
 
 
 	/**
+	 * @return $this
+	 */
+	private function setMissingForumData()
+	{
+		if (is_array($this->forumData)) {
+
+			array_merge($this->forumData, $this->getMissingForumData());
+
+			// todo: create thread_sef here link so:
+			// $this->forumData['thread_sef'] = $this->getThreadSlug();
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * Returns missing forum data from `#forum` and `#forum_thread` tables
+	 *
+	 * @return array|bool|null
+	 */
+	private function getMissingForumData()
+	{
+		$sql = e107::getDb();
+
+		$thread_id = (int)$this->forumData['post_thread'];
+
+		$query = "SELECT f.forum_sef, f.forum_id, ft.thread_id, ft.thread_name 
+					FROM `#forum` AS f 
+						LEFT JOIN `#forum_thread` AS ft ON f.forum_id = ft.thread_forum_id 
+							WHERE ft.thread_id = {$thread_id} ";
+
+		$result = $sql->gen($query);
+
+		if ($result) {
+			return $sql->fetch($result);
+		}
+
+		return null;
+	}
+
+
+	/**
 	 * @param mixed $forumData
 	 *
 	 * @return ForumLinks
@@ -71,25 +357,30 @@ class ForumLinks
 	}
 
 
-	/**
-	 * @return $this
-	 */
-	private function setMissingForumData()
+	public function createLink()
 	{
-		if (is_array($this->forumData)) {
-
-			array_merge($this->forumData, $this->getMissingForumData());
-
-			// todo: create thread_sef here link so:
-			// $this->forumData['thread_sef'] = $this->getThreadSlug();
-		}
-		return $this;
+		return e107::url('forum', 'topic', $this->forumData,
+			$this->getLinkOptions());
 	}
 
 
-	public function createLink()
+	/**
+	 * Returns forum link options
+	 *
+	 * @return array
+	 */
+	private function getLinkOptions()
 	{
-		return e107::url('forum', 'topic', $this->forumData, $this->getLinkOptions());
+		$urlPref = e107::getPref('e_url_list');
+
+		if ($urlPref['forum']) {
+			return ['mode'   => 'full',
+			        'legacy' => false,
+			        'query'  => ['last' => 1],
+			];
+		}
+
+		return ['mode' => 'full', 'legacy' => true];
 	}
 
 
@@ -110,61 +401,11 @@ class ForumLinks
 	}
 
 
-	private function createSlug($title, $type = null)
-	{
-		$type = $type ?: e107::getPref('url_sef_translate');
-
-		return eHelper::title2sef($title, $type);
-	}
-
-
-	/**
-	 * Returns missing forum data from `#forum` and `#forum_thread` tables
-	 *
-	 * @return array|bool|null
-	 */
-	private function getMissingForumData()
-	{
-		$sql = e107::getDb();
-
-		$thread_id = (int) $this->forumData['post_thread'];
-
-		$query = "SELECT f.forum_sef, f.forum_id, ft.thread_id, ft.thread_name 
-					FROM `#forum` AS f 
-						LEFT JOIN `#forum_thread` AS ft ON f.forum_id = ft.thread_forum_id 
-							WHERE ft.thread_id = {$thread_id} ";
-
-		$result = $sql->gen($query);
-
-		if ($result) {
-			return $sql->fetch($result);
-		}
-
-		return null;
-	}
-
-
 	private function getThreadSlug()
 	{
 
 		return $this->createSlug($this->forumData['thread_name']);
 
-	}
-
-
-	/**
-	 * Returns forum link options
-	 *
-	 * @return array
-	 */
-	private function getLinkOptions()
-	{
-		$urlPref = e107::getPref('e_url_list');
-
-		if ($urlPref['forum']) {
-			return ['mode'   => 'full', 'legacy' => false, 'query'  => ['last' => 1]];
-		}
-		return ['mode' => 'full', 'legacy' => true];
 	}
 
 
