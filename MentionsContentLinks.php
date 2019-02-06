@@ -32,6 +32,11 @@ class ContentLinksFactory
 	}
 
 
+	/**
+	 * Generates requested content link
+	 *
+	 * @return mixed
+	 */
 	public function generate()
 	{
 		$class = ucfirst($this->id) . 'Links';
@@ -91,7 +96,13 @@ class CommentLinks
 
 	use Sluggable;
 
+	/**
+	 * @var link generated link
+	 */
 	public $link;
+	/**
+	 * @var linkConfig url configuration
+	 */
 	private $linkConfig;
 
 	private $data;
@@ -113,6 +124,8 @@ class CommentLinks
 
 
 	/**
+	 * Sets link configuration
+	 *
 	 * @param mixed $linkConfig
 	 *
 	 * @return CommentLinks
@@ -126,6 +139,8 @@ class CommentLinks
 
 
 	/**
+	 * Sets type
+	 *
 	 * @param mixed $type
 	 *
 	 * @return CommentLinks
@@ -139,6 +154,8 @@ class CommentLinks
 
 
 	/**
+	 * Sets data
+	 *
 	 * @param mixed $data
 	 *
 	 * @return CommentLinks
@@ -187,23 +204,12 @@ class CommentLinks
 	}
 
 
+
 	/**
-	 * @param mixed $link
+	 * Create comment link
 	 *
-	 * @return CommentLinks
+	 * @return string|null
 	 */
-	public function setLink($link)
-	{
-		$this->link = $link;
-	}
-
-
-	public function generate()
-	{
-		return $this->createLink();
-	}
-
-
 	public function createLink()
 	{
 		$config = $this->linkConfig;
@@ -291,6 +297,8 @@ class ForumLinks
 
 
 	/**
+	 * Sets missing data for link generation
+	 *
 	 * @return $this
 	 */
 	private function setMissingForumData()
@@ -308,7 +316,7 @@ class ForumLinks
 
 
 	/**
-	 * Returns missing forum data from `#forum` and `#forum_thread` tables
+	 * Fetches missing forum data from `#forum` and `#forum_thread` tables
 	 *
 	 * @return array|bool|null
 	 */
@@ -334,6 +342,8 @@ class ForumLinks
 
 
 	/**
+	 * Sets forum data
+	 *
 	 * @param mixed $data
 	 *
 	 * @return ForumLinks
@@ -346,6 +356,11 @@ class ForumLinks
 	}
 
 
+	/**
+	 * Creates forum link
+	 *
+	 * @return string
+	 */
 	public function createLink()
 	{
 		return e107::url('forum', 'topic', $this->data,
@@ -354,7 +369,7 @@ class ForumLinks
 
 
 	/**
-	 * Returns forum link options
+	 * Returns forum link configuration
 	 *
 	 * @return array
 	 */
@@ -375,25 +390,12 @@ class ForumLinks
 
 
 	/**
-	 * @return string
-	 * @deprecated - use ForumLinks::createLink()
+	 * Returns thread_name slug
+	 *
+	 * @return mixed|string
 	 */
-	private function createForumItemLink()
-	{
-
-		$data = $this->forumData;
-
-		$data['thread_sef'] = $this->getThreadSlug();
-
-		$opt = $this->getLinkOptions();
-
-		return e107::url('forum', 'topic', $data, $opt);
-	}
-
-
 	private function getThreadSlug()
 	{
-
 		return $this->createSlug($this->data['thread_name']);
 
 	}
