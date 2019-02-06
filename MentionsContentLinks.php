@@ -3,10 +3,9 @@
 
 trait Sluggable
 {
-	private function createSlug($title, $type = null)
+	private function sluggify($title, $type = null)
 	{
 		$type = $type ?: e107::getPref('url_sef_translate');
-
 		return eHelper::title2sef($title, $type);
 	}
 
@@ -216,7 +215,7 @@ class CommentLinks
 
 			$urlData = [
 				'news_id'  => $this->data['comment_item_id'],
-				'news_sef' => $this->createSlug($this->data['comment_subject']),
+				'news_sef' => $this->sluggify($this->data['comment_subject']),
 			];
 
 			return e107::getUrl()->create('news/view/item', $urlData, $config);
@@ -226,7 +225,7 @@ class CommentLinks
 
 			$urlData = [
 				'download_id'  => $this->data['comment_item_id'],
-				'download_sef' => $this->createSlug($this->data['comment_subject']),
+				'download_sef' => $this->sluggify($this->data['comment_subject']),
 			];
 
 			return e107::url('download', 'item', $urlData, $config);
@@ -242,7 +241,7 @@ class CommentLinks
 			$urlData = [
 				'page_id'    => $this->data['comment_item_id'],
 				'page_title' => $this->data['comment_subject'],
-				'page_sef'   => $this->createSlug($this->data['comment_subject']),
+				'page_sef'   => $this->sluggify($this->data['comment_subject']),
 			];
 
 			return e107::getUrl()->create('page/view', $urlData, $config);
@@ -393,7 +392,7 @@ class ForumLinks
 	 */
 	private function getThreadSlug()
 	{
-		return $this->createSlug($this->data['thread_name']);
+		return $this->sluggify($this->data['thread_name']);
 
 	}
 
