@@ -302,7 +302,7 @@ class ForumLinks
 	{
 		if (is_array($this->data)) {
 
-			$this->data = array_merge($this->data, $this->getMissingForumData());
+			$this->data = array_merge($this->data, $this->fetchMissingForumData());
 
 			// create thread_sef
 			$this->data['thread_sef'] = $this->getThreadSlug();
@@ -317,7 +317,7 @@ class ForumLinks
 	 *
 	 * @return array|bool|null
 	 */
-	private function getMissingForumData()
+	private function fetchMissingForumData()
 	{
 		$sql = e107::getDb();
 
