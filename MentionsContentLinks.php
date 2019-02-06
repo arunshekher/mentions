@@ -118,8 +118,6 @@ class CommentLinks
 	{
 		$this->setData($data)->setType((int)$data['comment_type'])
 			->setLinkConfig($this->getLinkConfig());
-
-		file_put_contents(e_PLUGIN . 'mentions/logs/content-links-factory-comment.txt', var_export($this->linkConfig, true) . PHP_EOL, FILE_APPEND);
 	}
 
 
@@ -292,7 +290,6 @@ class ForumLinks
 	public function __construct($data)
 	{
 		$this->setData($data)->setMissingForumData();
-		file_put_contents(e_PLUGIN . 'mentions/logs/content-links-factory-forum.txt', var_export($this->data, true) . PHP_EOL, FILE_APPEND);
 	}
 
 
