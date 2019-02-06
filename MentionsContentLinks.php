@@ -32,18 +32,6 @@ class ContentLinksFactory
 	}
 
 
-	public function create()
-	{
-		if ($this->id === 'forum') {
-			$forum = new ForumLinks($this->data);
-
-			return $forum->createLink();
-		}
-
-		return null;
-	}
-
-
 	public function generate()
 	{
 		$class = ucfirst($this->id) . 'Links';
@@ -287,17 +275,18 @@ class ForumLinks
 {
 	use Sluggable;
 
-	private $forumData;
+	private $data;
 
 
 	/**
 	 * ForumLinks constructor.
 	 *
-	 * @param $forumData
+	 * @param $data
 	 */
-	public function __construct($forumData)
+	public function __construct($data)
 	{
-		$this->setForumData($forumData)->setMissingForumData();
+		$this->setData($data)->setMissingForumData();
+		file_put_contents(e_PLUGIN . 'mentions/logs/content-links-factory-forum.txt', var_export($this->data, true) . PHP_EOL, FILE_APPEND);
 	}
 
 
@@ -306,12 +295,12 @@ class ForumLinks
 	 */
 	private function setMissingForumData()
 	{
-		if (is_array($this->forumData)) {
+		if (is_array($this->data)) {
 
-			array_merge($this->forumData, $this->getMissingForumData());
+			$this->data = array_merge($this->data, $this->getMissingForumData());
 
-			// todo: create thread_sef here link so:
-			// $this->forumData['thread_sef'] = $this->getThreadSlug();
+			// create thread_sef
+			$this->data['thread_sef'] = $this->getThreadSlug();
 		}
 
 		return $this;
@@ -327,7 +316,7 @@ class ForumLinks
 	{
 		$sql = e107::getDb();
 
-		$thread_id = (int)$this->forumData['post_thread'];
+		$thread_id = (int)$this->data['post_thread'];
 
 		$query = "SELECT f.forum_sef, f.forum_id, ft.thread_id, ft.thread_name 
 					FROM `#forum` AS f 
@@ -345,13 +334,13 @@ class ForumLinks
 
 
 	/**
-	 * @param mixed $forumData
+	 * @param mixed $data
 	 *
 	 * @return ForumLinks
 	 */
-	public function setForumData($forumData)
+	private function setData($data)
 	{
-		$this->forumData = $forumData;
+		$this->data = $data;
 
 		return $this;
 	}
@@ -359,8 +348,8 @@ class ForumLinks
 
 	public function createLink()
 	{
-		return e107::url('forum', 'topic', $this->forumData,
-			$this->getLinkOptions());
+		return e107::url('forum', 'topic', $this->data,
+			$this->getLinkConfig());
 	}
 
 
@@ -369,11 +358,12 @@ class ForumLinks
 	 *
 	 * @return array
 	 */
-	private function getLinkOptions()
+	private function getLinkConfig()
 	{
-		$urlPref = e107::getPref('e_url_list');
+		$urlConfig = e107::findPref('e_url_list/forum');
 
-		if ($urlPref['forum']) {
+		if ($urlConfig) {
+
 			return ['mode'   => 'full',
 			        'legacy' => false,
 			        'query'  => ['last' => 1],
@@ -404,7 +394,7 @@ class ForumLinks
 	private function getThreadSlug()
 	{
 
-		return $this->createSlug($this->forumData['thread_name']);
+		return $this->createSlug($this->data['thread_name']);
 
 	}
 
