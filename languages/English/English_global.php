@@ -23,3 +23,6 @@ define('LAN_MENTIONS_COMMENT_NEWS', 'news');
 define('LAN_MENTIONS_COMMENT_POLL', 'poll');
 define('LAN_MENTIONS_COMMENT_DOWNLOADS', 'downloads');
 define('LAN_MENTIONS_COMMENT_UNKNOWN', 'unknown');
+
+
+define('LAN_PLUGIN_MENTIONS_EMAIL_TEXT_COMMENT', 'mentioned you in a [-tag-] post for the [-type-] item titled [-link-] on [-date-].');
