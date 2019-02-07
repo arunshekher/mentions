@@ -49,7 +49,7 @@ class ContentEmailsFactory
 	{
 		$className = ucfirst($this->id) . 'Email';
 		$emailObject = new $className($this->data);
-		$emailObject->generateEmailText();
+		return $emailObject->generateEmailText();
 	}
 
 }
@@ -73,8 +73,6 @@ class CommentEmail
 	private $date;
 
 
-
-
 	/**
 	 * CommentEmail constructor.
 	 *
@@ -84,13 +82,49 @@ class CommentEmail
 	{
 		$link = new ContentLinksFactory('comment', $data);
 
-		$this->setData($data)
-			->setType($data['comment_type'])
+		$this->setData($data)->setType($data['comment_type'])
 			->setTitle($data['comment_subject'])
-			->setDate($data['comment_datestamp'])
-			->setTag($this->fetchTag())
-			->setTypeWord($this->getTypeWord())
-			->setLink($link->generate());
+			->setDate($data['comment_datestamp'])->setTag($this->fetchTag())
+			->setTypeWord($this->getTypeWord())->setLink($link->generate());
+	}
+
+
+	/**
+	 * @param mixed $link
+	 *
+	 * @return CommentEmail
+	 */
+	public function setLink($link)
+	{
+		$this->link = $link;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param $typeWord
+	 *
+	 * @return CommentEmail
+	 */
+	public function setTypeWord($typeWord)
+	{
+		$this->typeWord = $typeWord;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param mixed $tag
+	 *
+	 * @return CommentEmail
+	 */
+	public function setTag($tag)
+	{
+		$this->tag = $tag;
+
+		return $this;
 	}
 
 
@@ -115,19 +149,6 @@ class CommentEmail
 	public function setTitle($title)
 	{
 		$this->title = $title;
-
-		return $this;
-	}
-
-
-	/**
-	 * @param mixed $link
-	 *
-	 * @return CommentEmail
-	 */
-	public function setLink($link)
-	{
-		$this->link = $link;
 
 		return $this;
 	}
@@ -160,55 +181,17 @@ class CommentEmail
 
 
 	/**
-	 * @param mixed $tag
+	 * Returns word for comment
 	 *
-	 * @return CommentEmail
+	 * @return string
 	 */
-	public function setTag($tag)
+	private function fetchTag()
 	{
-		$this->tag = $tag;
+		if (defined(COMLAN_8)) {
+			return strtolower(COMLAN_8);
+		}
 
-		return $this;
-	}
-
-
-	/**
-	 * @param $typeWord
-	 *
-	 * @return CommentEmail
-	 */
-	public function setTypeWord($typeWord)
-	{
-		$this->typeWord = $typeWord;
-
-		return $this;
-	}
-
-
-	public function generateEmailText()
-	{
-		$tp = e107::getParser();
-		$vars = $this->getVars();
-
-		return $tp->lanVars(LAN_PLUGIN_MENTIONS_EMAIL_TEXT_COMMENT, $vars);
-	}
-
-
-	private function getVars()
-	{
-		return [
-			'-tag-'   => $this->tag, // todo: the i18n form of TAG
-			'-date-'  => $this->date,
-			'-type-'  => $this->typeWord,
-			'-title-' => $this->title,
-			'-link-'  => $this->getLink(),
-		];
-	}
-
-
-	private function getLink()
-	{
-		return '<a href="' . $this->link . '">\'' . $this->title . '\'</a>';
+		return LAN_MENTIONS_TAG_COMMENT;
 	}
 
 
@@ -244,17 +227,30 @@ class CommentEmail
 	}
 
 
-	/**
-	 * Returns word for comment
-	 *
-	 * @return string
-	 */
-	private function fetchTag()
+	public function generateEmailText()
 	{
-		if (defined(COMLAN_8)) {
-			return strtolower(COMLAN_8);
-		}
-		return LAN_MENTIONS_TAG_COMMENT;
+		$tp = e107::getParser();
+		$vars = $this->getVars();
+
+		return $tp->lanVars(LAN_PLUGIN_MENTIONS_EMAIL_TEXT_COMMENT, $vars);
+	}
+
+
+	private function getVars()
+	{
+		return [
+			'-tag-'   => $this->tag, // todo: the i18n form of TAG
+			'-date-'  => $this->date,
+			'-type-'  => $this->typeWord,
+			'-title-' => $this->title,
+			'-link-'  => $this->getLink(),
+		];
+	}
+
+
+	private function getLink()
+	{
+		return '<a href="' . $this->link . '">\'' . $this->title . '\'</a>';
 	}
 
 }
@@ -262,5 +258,111 @@ class CommentEmail
 
 class ForumEmail
 {
+	private $tag;
+	private $title;
+	private $link;
+	private $date;
+
+
+	/**
+	 * ForumEmail constructor.
+	 *
+	 * @param $data
+	 */
+	public function __construct($data)
+	{
+		$forum = new ContentLinksFactory('forum', $data);
+
+		$this->setTitle($forum->title())->setTag($this->fetchTag())
+			->setLink($forum->link());
+	}
+
+
+	/**
+	 * @param mixed $date
+	 *
+	 * @return ForumEmail
+	 */
+	public function setDate($date)
+	{
+		$this->date = $date;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param mixed $link
+	 *
+	 * @return ForumEmail
+	 */
+	public function setLink($link)
+	{
+		$this->link = $link;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param mixed $tag
+	 *
+	 * @return ForumEmail
+	 */
+	public function setTag($tag)
+	{
+		$this->tag = $tag;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param mixed $title
+	 *
+	 * @return ForumEmail
+	 */
+	public function setTitle($title)
+	{
+		$this->title = $title;
+
+		return $this;
+	}
+
+
+	private function fetchTag()
+	{
+		if (defined(ONLINE_EL13)) {
+			return strtolower(ONLINE_EL13);
+		}
+
+		return LAN_MENTIONS_TAG_FORUM;
+	}
+
+
+	public function generateEmailText()
+	{
+		$tp = e107::getParser();
+		$vars = $this->getVars();
+
+		return $tp->lanVars(LAN_PLUGIN_MENTIONS_EMAIL_TEXT_FORUM, $vars);
+	}
+
+
+	private function getVars()
+	{
+		return [
+			'-tag-'   => $this->tag,
+			'-date-'  => $this->date,
+			'-title-' => $this->title,
+			'-link-'  => $this->getLink(),
+		];
+	}
+
+
+	private function getLink()
+	{
+		return '<a href="' . $this->link . '">\'' . $this->title . '\'</a>';
+	}
 
 }
