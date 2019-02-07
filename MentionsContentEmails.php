@@ -63,12 +63,16 @@ class ChatboxEmail
 
 class CommentEmail
 {
+	private $tag; // todo: make it assign to a core LAN if available
 	private $data;
 
 	private $title;
 	private $type;
+	private $typeWord;
 	private $link;
 	private $date;
+
+
 
 
 	/**
@@ -78,9 +82,15 @@ class CommentEmail
 	 */
 	public function __construct($data)
 	{
-		$this->setData($data)->setType($data['comment_type'])->setLink()
+		$link = new ContentLinksFactory('comment', $data);
+
+		$this->setData($data)
+			->setType($data['comment_type'])
 			->setTitle($data['comment_subject'])
-			->setDate($data['comment_datestamp']);
+			->setDate($data['comment_datestamp'])
+			->setTag($this->fetchTag())
+			->setTypeWord($this->getTypeWord())
+			->setLink($link->generate());
 	}
 
 
@@ -115,11 +125,9 @@ class CommentEmail
 	 *
 	 * @return CommentEmail
 	 */
-	public function setLink()
+	public function setLink($link)
 	{
-		$link = new ContentLinksFactory('comment', $this->data);
-
-		$this->link = $link->generate();
+		$this->link = $link;
 
 		return $this;
 	}
@@ -151,6 +159,32 @@ class CommentEmail
 	}
 
 
+	/**
+	 * @param mixed $tag
+	 *
+	 * @return CommentEmail
+	 */
+	public function setTag($tag)
+	{
+		$this->tag = $tag;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param $typeWord
+	 *
+	 * @return CommentEmail
+	 */
+	public function setTypeWord($typeWord)
+	{
+		$this->typeWord = $typeWord;
+
+		return $this;
+	}
+
+
 	public function generateEmailText()
 	{
 		$tp = e107::getParser();
@@ -165,7 +199,7 @@ class CommentEmail
 		return [
 			'-tag-'   => $this->tag, // todo: the i18n form of TAG
 			'-date-'  => $this->date,
-			'-type-'  => $this->type, // todo: the verbose form of comment type
+			'-type-'  => $this->typeWord,
 			'-title-' => $this->title,
 			'-link-'  => $this->getLink(),
 		];
@@ -175,6 +209,52 @@ class CommentEmail
 	private function getLink()
 	{
 		return '<a href="' . $this->link . '">\'' . $this->title . '\'</a>';
+	}
+
+
+	/**
+	 * Returns word for comment type (uses core LAN)
+	 *
+	 * @return string
+	 */
+	private function getTypeWord()
+	{
+
+		if (0 === (int)$this->type) {
+			return COMLAN_TYPE_1;
+		}
+
+		if (2 === (int)$this->type) {
+			return COMLAN_TYPE_2;
+		}
+
+		if (4 === (int)$this->type) {
+			return COMLAN_TYPE_4;
+		}
+
+		if ('page' === $this->type) {
+			return COMLAN_TYPE_PAGE;
+		}
+
+		if ('profile' === $this->type) {
+			return COMLAN_TYPE_8;
+		}
+
+		return 'Unknown';
+	}
+
+
+	/**
+	 * Returns word for comment
+	 *
+	 * @return string
+	 */
+	private function fetchTag()
+	{
+		if (defined(COMLAN_8)) {
+			return strtolower(COMLAN_8);
+		}
+		return LAN_MENTIONS_TAG_COMMENT;
 	}
 
 }
