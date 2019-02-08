@@ -3,6 +3,8 @@
 
 class ContentEmailsFactory
 {
+	private $instance;
+
 	private $id;
 	private $data;
 
@@ -15,7 +17,20 @@ class ContentEmailsFactory
 	 */
 	public function __construct($id, $data)
 	{
-		$this->setId($id)->setData($data);
+		$this->setId($id)->setData($data)->setInstance($this->createInstance());
+	}
+
+
+	/**
+	 * @param mixed $instance
+	 *
+	 * @return ContentEmailsFactory
+	 */
+	private function setInstance($instance)
+	{
+		$this->instance = $instance;
+
+		return $this;
 	}
 
 
@@ -24,7 +39,7 @@ class ContentEmailsFactory
 	 *
 	 * @return ContentEmailsFactory
 	 */
-	public function setData($data)
+	private function setData($data)
 	{
 		$this->data = $data;
 
@@ -37,7 +52,7 @@ class ContentEmailsFactory
 	 *
 	 * @return ContentEmailsFactory
 	 */
-	public function setId($id)
+	private function setId($id)
 	{
 		$this->id = $id;
 
@@ -45,11 +60,23 @@ class ContentEmailsFactory
 	}
 
 
-	public function generate()
+	private function createInstance()
 	{
 		$className = ucfirst($this->id) . 'Email';
-		$emailObject = new $className($this->data);
-		return $emailObject->generateEmailText();
+
+		return new $className($this->data);
+	}
+
+
+	public function generate()
+	{
+		return $this->instance->getEmailText();
+	}
+
+
+	public function email()
+	{
+		return $this->instance->getEmailText();
 	}
 
 }
@@ -57,7 +84,120 @@ class ContentEmailsFactory
 
 class ChatboxEmail
 {
+	private $tag;
+	private $data;
+	private $message;
+	private $link;
+	private $date;
 
+
+	/**
+	 * ChatboxEmail constructor.
+	 *
+	 * @param $data
+	 */
+	public function __construct($data)
+	{
+		$chat = new ContentLinksFactory('chatbox', $data);
+
+		$this->setData($data)->setTag($this->fetchTag())
+			->setDate($data['datestamp'])->setLink($chat->link());
+	}
+
+
+	/**
+	 * @param mixed $link
+	 *
+	 * @return ChatboxEmail
+	 */
+	public function setLink($link)
+	{
+		$this->link = $link;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param mixed $date
+	 *
+	 * @return ChatboxEmail
+	 */
+	public function setDate($date)
+	{
+		$this->date = $date;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param mixed $tag
+	 *
+	 * @return ChatboxEmail
+	 */
+	public function setTag($tag)
+	{
+		$this->tag = $tag;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param mixed $data
+	 *
+	 * @return ChatboxEmail
+	 */
+	public function setData($data)
+	{
+		$this->data = $data;
+
+		return $this;
+	}
+
+
+	private function fetchTag()
+	{
+		return LAN_MENTIONS_TAG_CHATBOX;
+	}
+
+
+	/**
+	 * @param mixed $message
+	 *
+	 * @return ChatboxEmail
+	 */
+	public function setMessage($message)
+	{
+		$this->message = $message;
+
+		return $this;
+	}
+
+
+	public function getEmailText()
+	{
+		$tp = e107::getParser();
+		$vars = $this->getVars();
+
+		return $tp->lanVars(LAN_PLUGIN_MENTIONS_EMAIL_TEXT_CHATBOX, $vars);
+	}
+
+
+	private function getVars()
+	{
+		return [
+			'-tag-'  => $this->tag,
+			'-date-' => $this->date,
+			'-link-' => $this->getLink(),
+		];
+	}
+
+	private function getLink()
+	{
+		return '<a href="' . $this->link . '">\'' . $this->tag . '\'</a>';
+	}
 }
 
 
@@ -227,7 +367,7 @@ class CommentEmail
 	}
 
 
-	public function generateEmailText()
+	public function getEmailText()
 	{
 		$tp = e107::getParser();
 		$vars = $this->getVars();
@@ -275,19 +415,6 @@ class ForumEmail
 
 		$this->setTitle($forum->title())->setTag($this->fetchTag())
 			->setLink($forum->link());
-	}
-
-
-	/**
-	 * @param mixed $date
-	 *
-	 * @return ForumEmail
-	 */
-	public function setDate($date)
-	{
-		$this->date = $date;
-
-		return $this;
 	}
 
 
@@ -340,7 +467,20 @@ class ForumEmail
 	}
 
 
-	public function generateEmailText()
+	/**
+	 * @param mixed $date
+	 *
+	 * @return ForumEmail
+	 */
+	public function setDate($date)
+	{
+		$this->date = $date;
+
+		return $this;
+	}
+
+
+	public function getEmailText()
 	{
 		$tp = e107::getParser();
 		$vars = $this->getVars();
