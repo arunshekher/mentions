@@ -1,5 +1,13 @@
 <?php
 
+trait CommonTrait
+{
+	protected function prepareDate($date, $format = 'long')
+	{
+		return e107::getParser()->toDate($date, $format);
+	}
+
+}
 
 class ContentEmailsFactory
 {
@@ -91,6 +99,8 @@ class ChatboxEmail
 	private $date;
 
 
+	use CommonTrait;
+	
 	/**
 	 * ChatboxEmail constructor.
 	 *
@@ -101,7 +111,7 @@ class ChatboxEmail
 		$chat = new ContentLinksFactory('chatbox', $data);
 
 		$this->setData($data)->setTag($this->fetchTag())
-			->setDate($data['datestamp'])->setLink($chat->link());
+			->setDate($this->prepareDate($data['datestamp']))->setLink($chat->link());
 	}
 
 
@@ -212,6 +222,7 @@ class CommentEmail
 	private $link;
 	private $date;
 
+	use CommonTrait;
 
 	/**
 	 * CommentEmail constructor.
@@ -224,7 +235,7 @@ class CommentEmail
 
 		$this->setData($data)->setType($data['comment_type'])
 			->setTitle($data['comment_subject'])
-			->setDate($data['comment_datestamp'])->setTag($this->fetchTag())
+			->setDate($this->prepareDate($data['comment_datestamp']))->setTag($this->fetchTag())
 			->setTypeWord($this->getTypeWord())->setLink($link->generate());
 	}
 
@@ -363,7 +374,7 @@ class CommentEmail
 			return COMLAN_TYPE_8;
 		}
 
-		return 'Unknown';
+		return 'unknown';
 	}
 
 
