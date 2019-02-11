@@ -414,7 +414,8 @@ class ForumEmail
 	private $link;
 	private $date;
 
-
+	use CommonTrait;
+	
 	/**
 	 * ForumEmail constructor.
 	 *
@@ -425,7 +426,8 @@ class ForumEmail
 		$forum = new ContentLinksFactory('forum', $data);
 
 		$this->setTitle($forum->title())->setTag($this->fetchTag())
-			->setLink($forum->link());
+			->setLink($forum->link())
+			->setDate($this->prepareDate($data['post_datestamp']));
 	}
 
 
@@ -515,5 +517,6 @@ class ForumEmail
 	{
 		return '<a href="' . $this->link . '">\'' . $this->title . '\'</a>';
 	}
+	
 
 }
