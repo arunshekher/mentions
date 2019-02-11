@@ -2,6 +2,7 @@
 require_once __DIR__ . '/MentionsContentEmails.php';
 require_once __DIR__ . '/MentionsContentLinks.php';
 
+
 class MentionsNotificationTest extends Mentions
 {
 	private $notificationSender = USERNAME;
@@ -24,16 +25,66 @@ class MentionsNotificationTest extends Mentions
 	private $eventUserMessage; // todo: post message
 
 
-	/**
-	 * @param mixed $notificationRecipient
-	 *
-	 * @return MentionsNotificationTest
-	 */
-	public function setNotificationRecipient($notificationRecipient)
+	public function chatbox($data)
 	{
-		$this->notificationRecipient = $notificationRecipient;
+		$this->setEventType('chatbox')->setEventData($data)
+			->parseAllMentions($data['cmessage'])->fetchEachUserDetails()
+			->filterDuplicates()->copyMentionsDetails()
+			->traverseAllMentionsAndNotify();
+	}
+
+
+	private function traverseAllMentionsAndNotify()
+	{
+		for ($i =
+			     0; $i < $this->prefs['max_emails']; $i++) { // todo: rename this pref to 'max_emails_per_post'
+
+			// todo: utilize e107::user($userId);  to fetch user details perhaps
+			//  the fetching of user data can be done in parse-mentions OR filtering methods.
+
+			// skipping e-mailing mentioner
+			/*
+			if ($this->notificationSenderId === (int)$this->usersData[$i]['user_id']) {
+				continue;
+			}
+			*/
+
+			if ($this->isSenderRecipient($this->usersData[$i]['user_id'])) {
+				continue;
+			}
+
+			// send email
+			if (null !== $this->usersData[$i]['user_email'] && null !== $this->usersData[$i]['user_name']) {
+
+
+				$this->setNotificationRecipient($this->usersData[$i]['user_name'])
+					->setNotificationMessage($this->acquireEmailMessage());
+				// todo: make sendMentionsEmail() method fluent.
+				//$this->sendMentionsEmail($this->usersData[$i]);
+
+				// debug
+				$this->log($this->notificationMessage,
+					'mentions-notification-iterate-message');
+
+				continue;
+			}
+
+		}
 
 		return $this;
+	}
+
+
+	/**
+	 * Returns if sender is recipient
+	 *
+	 * @param $recipientId
+	 *
+	 * @return bool
+	 */
+	private function isSenderRecipient($recipientId)
+	{
+		return ($this->notificationSenderId === (int)$recipientId);
 	}
 
 
@@ -51,60 +102,41 @@ class MentionsNotificationTest extends Mentions
 
 
 	/**
-	 * @param mixed $eventType
+	 * @param mixed $notificationRecipient
 	 *
 	 * @return MentionsNotificationTest
 	 */
-	public function setEventType($eventType)
+	public function setNotificationRecipient($notificationRecipient)
 	{
-		$this->eventType = $eventType;
+		$this->notificationRecipient = $notificationRecipient;
 
 		return $this;
 	}
 
 
 	/**
-	 * @param mixed $eventData
+	 * Returns mention 'email notification citation' based on content tag
 	 *
-	 * @return MentionsNotificationTest
+	 * @return string
+	 *  Notification email passage/citation.
+	 * @internal param string $tag
+	 *  Tag name of the 'content type' for which the email text is requested.
 	 */
-	public function setEventData($eventData)
+	private function acquireEmailMessage()
 	{
-		$this->eventData = $eventData;
+
+		$mail = new ContentEmailsFactory($this->eventType, $this->eventData);
+		$this->log($mail, 'z-content-email-object');
+
+		return $mail->generate();
+	}
+
+
+	private function copyMentionsDetails()
+	{
+		$this->usersData = $this->mentionsUserNames;
 
 		return $this;
-	}
-
-
-
-	public function chatbox($data)
-	{
-		$this->setEventType('chatbox')->setEventData($data)
-			->parseAllMentions($data['cmessage'])->fetchEachUserDetails()
-			->filterDuplicates()->copyMentionsDetails()
-			->traverseAllMentionsAndNotify();
-	}
-
-
-	public function comment($data)
-	{
-		$this->setEventType('comment')->setEventData($data)
-			->parseAllMentions($data['comment_comment'])->fetchEachUserDetails()
-			->filterDuplicates()->copyMentionsDetails()
-			->traverseAllMentionsAndNotify();
-
-	}
-
-
-	public function forum($data)
-	{
-		$this->setEventType('forum')->setEventData($data)
-			->parseAllMentions($data['post_entry'])->fetchEachUserDetails()
-			->filterDuplicates()->copyMentionsDetails()
-			->traverseAllMentionsAndNotify();
-
-		// debug
-		$this->log($this, 'z-event-data');
 	}
 
 
@@ -192,65 +224,51 @@ class MentionsNotificationTest extends Mentions
 	}
 
 
-
-
-	private function copyMentionsDetails()
+	/**
+	 * @param mixed $eventData
+	 *
+	 * @return MentionsNotificationTest
+	 */
+	public function setEventData($eventData)
 	{
-		$this->usersData = $this->mentionsUserNames;
-		return $this;
-	}
+		$this->eventData = $eventData;
 
-	private function traverseAllMentionsAndNotify()
-	{
-		for ($i =
-			     0; $i < $this->prefs['max_emails']; $i++) { // todo: rename this pref to 'max_emails_per_post'
-
-			// todo: utilize e107::user($userId);  to fetch user details perhaps
-			//  the fetching of user data can be done in parse-mentions OR filtering methods.
-
-			// skipping e-mailing mentioner
-			/*
-			if ($this->notificationSenderId === (int)$this->usersData[$i]['user_id']) {
-				continue;
-			}
-			*/
-
-			if ($this->isSenderRecipient($this->usersData[$i]['user_id'])) {
-				continue;
-			}
-			
-
-			// send email
-			if (null !== $this->usersData[$i]['user_email']
-				&& null !== $this->usersData[$i]['user_name']) {
-
-
-
-				$this->setNotificationRecipient($this->usersData[$i]['user_name'])->setNotificationMessage($this->acquireEmailMessage());
-				//$this->sendMentionsEmail($this->usersData[$i]);
-
-				// debug
-				$this->log($this->notificationMessage,
-					'mentions-notification-iterate-message');
-
-				continue;
-			}
-
-		}
 		return $this;
 	}
 
 
 	/**
-	 * Returns if sender is recipient
+	 * @param mixed $eventType
 	 *
-	 * @param $recipientId
-	 *
-	 * @return bool
+	 * @return MentionsNotificationTest
 	 */
-	private function isSenderRecipient($recipientId)
+	public function setEventType($eventType)
 	{
-		return ($this->notificationSenderId === (int) $recipientId);
+		$this->eventType = $eventType;
+
+		return $this;
+	}
+
+
+	public function comment($data)
+	{
+		$this->setEventType('comment')->setEventData($data)
+			->parseAllMentions($data['comment_comment'])->fetchEachUserDetails()
+			->filterDuplicates()->copyMentionsDetails()
+			->traverseAllMentionsAndNotify();
+
+	}
+
+
+	public function forum($data)
+	{
+		$this->setEventType('forum')->setEventData($data)
+			->parseAllMentions($data['post_entry'])->fetchEachUserDetails()
+			->filterDuplicates()->copyMentionsDetails()
+			->traverseAllMentionsAndNotify();
+
+		// debug
+		$this->log($this, 'z-event-data');
 	}
 
 
@@ -267,7 +285,8 @@ class MentionsNotificationTest extends Mentions
 		$mail = e107::getEmail();
 
 		$emailContent = [
-			'email_subject' => $this->emailSubject(), // todo: this depends only on event data so can be called earlier in each event trigger methods.
+			'email_subject' => $this->emailSubject(),
+			// todo: this depends only on event data so can be called earlier in each event trigger methods.
 			'send_html'     => true,
 			'email_body'    => $this->emailBody(),
 			'template'      => 'default',
@@ -296,6 +315,25 @@ class MentionsNotificationTest extends Mentions
 
 
 	/**
+	 * Fetches the subject line for email based on plugin preference
+	 *
+	 * @return string
+	 *  Email subject line.
+	 */
+	public function emailSubject()
+	{
+		$subjectLine = trim($this->prefs['email_subject_line']);
+
+		if (null !== $subjectLine && $subjectLine !== '') {
+			return str_replace('{MENTIONER}', $this->notificationSender,
+				$subjectLine);
+		}
+
+		return LAN_MENTIONS_EMAIL_SUBJECTLINE . $this->notificationSender;
+	}
+
+
+	/**
 	 * Parses and returns email body
 	 *
 	 * @return string
@@ -305,7 +343,8 @@ class MentionsNotificationTest extends Mentions
 		$bodyVars = [
 			'MENTIONEE'    => $this->notificationRecipient,
 			'MENTIONER'    => $this->notificationSender,
-			'MENTION_TEXT' => $this->acquireEmailMessage(), // todo: this depends only on event data so can be called earlier in each event trigger methods.
+			'MENTION_TEXT' => $this->acquireEmailMessage(),
+			// todo: this depends only on event data so can be called earlier in each event trigger methods.
 		];
 
 		return e107::getParser()
@@ -333,42 +372,6 @@ class MentionsNotificationTest extends Mentions
 
 		return $template;
 	}
-
-
-	/**
-	 * Fetches the subject line for email based on plugin preference
-	 *
-	 * @return string
-	 *  Email subject line.
-	 */
-	public function emailSubject()
-	{
-		$subjectLine = trim($this->prefs['email_subject_line']);
-
-		if (null !== $subjectLine && $subjectLine !== '') {
-			return str_replace('{MENTIONER}', $this->notificationSender, $subjectLine);
-		}
-
-		return LAN_MENTIONS_EMAIL_SUBJECTLINE . $this->notificationSender;
-	}
-
-
-	/**
-	 * Returns mention 'email notification citation' based on content tag
-	 *
-	 * @return string
-	 *  Notification email passage/citation.
-	 * @internal param string $tag
-	 *  Tag name of the 'content type' for which the email text is requested.
-	 */
-	private function acquireEmailMessage()
-	{
-
-		$mail = new ContentEmailsFactory($this->eventType, $this->eventData);
-		$this->log($mail, 'z-content-email-object');
-		return $mail->generate();
-	}
-
 
 
 }
