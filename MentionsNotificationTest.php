@@ -29,18 +29,14 @@ class MentionsNotificationTest extends Mentions
 	{
 		$this->setEventType('chatbox')->setEventData($data)
 			->parseAllMentions($data['cmessage'])->fetchEachUserDetails()
-			->filterDuplicates()->copyMentionsDetails()
-			->traverseAllMentionsAndNotify();
+			->filterDuplicates()->iterateMentionsAndNotify();
 	}
 
 
-	private function traverseAllMentionsAndNotify()
+	private function iterateMentionsAndNotify()
 	{
 		for ($i =
 			     0; $i < $this->prefs['max_emails']; $i++) { // todo: rename this pref to 'max_emails_per_post'
-
-			// todo: utilize e107::user($userId);  to fetch user details perhaps
-			//  the fetching of user data can be done in parse-mentions OR filtering methods.
 
 			// skipping e-mailing mentioner
 			if ($this->isSenderRecipient($this->mentionedUsers[$i]['user_id'])) {
@@ -160,6 +156,11 @@ class MentionsNotificationTest extends Mentions
 	}
 
 
+	/**
+	 * Filters out duplicate entries in self::mentionedUsers
+	 *
+	 * @return $this
+	 */
 	private function filterDuplicates()
 	{
 		if (count($this->mentionedUsers) > 1) {
@@ -272,8 +273,7 @@ class MentionsNotificationTest extends Mentions
 	{
 		$this->setEventType('comment')->setEventData($data)
 			->parseAllMentions($data['comment_comment'])->fetchEachUserDetails()
-			->filterDuplicates()->copyMentionsDetails()
-			->traverseAllMentionsAndNotify();
+			->filterDuplicates()->iterateMentionsAndNotify();
 
 	}
 
@@ -282,8 +282,7 @@ class MentionsNotificationTest extends Mentions
 	{
 		$this->setEventType('forum')->setEventData($data)
 			->parseAllMentions($data['post_entry'])->fetchEachUserDetails()
-			->filterDuplicates()->copyMentionsDetails()
-			->traverseAllMentionsAndNotify();
+			->filterDuplicates()->iterateMentionsAndNotify();
 
 		// debug
 		$this->log($this, 'z-event-data');
