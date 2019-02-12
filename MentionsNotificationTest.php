@@ -11,12 +11,12 @@ class MentionsNotificationTest extends Mentions
 	private $notificationSenderId = USERID;
 
 	private $mentions;
-	private $mentionsUserNames;
+	private $mentionedUsers;
 
 	// todo: new trial - instead of self::$mentionsUserNames;
 	private $usersData;
 
-
+	private $notificationSubject;
 	private $notificationMessage;
 	private $notificationRecipient;
 
@@ -43,24 +43,19 @@ class MentionsNotificationTest extends Mentions
 			//  the fetching of user data can be done in parse-mentions OR filtering methods.
 
 			// skipping e-mailing mentioner
-			/*
-			if ($this->notificationSenderId === (int)$this->usersData[$i]['user_id']) {
-				continue;
-			}
-			*/
-
-			if ($this->isSenderRecipient($this->usersData[$i]['user_id'])) {
+			if ($this->isSenderRecipient($this->mentionedUsers[$i]['user_id'])) {
 				continue;
 			}
 
-			// send email
-			if (null !== $this->usersData[$i]['user_email'] && null !== $this->usersData[$i]['user_name']) {
+			// check & send email
+			if ($this->hasEmailableData($this->mentionedUsers[$i])) {
 
 
-				$this->setNotificationRecipient($this->usersData[$i]['user_name'])
+				$this->setNotificationRecipient($this->mentionedUsers[$i]['user_name'])
 					->setNotificationMessage($this->acquireEmailMessage());
-				// todo: make sendMentionsEmail() method fluent.
-				//$this->sendMentionsEmail($this->usersData[$i]);
+
+				// send email
+				//$this->sendMentionsEmail($this->mentionedUsers[$i]);
 
 				// debug
 				$this->log($this->notificationMessage,
@@ -74,6 +69,18 @@ class MentionsNotificationTest extends Mentions
 		return $this;
 	}
 
+
+	/**
+	 * Returns if the mentioned user has e-mailable data
+	 *
+	 * @param $mentionedUser
+	 *
+	 * @return bool
+	 */
+	private function hasEmailableData($mentionedUser)
+	{
+		return (null !== $mentionedUser['user_email'] && null !== $mentionedUser['user_name']);
+	}
 
 	/**
 	 * Returns if sender is recipient
@@ -115,6 +122,19 @@ class MentionsNotificationTest extends Mentions
 
 
 	/**
+	 * @param mixed $notificationSubject
+	 *
+	 * @return MentionsNotificationTest
+	 */
+	public function setNotificationSubject($notificationSubject)
+	{
+		$this->notificationSubject = $notificationSubject;
+
+		return $this;
+	}
+
+
+	/**
 	 * Returns mention 'email notification citation' based on content tag
 	 *
 	 * @return string
@@ -134,7 +154,7 @@ class MentionsNotificationTest extends Mentions
 
 	private function copyMentionsDetails()
 	{
-		$this->usersData = $this->mentionsUserNames;
+		$this->usersData = $this->mentionedUsers;
 
 		return $this;
 	}
@@ -142,9 +162,9 @@ class MentionsNotificationTest extends Mentions
 
 	private function filterDuplicates()
 	{
-		if (count($this->mentionsUserNames) > 1) {
-			$this->mentionsUserNames =
-				array_unique($this->mentionsUserNames, SORT_REGULAR);
+		if (count($this->mentionedUsers) > 1) {
+			$this->mentionedUsers =
+				array_unique($this->mentionedUsers, SORT_REGULAR);
 		}
 
 		return $this;
@@ -161,8 +181,8 @@ class MentionsNotificationTest extends Mentions
 	{
 		// todo: check if self::mentionsUserNames is an array
 
-		foreach ($this->mentionsUserNames as $key => $value) {
-			$this->mentionsUserNames[$key] = $this->getUserData($value);
+		foreach ($this->mentionedUsers as $key => $value) {
+			$this->mentionedUsers[$key] = $this->getUserData($value);
 		}
 
 		return $this;
@@ -175,8 +195,6 @@ class MentionsNotificationTest extends Mentions
 	 * @param $message
 	 *
 	 * @return $this
-	 * @todo: make it fluent and call filterDuplicate() method after this
-	 *     followed by grab userDetails() method.
 	 */
 	private function parseAllMentions($message)
 	{
@@ -185,7 +203,7 @@ class MentionsNotificationTest extends Mentions
 		if (preg_match_all($pattern, $message, $matches) !== false) {
 
 			$this->setMentions($matches[0]);
-			$this->setMentionsUserNames($matches[1]);
+			$this->setMentionedUsers($matches[1]);
 
 			return $this;
 		} // todo: ?  do a pattern fallback match
@@ -212,13 +230,13 @@ class MentionsNotificationTest extends Mentions
 	/**
 	 * Sets self::$mentionsUserNames
 	 *
-	 * @param mixed $mentionsUserNames
+	 * @param mixed $mentionedUsers
 	 *
 	 * @return MentionsNotificationTest
 	 */
-	public function setMentionsUserNames($mentionsUserNames)
+	public function setMentionedUsers($mentionedUsers)
 	{
-		$this->mentionsUserNames = $mentionsUserNames;
+		$this->mentionedUsers = $mentionedUsers;
 
 		return $this;
 	}
@@ -279,6 +297,7 @@ class MentionsNotificationTest extends Mentions
 	 *
 	 * @return bool
 	 *  true if success false if failure.
+	 * @todo: make method fluent.
 	 */
 	private function sendMentionsEmail(array $userData)
 	{
@@ -286,7 +305,8 @@ class MentionsNotificationTest extends Mentions
 
 		$emailContent = [
 			'email_subject' => $this->emailSubject(),
-			// todo: this depends only on event data so can be called earlier in each event trigger methods.
+			// todo: this depends only on event data so can be called earlier
+			//  in each event trigger methods.
 			'send_html'     => true,
 			'email_body'    => $this->emailBody(),
 			'template'      => 'default',
@@ -344,7 +364,8 @@ class MentionsNotificationTest extends Mentions
 			'MENTIONEE'    => $this->notificationRecipient,
 			'MENTIONER'    => $this->notificationSender,
 			'MENTION_TEXT' => $this->acquireEmailMessage(),
-			// todo: this depends only on event data so can be called earlier in each event trigger methods.
+			// todo: this depends only on event data so can be called earlier
+			//  in each event trigger methods to be stored in a private property.
 		];
 
 		return e107::getParser()
