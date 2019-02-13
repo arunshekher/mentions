@@ -6,34 +6,101 @@ require_once __DIR__ . '/MentionsContentLinks.php';
 class MentionsNotificationTest extends Mentions
 {
 	private $notificationSender = USERNAME;
-
-	// todo: new - instead of self::$mentioner
 	private $notificationSenderId = USERID;
 
 	private $mentions;
 	private $mentionedUsers;
 
-	// todo: new trial - instead of self::$mentionsUserNames;
-	private $usersData;
-
+	// todo: may be rename to $emailSubject, $emailMessage and so forth.
 	private $notificationSubject;
 	private $notificationMessage;
 	private $notificationRecipient;
 
 	private $eventType;
 	private $eventData;
-	private $eventUserMessage; // todo: post message
+	private $eventUserText;
 
 
-	public function chatbox($data)
+	/**
+	 * Initializes MentionsNotificationTest class
+	 *
+	 * @param $eventType
+	 * @param $eventData
+	 *
+	 * @return \MentionsNotificationTest
+	 */
+	private function init($eventType, $eventData)
 	{
-		$this->setEventType('chatbox')->setEventData($data)
-			->parseAllMentions($data['cmessage'])->fetchEachUserDetails()
-			->filterDuplicates()->iterateMentionsAndNotify();
+		return $this->setEventType($eventType)->setEventData($eventData)->setEventUserText()
+			->parseAllMentions($this->eventUserText)->fetchEachUserDetails()
+			->filterDuplicates();
 	}
 
 
-	private function iterateMentionsAndNotify()
+	/**
+	 * Sets self::$eventUserText
+	 *
+	 * @return $this
+	 */
+	private function setEventUserText()
+	{
+		if ($this->eventType === 'chatbox') {
+			$this->eventUserText = $this->eventData['cmessage'];
+		}
+
+		if ($this->eventType === 'comment') {
+			$this->eventUserText = $this->eventData['comment_comment'];
+		}
+
+		if ($this->eventType === 'forum') {
+			$this->eventUserText = $this->eventData['post_entry'];
+		}
+		return $this;
+	}
+
+
+	/**
+	 * Listen to, initializes and perform chatbox event notification.
+	 *
+	 * @param $data
+	 */
+	public function chatbox($data)
+	{
+		$this->init('chatbox', $data)->iterateAndNotify();
+	}
+
+
+	/**
+	 * Listen to, initializes and perform comment event notification.
+	 *
+	 * @param $data
+	 */
+	public function comment($data)
+	{
+		$this->init('comment', $data)->iterateAndNotify();
+	}
+
+
+	/**
+	 * Listen to, initializes and perform forum event notification.
+	 *
+	 * @param $data
+	 */
+	public function forum($data)
+	{
+		$this->init('forum', $data)->iterateAndNotify();
+
+		// debug
+		$this->log($this, 'z-event-data');
+	}
+
+
+	/**
+	 * Iterates through mentions and send email
+	 *
+	 * @return $this
+	 */
+	private function iterateAndNotify()
 	{
 		for ($i =
 			     0; $i < $this->prefs['max_emails']; $i++) { // todo: rename this pref to 'max_emails_per_post'
@@ -65,7 +132,6 @@ class MentionsNotificationTest extends Mentions
 		return $this;
 	}
 
-
 	/**
 	 * Returns if the mentioned user has e-mailable data
 	 *
@@ -77,6 +143,7 @@ class MentionsNotificationTest extends Mentions
 	{
 		return (null !== $mentionedUser['user_email'] && null !== $mentionedUser['user_name']);
 	}
+
 
 	/**
 	 * Returns if sender is recipient
@@ -142,17 +209,8 @@ class MentionsNotificationTest extends Mentions
 	{
 
 		$mail = new ContentEmailsFactory($this->eventType, $this->eventData);
-		$this->log($mail, 'z-content-email-object');
 
 		return $mail->generate();
-	}
-
-
-	private function copyMentionsDetails()
-	{
-		$this->usersData = $this->mentionedUsers;
-
-		return $this;
 	}
 
 
@@ -255,7 +313,6 @@ class MentionsNotificationTest extends Mentions
 		return $this;
 	}
 
-
 	/**
 	 * @param mixed $eventType
 	 *
@@ -266,26 +323,6 @@ class MentionsNotificationTest extends Mentions
 		$this->eventType = $eventType;
 
 		return $this;
-	}
-
-
-	public function comment($data)
-	{
-		$this->setEventType('comment')->setEventData($data)
-			->parseAllMentions($data['comment_comment'])->fetchEachUserDetails()
-			->filterDuplicates()->iterateMentionsAndNotify();
-
-	}
-
-
-	public function forum($data)
-	{
-		$this->setEventType('forum')->setEventData($data)
-			->parseAllMentions($data['post_entry'])->fetchEachUserDetails()
-			->filterDuplicates()->iterateMentionsAndNotify();
-
-		// debug
-		$this->log($this, 'z-event-data');
 	}
 
 
