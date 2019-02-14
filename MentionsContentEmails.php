@@ -1,13 +1,81 @@
 <?php
 
-trait CommonTrait
+
+trait FamilialTraits
 {
+	/**
+	 * @param mixed $link
+	 *
+	 * @return $this
+	 */
+	public function setLink($link)
+	{
+		$this->link = $link;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param mixed $date
+	 *
+	 * @return $this
+	 */
+	public function setDate($date)
+	{
+		$this->date = $date;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param mixed $tag
+	 *
+	 * @return $this
+	 */
+	public function setTag($tag)
+	{
+		$this->tag = $tag;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param mixed $data
+	 *
+	 * @return $this
+	 */
+	public function setData($data)
+	{
+		$this->data = $data;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param mixed $title
+	 *
+	 * @return $this
+	 */
+	public function setTitle($title)
+	{
+		$this->title = $title;
+
+		return $this;
+	}
+
+
 	protected function prepareDate($date, $format = 'long')
 	{
 		return e107::getParser()->toDate($date, $format);
 	}
 
+
 }
+
 
 class ContentEmailsFactory
 {
@@ -99,8 +167,9 @@ class ChatboxEmail
 	private $date;
 
 
-	use CommonTrait;
-	
+	use FamilialTraits;
+
+
 	/**
 	 * ChatboxEmail constructor.
 	 *
@@ -111,59 +180,8 @@ class ChatboxEmail
 		$chat = new ContentLinksFactory('chatbox', $data);
 
 		$this->setData($data)->setTag($this->fetchTag())
-			->setDate($this->prepareDate($data['datestamp']))->setLink($chat->link());
-	}
-
-
-	/**
-	 * @param mixed $link
-	 *
-	 * @return ChatboxEmail
-	 */
-	public function setLink($link)
-	{
-		$this->link = $link;
-
-		return $this;
-	}
-
-
-	/**
-	 * @param mixed $date
-	 *
-	 * @return ChatboxEmail
-	 */
-	public function setDate($date)
-	{
-		$this->date = $date;
-
-		return $this;
-	}
-
-
-	/**
-	 * @param mixed $tag
-	 *
-	 * @return ChatboxEmail
-	 */
-	public function setTag($tag)
-	{
-		$this->tag = $tag;
-
-		return $this;
-	}
-
-
-	/**
-	 * @param mixed $data
-	 *
-	 * @return ChatboxEmail
-	 */
-	public function setData($data)
-	{
-		$this->data = $data;
-
-		return $this;
+			->setDate($this->prepareDate($data['datestamp']))
+			->setLink($chat->link());
 	}
 
 
@@ -204,6 +222,7 @@ class ChatboxEmail
 		];
 	}
 
+
 	private function getLink()
 	{
 		return '<a href="' . $this->link . '">\'' . $this->tag . '\'</a>';
@@ -222,7 +241,8 @@ class CommentEmail
 	private $link;
 	private $date;
 
-	use CommonTrait;
+	use FamilialTraits;
+
 
 	/**
 	 * CommentEmail constructor.
@@ -235,21 +255,9 @@ class CommentEmail
 
 		$this->setData($data)->setType($data['comment_type'])
 			->setTitle($data['comment_subject'])
-			->setDate($this->prepareDate($data['comment_datestamp']))->setTag($this->fetchTag())
-			->setTypeWord($this->getTypeWord())->setLink($link->generate());
-	}
-
-
-	/**
-	 * @param mixed $link
-	 *
-	 * @return CommentEmail
-	 */
-	public function setLink($link)
-	{
-		$this->link = $link;
-
-		return $this;
+			->setDate($this->prepareDate($data['comment_datestamp']))
+			->setTag($this->fetchTag())->setTypeWord($this->getTypeWord())
+			->setLink($link->generate());
 	}
 
 
@@ -267,45 +275,6 @@ class CommentEmail
 
 
 	/**
-	 * @param mixed $tag
-	 *
-	 * @return CommentEmail
-	 */
-	public function setTag($tag)
-	{
-		$this->tag = $tag;
-
-		return $this;
-	}
-
-
-	/**
-	 * @param mixed $date
-	 *
-	 * @return CommentEmail
-	 */
-	public function setDate($date)
-	{
-		$this->date = $date;
-
-		return $this;
-	}
-
-
-	/**
-	 * @param mixed $title
-	 *
-	 * @return CommentEmail
-	 */
-	public function setTitle($title)
-	{
-		$this->title = $title;
-
-		return $this;
-	}
-
-
-	/**
 	 * @param mixed $type
 	 *
 	 * @return CommentEmail
@@ -313,19 +282,6 @@ class CommentEmail
 	public function setType($type)
 	{
 		$this->type = $type;
-
-		return $this;
-	}
-
-
-	/**
-	 * @param mixed $data
-	 *
-	 * @return CommentEmail
-	 */
-	public function setData($data)
-	{
-		$this->data = $data;
 
 		return $this;
 	}
@@ -410,12 +366,15 @@ class CommentEmail
 class ForumEmail
 {
 	private $tag;
+	private $data;
+
 	private $title;
 	private $link;
 	private $date;
 
-	use CommonTrait;
-	
+	use FamilialTraits;
+
+
 	/**
 	 * ForumEmail constructor.
 	 *
@@ -425,48 +384,9 @@ class ForumEmail
 	{
 		$forum = new ContentLinksFactory('forum', $data);
 
-		$this->setTitle($forum->title())->setTag($this->fetchTag())
-			->setLink($forum->link())
+		$this->setTitle($forum->title())->setData($data)
+			->setTag($this->fetchTag())->setLink($forum->link())
 			->setDate($this->prepareDate($data['post_datestamp']));
-	}
-
-
-	/**
-	 * @param mixed $link
-	 *
-	 * @return ForumEmail
-	 */
-	public function setLink($link)
-	{
-		$this->link = $link;
-
-		return $this;
-	}
-
-
-	/**
-	 * @param mixed $tag
-	 *
-	 * @return ForumEmail
-	 */
-	public function setTag($tag)
-	{
-		$this->tag = $tag;
-
-		return $this;
-	}
-
-
-	/**
-	 * @param mixed $title
-	 *
-	 * @return ForumEmail
-	 */
-	public function setTitle($title)
-	{
-		$this->title = $title;
-
-		return $this;
 	}
 
 
@@ -477,19 +397,6 @@ class ForumEmail
 		}
 
 		return LAN_MENTIONS_TAG_FORUM;
-	}
-
-
-	/**
-	 * @param mixed $date
-	 *
-	 * @return ForumEmail
-	 */
-	public function setDate($date)
-	{
-		$this->date = $date;
-
-		return $this;
 	}
 
 
@@ -517,6 +424,6 @@ class ForumEmail
 	{
 		return '<a href="' . $this->link . '">\'' . $this->title . '\'</a>';
 	}
-	
+
 
 }
