@@ -11,7 +11,7 @@ class MentionsNotificationTest extends Mentions
 	private $mentions;
 	private $mentionedUsers;
 
-	// todo: may be rename to $emailSubject, $emailMessage and so forth.
+	// todo: may be rename to $getEmailSubject, $emailMessage and so forth.
 	private $notificationSubject;
 	private $notificationMessage;
 	private $notificationRecipient;
@@ -22,44 +22,6 @@ class MentionsNotificationTest extends Mentions
 
 
 	/**
-	 * Initializes MentionsNotificationTest class
-	 *
-	 * @param $eventType
-	 * @param $eventData
-	 *
-	 * @return \MentionsNotificationTest
-	 */
-	private function init($eventType, $eventData)
-	{
-		return $this->setEventType($eventType)->setEventData($eventData)->setEventUserText()
-			->parseAllMentions($this->eventUserText)->fetchEachUserDetails()
-			->filterDuplicates();
-	}
-
-
-	/**
-	 * Sets self::$eventUserText
-	 *
-	 * @return $this
-	 */
-	private function setEventUserText()
-	{
-		if ($this->eventType === 'chatbox') {
-			$this->eventUserText = $this->eventData['cmessage'];
-		}
-
-		if ($this->eventType === 'comment') {
-			$this->eventUserText = $this->eventData['comment_comment'];
-		}
-
-		if ($this->eventType === 'forum') {
-			$this->eventUserText = $this->eventData['post_entry'];
-		}
-		return $this;
-	}
-
-
-	/**
 	 * Listen to, initializes and perform chatbox event notification.
 	 *
 	 * @param $data
@@ -67,31 +29,6 @@ class MentionsNotificationTest extends Mentions
 	public function chatbox($data)
 	{
 		$this->init('chatbox', $data)->iterateAndNotify();
-	}
-
-
-	/**
-	 * Listen to, initializes and perform comment event notification.
-	 *
-	 * @param $data
-	 */
-	public function comment($data)
-	{
-		$this->init('comment', $data)->iterateAndNotify();
-	}
-
-
-	/**
-	 * Listen to, initializes and perform forum event notification.
-	 *
-	 * @param $data
-	 */
-	public function forum($data)
-	{
-		$this->init('forum', $data)->iterateAndNotify();
-
-		// debug
-		$this->log($this, 'z-event-data');
 	}
 
 
@@ -115,6 +52,7 @@ class MentionsNotificationTest extends Mentions
 
 
 				$this->setNotificationRecipient($this->mentionedUsers[$i]['user_name'])
+					->setNotificationSubject($this->getEmailSubject())
 					->setNotificationMessage($this->acquireEmailMessage());
 
 				// send email
@@ -132,18 +70,6 @@ class MentionsNotificationTest extends Mentions
 		return $this;
 	}
 
-	/**
-	 * Returns if the mentioned user has e-mailable data
-	 *
-	 * @param $mentionedUser
-	 *
-	 * @return bool
-	 */
-	private function hasEmailableData($mentionedUser)
-	{
-		return (null !== $mentionedUser['user_email'] && null !== $mentionedUser['user_name']);
-	}
-
 
 	/**
 	 * Returns if sender is recipient
@@ -159,6 +85,19 @@ class MentionsNotificationTest extends Mentions
 
 
 	/**
+	 * Returns if the mentioned user has e-mailable data
+	 *
+	 * @param $mentionedUser
+	 *
+	 * @return bool
+	 */
+	private function hasEmailableData($mentionedUser)
+	{
+		return (null !== $mentionedUser['user_email'] && null !== $mentionedUser['user_name']);
+	}
+
+
+	/**
 	 * @param mixed $notificationMessage
 	 *
 	 * @return MentionsNotificationTest
@@ -166,19 +105,6 @@ class MentionsNotificationTest extends Mentions
 	public function setNotificationMessage($notificationMessage)
 	{
 		$this->notificationMessage = $notificationMessage;
-
-		return $this;
-	}
-
-
-	/**
-	 * @param mixed $notificationRecipient
-	 *
-	 * @return MentionsNotificationTest
-	 */
-	public function setNotificationRecipient($notificationRecipient)
-	{
-		$this->notificationRecipient = $notificationRecipient;
 
 		return $this;
 	}
@@ -198,6 +124,38 @@ class MentionsNotificationTest extends Mentions
 
 
 	/**
+	 * @param mixed $notificationRecipient
+	 *
+	 * @return MentionsNotificationTest
+	 */
+	public function setNotificationRecipient($notificationRecipient)
+	{
+		$this->notificationRecipient = $notificationRecipient;
+
+		return $this;
+	}
+
+
+	/**
+	 * Fetches the subject line for email based on plugin preference
+	 *
+	 * @return string
+	 *  Email subject line.
+	 */
+	public function getEmailSubject()
+	{
+		$subjectLine = trim($this->prefs['email_subject_line']);
+
+		if (null !== $subjectLine && $subjectLine !== '') {
+			return str_replace('{MENTIONER}', $this->notificationSender,
+				$subjectLine);
+		}
+
+		return LAN_MENTIONS_EMAIL_SUBJECTLINE . $this->notificationSender;
+	}
+
+
+	/**
 	 * Returns mention 'email notification citation' based on content tag
 	 *
 	 * @return string
@@ -211,6 +169,22 @@ class MentionsNotificationTest extends Mentions
 		$mail = new ContentEmailsFactory($this->eventType, $this->eventData);
 
 		return $mail->generate();
+	}
+
+
+	/**
+	 * Initializes MentionsNotificationTest class
+	 *
+	 * @param $eventType
+	 * @param $eventData
+	 *
+	 * @return \MentionsNotificationTest
+	 */
+	private function init($eventType, $eventData)
+	{
+		return $this->setEventType($eventType)->setEventData($eventData)
+			->setEventUserText()->parseAllMentions($this->eventUserText)
+			->fetchEachUserDetails()->filterDuplicates();
 	}
 
 
@@ -302,6 +276,29 @@ class MentionsNotificationTest extends Mentions
 
 
 	/**
+	 * Sets self::$eventUserText
+	 *
+	 * @return $this
+	 */
+	private function setEventUserText()
+	{
+		if ($this->eventType === 'chatbox') {
+			$this->eventUserText = $this->eventData['cmessage'];
+		}
+
+		if ($this->eventType === 'comment') {
+			$this->eventUserText = $this->eventData['comment_comment'];
+		}
+
+		if ($this->eventType === 'forum') {
+			$this->eventUserText = $this->eventData['post_entry'];
+		}
+
+		return $this;
+	}
+
+
+	/**
 	 * @param mixed $eventData
 	 *
 	 * @return MentionsNotificationTest
@@ -313,6 +310,7 @@ class MentionsNotificationTest extends Mentions
 		return $this;
 	}
 
+
 	/**
 	 * @param mixed $eventType
 	 *
@@ -323,6 +321,31 @@ class MentionsNotificationTest extends Mentions
 		$this->eventType = $eventType;
 
 		return $this;
+	}
+
+
+	/**
+	 * Listen to, initializes and perform comment event notification.
+	 *
+	 * @param $data
+	 */
+	public function comment($data)
+	{
+		$this->init('comment', $data)->iterateAndNotify();
+	}
+
+
+	/**
+	 * Listen to, initializes and perform forum event notification.
+	 *
+	 * @param $data
+	 */
+	public function forum($data)
+	{
+		$this->init('forum', $data)->iterateAndNotify();
+
+		// debug
+		$this->log($this, 'z-event-data');
 	}
 
 
@@ -340,11 +363,9 @@ class MentionsNotificationTest extends Mentions
 		$mail = e107::getEmail();
 
 		$emailContent = [
-			'email_subject' => $this->emailSubject(),
-			// todo: this depends only on event data so can be called earlier
-			//  in each event trigger methods.
+			'email_subject' => $this->notificationSubject,
 			'send_html'     => true,
-			'email_body'    => $this->emailBody(),
+			'email_body'    => $this->getEmailBody(),
 			'template'      => 'default',
 			'e107_header'   => $userData['user_id'],
 			'extra_header'  => 'X-e107-Plugin : Mentions-Plugin-v',
@@ -371,37 +392,16 @@ class MentionsNotificationTest extends Mentions
 
 
 	/**
-	 * Fetches the subject line for email based on plugin preference
-	 *
-	 * @return string
-	 *  Email subject line.
-	 */
-	public function emailSubject()
-	{
-		$subjectLine = trim($this->prefs['email_subject_line']);
-
-		if (null !== $subjectLine && $subjectLine !== '') {
-			return str_replace('{MENTIONER}', $this->notificationSender,
-				$subjectLine);
-		}
-
-		return LAN_MENTIONS_EMAIL_SUBJECTLINE . $this->notificationSender;
-	}
-
-
-	/**
 	 * Parses and returns email body
 	 *
 	 * @return string
 	 */
-	private function emailBody()
+	private function getEmailBody()
 	{
 		$bodyVars = [
 			'MENTIONEE'    => $this->notificationRecipient,
 			'MENTIONER'    => $this->notificationSender,
-			'MENTION_TEXT' => $this->acquireEmailMessage(),
-			// todo: this depends only on event data so can be called earlier
-			//  in each event trigger methods to be stored in a private property.
+			'MENTION_TEXT' => $this->notificationMessage,
 		];
 
 		return e107::getParser()
