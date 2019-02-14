@@ -13,42 +13,49 @@ abstract class Mentions
 	 */
 
 	const SPLIT_REGEX_V1 = '/(^|[\pL\pN\pM]*@\s*[\pL\pN\pM._-~#!@\*]+)/u';
+
 	/**
 	 * Split text regex - v2 sites
 	 * --------------------------------------
 	 */
 
 	const SPLIT_REGEX_V2 = '/(^|[\pL\pN\pM]*@\s*[\pL\pN\pM._]+)/u';
+
 	/**
 	 * Match username regex - v1 upgraded sites
 	 * --------------------------------------
 	 */
 
 	const MATCH_REGEX_V1 = '/@([\pL\pN\pM._-~#!@\*]+)/u';
+
 	/**
 	 * Match username regex - v2 sites
 	 * --------------------------------------
 	 */
 
 	const MATCH_REGEX_V2 = '/@([\pL\pN\pM._]+)/u';
+
 	/**
 	 * Split text regex fallback - v1 upgraded sites
 	 * --------------------------------------
 	 */
 
 	const SPLIT_REGEX_V1_FALLBACK = '/(^|\w*@\s*[a-z0-9._#~\*]+)/mui';
+
 	/**
 	 * Split text regex fallback - v2 sites
 	 * --------------------------------------
 	 */
 
 	const SPLIT_REGEX_V2_FALLBACK = '/(^|\w*@\s*[a-z0-9._]+)/mui';
+
 	/**
 	 * Match username regex fallback - v1 upgraded sites
 	 * --------------------------------------
 	 */
 
 	const MATCH_REGEX_V1_FALLBACK = '/@([\w\X._-~#!@\*]+)/ui';
+
 	/**
 	 * Match username regex fallback - v1 upgraded sites
 	 * --------------------------------------
@@ -63,10 +70,6 @@ abstract class Mentions
 	 */
 	protected $prefs;
 
-	private $userId;
-	private $userName;
-	private $userData;
-
 	private $pcreCompatibility = false;
 
 
@@ -76,7 +79,6 @@ abstract class Mentions
 	public function __construct()
 	{
 		$this->setPrefs()->setPcreCompatibility();
-		$this->log($this->pcreCompatibility, 'PCRE-compatibility');
 	}
 
 
@@ -150,7 +152,7 @@ abstract class Mentions
 	protected function createUserLinkFrom($mention)
 	{
 
-		[$userMention, $userName] = $mention;
+		list($userMention, $userName) = $mention;
 
 		$data = $this->getUserData($userName);
 
