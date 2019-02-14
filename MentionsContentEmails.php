@@ -4,6 +4,8 @@
 trait FamilialTraits
 {
 	/**
+	 * Sets Link
+	 *
 	 * @param mixed $link
 	 *
 	 * @return $this
@@ -17,6 +19,8 @@ trait FamilialTraits
 
 
 	/**
+	 * Sets Date
+	 *
 	 * @param mixed $date
 	 *
 	 * @return $this
@@ -30,6 +34,8 @@ trait FamilialTraits
 
 
 	/**
+	 * Sets Tag
+	 *
 	 * @param mixed $tag
 	 *
 	 * @return $this
@@ -43,6 +49,8 @@ trait FamilialTraits
 
 
 	/**
+	 * Sets Data
+	 *
 	 * @param mixed $data
 	 *
 	 * @return $this
@@ -56,6 +64,8 @@ trait FamilialTraits
 
 
 	/**
+	 * Sets Title
+	 *
 	 * @param mixed $title
 	 *
 	 * @return $this
@@ -68,6 +78,14 @@ trait FamilialTraits
 	}
 
 
+	/**
+	 * Formats and returns date and time from unix timestamp.
+	 *
+	 * @param        $date
+	 * @param string $format
+	 *
+	 * @return string
+	 */
 	protected function prepareDate($date, $format = 'long')
 	{
 		return e107::getParser()->toDate($date, $format);
@@ -136,6 +154,11 @@ class ContentEmailsFactory
 	}
 
 
+	/**
+	 * Creates instance of the requested class
+	 *
+	 * @return mixed
+	 */
 	private function createInstance()
 	{
 		$className = ucfirst($this->id) . 'Email';
@@ -144,12 +167,22 @@ class ContentEmailsFactory
 	}
 
 
+	/**
+	 * Returns generated email text
+	 *
+	 * @return string
+	 */
 	public function generate()
 	{
 		return $this->instance->getEmailText();
 	}
 
 
+	/**
+	 * Returns generated email text
+	 *
+	 * @return string
+	 */
 	public function email()
 	{
 		return $this->instance->getEmailText();
@@ -185,6 +218,11 @@ class ChatboxEmail
 	}
 
 
+	/**
+	 * Returns word translation for content tag
+	 *
+	 * @return string
+	 */
 	private function fetchTag()
 	{
 		return LAN_MENTIONS_TAG_CHATBOX;
@@ -204,6 +242,11 @@ class ChatboxEmail
 	}
 
 
+	/**
+	 * Generates and returns variable substituted e-mail LAN text
+	 *
+	 * @return string
+	 */
 	public function getEmailText()
 	{
 		$tp = e107::getParser();
@@ -213,6 +256,11 @@ class ChatboxEmail
 	}
 
 
+	/**
+	 * Returns array of variable values for variable substituted LAN generation.
+	 *
+	 * @return array
+	 */
 	private function getVars()
 	{
 		return [
@@ -223,6 +271,9 @@ class ChatboxEmail
 	}
 
 
+	/**
+	 * @return string
+	 */
 	private function getLink()
 	{
 		return '<a href="' . $this->link . '">\'' . $this->tag . '\'</a>';
@@ -288,7 +339,7 @@ class CommentEmail
 
 
 	/**
-	 * Returns word for comment
+	 * Returns word translation for content tag
 	 *
 	 * @return string
 	 */
@@ -334,6 +385,11 @@ class CommentEmail
 	}
 
 
+	/**
+	 * Generates and returns e-mail text
+	 *
+	 * @return string
+	 */
 	public function getEmailText()
 	{
 		$tp = e107::getParser();
@@ -343,6 +399,9 @@ class CommentEmail
 	}
 
 
+	/**
+	 * @return array
+	 */
 	private function getVars()
 	{
 		return [
@@ -355,6 +414,9 @@ class CommentEmail
 	}
 
 
+	/**
+	 * @return string
+	 */
 	private function getLink()
 	{
 		return '<a href="' . $this->link . '">\'' . $this->title . '\'</a>';
@@ -390,6 +452,11 @@ class ForumEmail
 	}
 
 
+	/**
+	 * Returns word translation for content tag
+	 *
+	 * @return string
+	 */
 	private function fetchTag()
 	{
 		if (defined(ONLINE_EL13)) {
@@ -400,6 +467,11 @@ class ForumEmail
 	}
 
 
+	/**
+	 * Generates and returns e-mail text
+	 *
+	 * @return string
+	 */
 	public function getEmailText()
 	{
 		$tp = e107::getParser();
@@ -409,6 +481,9 @@ class ForumEmail
 	}
 
 
+	/**
+	 * @return array
+	 */
 	private function getVars()
 	{
 		return [
@@ -420,6 +495,9 @@ class ForumEmail
 	}
 
 
+	/**
+	 * @return string
+	 */
 	private function getLink()
 	{
 		return '<a href="' . $this->link . '">\'' . $this->title . '\'</a>';
