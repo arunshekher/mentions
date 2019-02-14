@@ -108,7 +108,7 @@ class ContentLinksFactory
 
 
 	/**
-	 * Returns title (@todo: only in case of ForumLinks class)
+	 * Returns title only in case of ForumLinks class
 	 *
 	 * @return mixed
 	 */
