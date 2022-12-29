@@ -108,7 +108,7 @@ class MentionsNotification extends Mentions
 	private function perform()
 	{
 		if (USER && $this->prefs['mentions_active']
-			&& (strtolower($_SERVER['REQUEST_METHOD']) === 'post'
+			&& ((isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST')
 				|| e_AJAX_REQUEST)) {
 
 			if ($this->prefs['notify_chatbox_mentions']) {
